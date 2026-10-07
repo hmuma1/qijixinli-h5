@@ -278,6 +278,56 @@
   background:linear-gradient(135deg,#6b5b95,#8b7bb8);
   box-shadow:0 6px 18px rgba(107,91,149,.28);
 }
+
+/* ===== 紧凑化改造：一屏显示 ===== */
+/* 折叠块（默认收起，点击展开） */
+.fold{ margin-top:6px; border-top:1px solid #f0edf8; }
+.fold > summary{
+  list-style:none; cursor:pointer; padding:12px 2px 10px;
+  font-size:13.5px; color:#8b7bb8; font-weight:600;
+  display:flex; align-items:center; gap:6px;
+}
+.fold > summary::-webkit-details-marker{ display:none; }
+.fold > summary::after{
+  content:'▾'; margin-left:auto; font-size:12px; color:#b8aee0;
+  transition:transform .22s ease;
+}
+.fold[open] > summary::after{ transform:rotate(180deg); }
+.fold > summary:active{ opacity:.65; }
+.fold .fold-body{ padding:0 2px 12px; }
+.fold .fold-body p{ font-size:13.5px; line-height:1.68; color:#6f6885; margin-bottom:8px; }
+.fold .fold-body p:last-child{ margin-bottom:0; }
+
+/* 开场页收紧 */
+.stage-hero{ padding:22px 16px 16px; margin-bottom:10px; }
+.stage-title{ font-size:27px; }
+.stage-q{ font-size:14.5px; }
+
+/* 卡片内间距收紧 */
+#s-intro .card, #s-pre1 .card, #s-pre2 .card{ padding:15px 17px; margin-bottom:11px; }
+#s-intro .card h2, #s-pre1 .card h2, #s-pre2 .card h2{ font-size:16px; margin-bottom:8px; }
+#s-intro .hero{ padding:30px 18px 18px; }
+#s-intro .hero h1{ font-size:27px; line-height:1.28; }
+#s-intro .hero p{ font-size:14px; line-height:1.62; margin-top:9px; }
+
+/* 星球简洁入口条 */
+.planet-bar{
+  margin-top:4px; padding:14px 16px; border-radius:15px;
+  background:linear-gradient(135deg,#2a2340 0%,#3d3355 100%);
+  display:flex; align-items:center; gap:11px; cursor:pointer;
+  border:none; width:100%; text-align:left;
+  transition:transform .16s ease, box-shadow .2s ease;
+}
+.planet-bar:active{ transform:scale(.985); }
+.planet-bar .pb-icon{
+  flex:0 0 34px; width:34px; height:34px; border-radius:10px;
+  background:linear-gradient(135deg,#8b7bb8,#c4b5fd);
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.planet-bar .pb-txt{ flex:1; min-width:0; }
+.planet-bar .pb-t1{ color:#f1ecfd; font-size:14px; font-weight:700; line-height:1.4; }
+.planet-bar .pb-t2{ color:#a79cc7; font-size:11.5px; margin-top:2px; }
+.planet-bar .pb-go{ color:#c4b5fd; font-size:17px; flex:0 0 auto; }
 </style>
 </head>
 <body>
@@ -295,26 +345,21 @@
     <ul>
       <li><strong>第 1 段 · ECR 依恋类型</strong>：安全型 / 焦虑型 / 回避型 / 恐惧型</li>
       <li><strong>第 2 段 · MBTI 人格类型</strong>：你的四字母人格与 16 型定位</li>
-      <li><strong>综合报告</strong>：两套结果交叉解读，告诉你「你为什么会这样去爱」</li>
+      <li><strong>综合报告</strong>：两套结果交叉解读</li>
     </ul>
     <div class="meta">
       <span class="chip">📖 共 48 题</span>
       <span class="chip">⏱ 约 8 分钟</span>
       <span class="chip">🔄 每次题序不同</span>
-      <span class="chip">🧠 依恋理论 + MBTI</span>
     </div>
-  </div>
-
-  <div class="card">
-    <h2>为什么每次打开题目都不一样</h2>
-    <p>我们准备了<strong>远超单次题量</strong>的题库。每次进入测评，系统都会从题库中<strong>随机抽题、随机排序</strong>，所以你不会两次做到一模一样的卷子。</p>
-    <p>但请放心：<strong>题目在变，测得的东西不变</strong>。无论抽到哪些题，量表的维度结构和判定规则都是固定的——所以你的类型结果依然稳定、可靠。</p>
-  </div>
-
-  <div class="card">
-    <h2>测评依据</h2>
-    <p>依恋部分基于 <strong>ECR（Experiences in Close Relationships，亲密关系经历量表）</strong>，参考 Bowlby 与 Ainsworth 的<strong>依恋理论</strong>、Bartholomew &amp; Horowitz 的<strong>成人依恋四类型模型</strong>，以及 ECR（亲密关系经历量表）的焦虑/回避双维度框架；人格部分基于 <strong>MBTI（Myers-Briggs Type Indicator，迈尔斯-布里格斯类型指标）</strong>四维度二分法（E/I · S/N · T/F · J/P）。</p>
-    <p style="color:#9a97ad;font-size:13px;">结果仅供自我觉察参考，不构成医学诊断，也非临床心理评估。</p>
+    <details class="fold">
+      <summary>每次题目为什么不一样？依据是什么？</summary>
+      <div class="fold-body">
+        <p><strong>随机抽题</strong>：题库远超单次题量，每次随机抽取并打乱顺序，所以两次不会做到同一份卷子。但<strong>题目在变，测得的东西不变</strong>——维度结构与判定规则固定，结果依然稳定可靠。</p>
+        <p><strong>测评依据</strong>：依恋部分基于 <strong>ECR（亲密关系经历量表）</strong>，参考 Bowlby 与 Ainsworth 的依恋理论、Bartholomew &amp; Horowitz 的成人依恋四类型模型；人格部分基于 <strong>MBTI</strong> 四维度二分法（E/I · S/N · T/F · J/P）。</p>
+        <p style="color:#9a97ad;font-size:12.5px;">结果仅供自我觉察参考，不构成医学诊断，也非临床心理评估。</p>
+      </div>
+    </details>
   </div>
 
   <button class="btn" onclick="startStage1()">开始测评 →</button>
@@ -331,23 +376,20 @@
   </div>
 
   <div class="card">
-    <h2>接下来这 24 题，测的是你爱人的方式</h2>
-    <p>同样是被爱，有人觉得踏实，有人觉得不安；同样是靠近，有人想贴得更紧，有人想往后退一点。这些反应不是「作」，也不是「冷」，它们来自你早年学会的<strong>依恋策略</strong>。</p>
-    <p>下面 24 题会从两个维度量你：<strong>焦虑</strong>（多怕被抛下）与<strong>回避</strong>（多怕太亲密）。两个分数一交叉，就落在四种依恋类型里。</p>
+    <h2>这 24 题，测的是你爱人的方式</h2>
+    <p>同样是被爱，有人觉得踏实，有人觉得不安；同样是靠近，有人想贴得更紧，有人想往后退一点。这些不是「作」，也不是「冷」，它们来自你早年学会的<strong>依恋策略</strong>。</p>
     <div class="meta">
       <span class="chip">📖 24 题</span>
       <span class="chip">⏱ 约 4 分钟</span>
       <span class="chip">🧭 4 型判定</span>
     </div>
-  </div>
-
-  <div class="card soft">
-    <h2>答题前，记住三件事</h2>
-    <ul>
-      <li><strong>凭第一反应选</strong>——不要想「我应该怎样」，想「我实际怎样」。</li>
-      <li><strong>没有好坏对错</strong>——四种类型都健康，只是策略不同。</li>
-      <li><strong>一题一屏</strong>——选完会自动进入下一题，随时可以回上一题改。</li>
-    </ul>
+    <details class="fold">
+      <summary>怎么判定的？</summary>
+      <div class="fold-body">
+        <p>从两个维度量你：<strong>焦虑</strong>（多怕被抛下）与<strong>回避</strong>（多怕太亲密）。两个分数一交叉，就落在四种依恋类型里。</p>
+        <p><strong>凭第一反应选</strong>——不要想「我应该怎样」，想「我实际怎样」。四种类型都健康，只是策略不同。</p>
+      </div>
+    </details>
   </div>
 
   <button class="btn" onclick="beginQuiz1()">好，开始第 1 段 →</button>
@@ -427,27 +469,31 @@
   </div>
 
   <div class="card">
-    <h2>接下来 24 题，测的是你的性格底色</h2>
+    <h2>这 24 题，测的是你的性格底色</h2>
     <p>人格不是标签，是你处理世界的默认方式：<strong>能量从哪来</strong>（E/I）、<strong>怎么接收信息</strong>（S/N）、<strong>怎么做决定</strong>（T/F）、<strong>怎么安排生活</strong>（J/P）。</p>
-    <p>这 24 题很多是「二选一」——两边都像你的时候，选<strong>更自然、更不需要用力</strong>的那个。</p>
     <div class="meta">
       <span class="chip">📖 24 题</span>
       <span class="chip">⏱ 约 4 分钟</span>
       <span class="chip">🎯 16 型定位</span>
     </div>
+    <details class="fold">
+      <summary>拿不准怎么选？</summary>
+      <div class="fold-body">
+        <p>很多题是「二选一」——<strong>两边都像你的时候，选更自然、更不需要用力的那个</strong>。别选「你希望自己是」，选「你实际是」。</p>
+      </div>
+    </details>
   </div>
 
-  <div class="card planet">
-    <div class="planet-head">
-      <span class="planet-badge">奇迹星球</span>
-      <span class="planet-tip">进阶内容</span>
-    </div>
-    <h2>想先看看「深度报告」长什么样？</h2>
-    <p>完整的<strong>依恋 × 人格交叉深度报告</strong>，包含你的成因溯源、关系陷阱、调整路径，以及 30 天行动方案——这些内容不在免费结果里，只放在星球内部。</p>
-    <p class="planet-note">不急，你可以先做完第 2 段，拿到完整结果再决定。</p>
-  </div>
+  <button class="planet-bar" onclick="goPlanet()">
+    <span class="pb-icon">✦</span>
+    <span class="pb-txt">
+      <span class="pb-t1">想看更详细专业的综合测评？</span>
+      <span class="pb-t2">进入奇迹星球 · 深度报告 + 同类型的人</span>
+    </span>
+    <span class="pb-go">›</span>
+  </button>
 
-  <button class="btn" onclick="startStage2()">好，开始第 2 段 →</button>
+  <button class="btn" style="margin-top:11px;" onclick="startStage2()">好，开始第 2 段 →</button>
   <button class="btn ghost" style="margin-top:10px;" onclick="show('s-attach')">← 回看我的依恋结果</button>
 </section>
 
@@ -505,16 +551,15 @@
     <div id="r-cross"></div>
   </div>
 
-  <!-- 免费层的星球软性入口 -->
-  <div class="card planet">
-    <div class="planet-head">
-      <span class="planet-badge">奇迹星球</span>
-      <span class="planet-tip">同类型的人都在这里</span>
-    </div>
-    <h2>你会发现，你不是一个人</h2>
-    <p>星球里聚集了很多<strong>同一种依恋类型、同一种人格</strong>的人。他们的困惑和你惊人地像——有人把「焦虑型 × ENFP」的相处难题拆成了 12 个具体场景，也有人把自己的调整过程完整记了下来。</p>
-    <p class="planet-note">免费报告到这里就结束了。想继续往下走，两个选择：解锁下面的深度报告，或者直接进星球。</p>
-  </div>
+  <!-- 免费层的星球入口（简洁条） -->
+  <button class="planet-bar" onclick="goPlanet()">
+    <span class="pb-icon">✦</span>
+    <span class="pb-txt">
+      <span class="pb-t1">想看更详细专业的综合测评？</span>
+      <span class="pb-t2">进入奇迹星球 · 同类型的深度解读</span>
+    </span>
+    <span class="pb-go">›</span>
+  </button>
 
   <!-- 付费墙 -->
   <div class="lock" id="paywall">
