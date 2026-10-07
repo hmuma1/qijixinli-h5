@@ -634,6 +634,61 @@ body{
 .footnote{
   opacity:.62; letter-spacing:.3px;
 }
+
+/* ============================================================
+   v6 · 付费进阶版样式（加长题 + 精细画像）
+   ============================================================ */
+
+/* 进阶入口条：金色会员感 */
+.adv-bar{
+  margin-top:12px; padding:15px 17px; border-radius:16px; border:none; width:100%;
+  display:flex; align-items:center; gap:12px; cursor:pointer;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(255,214,120,.20) 0%, transparent 46%),
+    linear-gradient(135deg,#241a45 0%,#3a2a6b 56%,#46356f 100%);
+  box-shadow:0 10px 26px rgba(36,26,69,.28);
+  transition:transform .16s ease;
+}
+.adv-bar:active{ transform:scale(.985); }
+.adv-bar .ab-mark{
+  flex:0 0 36px; width:36px; height:36px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center; font-size:16px; color:#3a2a6b;
+  background:linear-gradient(135deg,#ffe9a8,#e0bd67);
+  box-shadow:0 4px 12px rgba(224,189,103,.34);
+}
+.adv-bar .ab-txt{ flex:1; min-width:0; text-align:left; }
+.adv-bar .ab-t1{ display:block; color:#fbf6e8; font-size:14.5px; font-weight:700; line-height:1.4; }
+.adv-bar .ab-t2{ display:block; color:#b8a9d8; font-size:11.5px; margin-top:3px; line-height:1.4; }
+
+/* 精细画像卡 */
+.adv-card{
+  background:
+    radial-gradient(circle at 82% 2%, rgba(255,214,120,.12) 0%, transparent 44%),
+    linear-gradient(150deg,#1e1730 0%,#2c2148 60%,#352a55 100%) !important;
+  border:none !important;
+}
+.adv-head{
+  font-size:12px; letter-spacing:2.4px; color:#d9b96c; font-weight:700;
+  text-transform:uppercase; margin-bottom:14px;
+}
+.adv-head::after{
+  content:''; display:block; width:34px; height:2px; margin-top:8px;
+  background:linear-gradient(90deg,#d9b96c,transparent);
+}
+.adv-grid{ display:flex; gap:10px; margin-bottom:15px; }
+.adv-grid .adv-cell{
+  flex:1; padding:13px 11px; border-radius:13px;
+  background:rgba(255,255,255,.055); border:1px solid rgba(217,185,108,.22);
+}
+.adv-grid .ac-k{ font-size:11px; color:#9e91bd; letter-spacing:.4px; }
+.adv-grid .ac-v{ font-size:16px; font-weight:700; color:#f4eede; margin-top:6px; line-height:1.35; }
+.adv-card #adv-lines p,
+.adv-card p{ color:#cfc6e4 !important; font-size:14px; line-height:1.72; }
+.adv-card b{ color:#ffe9a8; }
+.adv-card .dimbar .top{ color:#c8bee0 !important; }
+.adv-card .dimbar .track{ background:rgba(255,255,255,.09) !important; }
+.adv-card .dimbar .fill,
+.card .dimbar .fill{ background:linear-gradient(90deg,#8b6bf0,#c4a0f5) !important; }
 </style>
 </head>
 <body>
@@ -823,6 +878,26 @@ body{
   </div>
 </section>
 
+<!-- ========== 4.5 付费 · 进阶答题 ========== -->
+<section id="s-adv-quiz" class="screen">
+  <div class="stagebar">
+    <div class="st done" id="adv-st-a">进阶 · 依恋 32 题</div>
+    <div class="st on" id="adv-st-b">进阶 · 人格 32 题</div>
+    <div class="st" id="adv-st-c">精细画像</div>
+  </div>
+  <div class="progress">
+    <div class="bar"><div class="fill" id="adv-pfill"></div></div>
+    <div class="num"><span id="adv-pnow">1</span> / <span id="adv-ptotal">64</span></div>
+  </div>
+  <div class="q-head" id="adv-qhead">第 1 题</div>
+  <div class="q-text" id="adv-qtext">题目加载中…</div>
+  <div class="opts" id="adv-opts"></div>
+  <div class="nav">
+    <button class="btn ghost" id="adv-prev" onclick="prevAdvQ()" style="flex:0 0 34%;">上一题</button>
+    <button class="btn" id="adv-next" onclick="nextAdvQ()" disabled>下一题</button>
+  </div>
+</section>
+
 <!-- ========== 4. 综合报告（免费层 B + 付费墙） ========== -->
 <section id="s-report" class="screen">
   <div class="result-hero">
@@ -887,6 +962,9 @@ body{
       <button class="btn" onclick="unlock()">解锁完整报告 →</button>
       <button class="btn ghost" style="margin-top:10px;" onclick="checkPaid()">我已支付，查看报告</button>
       <button class="btn ghost" style="margin-top:10px;" onclick="goConsult()">先找小管家聊聊（免费）</button>
+      <p style="margin:14px 0 0;font-size:11.5px;color:rgba(255,255,255,.42);line-height:1.6;">
+        已解锁？回本页重新进入，报告与进阶加长版会自动出现
+      </p>
     </div>
   </div>
 
@@ -918,6 +996,28 @@ body{
       <p>这份报告是基于量表规则的通用解读。如果你想知道「<strong>具体到我的这段关系，该怎么办</strong>」，可以进奇迹星球——里面有更细的分场景题库、真实案例拆解，和可以当面问的小管家。</p>
       <button class="btn" onclick="goPlanet()">进奇迹星球看看 →</button>
       <button class="btn ghost" style="margin-top:10px;" onclick="goConsult()">先免费聊聊</button>
+    </div>
+
+    <!-- 付费进阶加题入口 -->
+    <button class="adv-bar" onclick="startAdvanced()">
+      <span class="ab-mark">✦</span>
+      <span class="ab-txt">
+        <span class="ab-t1">进阶加长版 · 再测 32 题</span>
+        <span class="ab-t2">依恋加至 32 题 · 人格每维加至 8 题，画像更细</span>
+      </span>
+      <span class="pb-go">›</span>
+    </button>
+
+    <div id="adv-report" style="display:none;">
+      <div class="card adv-card">
+        <div class="adv-head">进阶版 · 精细画像</div>
+        <div class="adv-grid" id="adv-grid"></div>
+        <div id="adv-lines"></div>
+      </div>
+      <div class="card">
+        <h2>进阶版 · 你的依恋刻度</h2>
+        <div id="adv-dims"></div>
+      </div>
     </div>
   </div>
 
@@ -1145,9 +1245,11 @@ function pickN(arr, n){
 /* ---------------- 依恋卷（ECR） ----------------
    输出：24 题，anx / avo 各 12，全局乱序
    每题结构：{ dim:'anx'|'avo', text, rev } */
-function buildAttachPaper(){
-  const anx = pickN(ECR_ANX, ECR_PICK_ANX).map(q=>({dim:"anx", text:q.t, rev:!!q.rev}));
-  const avo = pickN(ECR_AVO, ECR_PICK_AVO).map(q=>({dim:"avo", text:q.t, rev:!!q.rev}));
+function buildAttachPaper(pickAnx, pickAvo){
+  pickAnx = pickAnx || ECR_PICK_ANX;
+  pickAvo = pickAvo || ECR_PICK_AVO;
+  const anx = pickN(ECR_ANX, pickAnx).map(q=>({dim:"anx", text:q.t, rev:!!q.rev}));
+  const avo = pickN(ECR_AVO, pickAvo).map(q=>({dim:"avo", text:q.t, rev:!!q.rev}));
   return shuffle(anx.concat(avo));
 }
 
@@ -1157,7 +1259,9 @@ function buildAttachPaper(){
    计分：选中的那个 opt 的 dim +1 */
 const MBTI_DIM_PAIRS = [["E","I"],["S","N"],["T","F"],["J","P"]];
 
-function buildMbtiPaper(){
+/* n = 每个维度抽几题（默认 6 → 共 24 题；传 8 → 共 32 题，用于付费进阶版） */
+function buildMbtiPaper(n){
+  n = n || MBTI_PICK_PER_DIM;
   const out = [];
   MBTI_DIM_PAIRS.forEach(pair=>{
     // 找出所有属于这一对的题
@@ -1165,7 +1269,7 @@ function buildMbtiPaper(){
       const d1 = q.a.dim, d2 = q.b.dim;
       return pair.indexOf(d1) > -1 && pair.indexOf(d2) > -1;
     });
-    const chosen = pickN(pool, MBTI_PICK_PER_DIM);
+    const chosen = pickN(pool, n);
     chosen.forEach(q=>{
       // 记录该题归属的维度对，后续交错排列要用（先记，再乱序选项）
       const pairKey = [q.a.dim, q.b.dim].sort().join("");
@@ -1487,6 +1591,8 @@ let idx1 = 0;
 let idx2 = 0;
 let ans2 = [];
 let RESULT = null;      // {anx, avo, attachKey, mbtiType, mbtiCount}
+let ADV = null;         // 付费进阶卷运行时状态
+let ADV_PREV = null;    // 免费版结果快照（进阶报告做对比用）
 
 function $(id){ return document.getElementById(id); }
 
@@ -1610,6 +1716,194 @@ function beginQuiz2(){
   show('s-quiz2');
 }
 
+/* ---------------- 付费 · 进阶加题（依恋加 8 题 / 人格每维加 2 题） ----------------
+   说明：这是给「付费解锁者」的加长版，不是免费流程的一部分。
+   进阶卷只做「更精细的画像」，不改变已判定的类型，避免与免费结果冲突。 */
+const ADV_ANX = ECR_PICK_ANX + 4;      // 依恋焦虑 12 → 16
+const ADV_AVO = ECR_PICK_AVO + 4;      // 依恋回避 12 → 16
+const ADV_MBTI_PER_DIM = 8;            // 人格 每维 6 → 8（共 32 题）
+
+/* 用高阶卷重算一次：返回 {anx, avo, attachKey, mbtiType, mbtiCount, n1, n2} */
+function runAdvanced(){
+  const p1 = buildAttachPaper(ADV_ANX, ADV_AVO);
+  const a1 = new Array(p1.length).fill(null);
+  const p2 = buildMbtiPaper(ADV_MBTI_PER_DIM);
+  const a2 = new Array(p2.length).fill(null);
+  return { p1:p1, a1:a1, p2:p2, a2:a2, i1:0, i2:0, phase:'quiz1' };
+}
+
+/* 进阶卷入口（只允许付费解锁者） */
+function startAdvanced(){
+  if(localStorage.getItem('qjx_unlocked') !== '1'){
+    toast('进阶加长版需先在星球解锁');
+    setTimeout(()=>{ const pw = $('paywall'); if(pw){ pw.scrollIntoView({behavior:'smooth', block:'center'}); } }, 400);
+    return;
+  }
+  ADV = runAdvanced();
+  ADV.combo = RESULT;              // 记住免费版的类型，进阶报告要用
+  ADV_PREV = RESULT;
+  renderAdvQ();
+  show('s-adv-quiz');
+  toast('已进入进阶版 · 共 ' + (ADV.p1.length + ADV.p2.length) + ' 题');
+}
+
+/* 清空进阶结果（重测 / 重进） */
+function resetAdv(){
+  ADV = null;
+  const p = $('adv-report'); if(p) p.style.display = 'none';
+}
+
+/* ---- 进阶卷：出题 ---- */
+function advCurQ(){
+  if(!ADV) return null;
+  return ADV.phase === 'quiz1' ? ADV.p1[ADV.i1] : ADV.p2[ADV.i2];
+}
+function advCurIdx(){
+  return ADV.phase === 'quiz1' ? ADV.i1 : ADV.i2;
+}
+function advCurAnsArr(){
+  return ADV.phase === 'quiz1' ? ADV.a1 : ADV.a2;
+}
+
+function renderAdvQ(){
+  if(!ADV) return;
+  const q = advCurQ(); if(!q) return;
+  const i = advCurIdx();
+  const total = ADV.p1.length + ADV.p2.length;
+  const base = ADV.phase === 'quiz1' ? 0 : ADV.p1.length;
+  const done = base + i;
+
+  $('adv-qhead').textContent = (ADV.phase === 'quiz1' ? '依恋进阶 · 第 ' : '人格进阶 · 第 ') + (i + 1) + ' 题';
+  $('adv-qtext').textContent = ADV.phase === 'quiz1'
+    ? (q.text + (q.rev ? '　（请按真实感受作答）' : ''))
+    : q.text;
+  $('adv-pnow').textContent = done + 1;
+  $('adv-ptotal').textContent = total;
+  $('adv-pfill').style.width = (done / total * 100) + '%';
+
+  $('adv-st-a').className = 'st ' + (ADV.phase === 'quiz1' ? 'on' : 'done');
+  $('adv-st-b').className = 'st ' + (ADV.phase === 'quiz1' ? '' : 'on');
+  $('adv-st-c').className = 'st';
+
+  const box = $('adv-opts');
+  box.innerHTML = '';
+  const arr = advCurAnsArr();
+
+  if(ADV.phase === 'quiz1'){
+    ECR_OPTS.forEach(o=>{
+      const d = document.createElement('div');
+      d.className = 'opt' + (arr[i] === o.v ? ' sel' : '');
+      d.innerHTML = '<span class="dot"></span><span>' + o.t + '</span>';
+      d.onclick = ()=>{
+        arr[i] = o.v;
+        box.querySelectorAll('.opt').forEach(el=>el.classList.remove('sel'));
+        d.classList.add('sel');
+        $('adv-next').disabled = false;
+        setTimeout(()=>{ nextAdvQ(true); }, 240);
+      };
+      box.appendChild(d);
+    });
+  }else{
+    q.opts.forEach((o, oi)=>{
+      const d = document.createElement('div');
+      d.className = 'opt' + (arr[i] === oi ? ' sel' : '');
+      d.innerHTML = '<span class="dot"></span><span>' + o.t + '</span>';
+      d.onclick = ()=>{
+        arr[i] = oi;
+        box.querySelectorAll('.opt').forEach(el=>el.classList.remove('sel'));
+        d.classList.add('sel');
+        $('adv-next').disabled = false;
+        setTimeout(()=>{ nextAdvQ(true); }, 240);
+      };
+      box.appendChild(d);
+    });
+  }
+
+  const isLast = (ADV.phase === 'quiz2' && i === ADV.p2.length - 1);
+  $('adv-prev').disabled = (ADV.phase === 'quiz1' && i === 0);
+  $('adv-next').disabled = (arr[i] === null || arr[i] === undefined);
+  $('adv-next').textContent = isLast ? '生成进阶画像' : '下一题';
+}
+
+function nextAdvQ(auto){
+  if(!ADV) return;
+  const arr = advCurAnsArr();
+  const i = advCurIdx();
+  if(arr[i] === null || arr[i] === undefined) return;
+
+  if(ADV.phase === 'quiz1'){
+    if(i < ADV.p1.length - 1){ ADV.i1++; renderAdvQ(); }
+    else{
+      // 依恋进阶做完 → 直接续人格进阶
+      ADV.phase = 'quiz2'; ADV.i2 = 0;
+      renderAdvQ();
+      if(!auto) toast('依恋进阶完成，继续人格进阶');
+    }
+  }else{
+    if(i < ADV.p2.length - 1){ ADV.i2++; renderAdvQ(); }
+    else{ finishAdvanced(); }
+  }
+}
+
+function prevAdvQ(){
+  if(!ADV) return;
+  if(ADV.phase === 'quiz1'){
+    if(ADV.i1 > 0){ ADV.i1--; renderAdvQ(); }
+  }else{
+    if(ADV.i2 > 0){ ADV.i2--; renderAdvQ(); }
+    else{ ADV.phase = 'quiz1'; ADV.i1 = ADV.p1.length - 1; renderAdvQ(); }
+  }
+}
+
+/* ---- 进阶卷：出结果（与免费版对比，做精细画像） ---- */
+function finishAdvanced(){
+  if(!ADV) return;
+  const s = scoreAttach(ADV.p1, ADV.a1);
+  const key = classifyAttach(s.anx, s.avo);
+  const m = scoreMbti(ADV.p2, ADV.a2);
+  const at = ATTACH_TYPES[key];
+  const prev = ADV_PREV || {};
+
+  $('adv-st-c').className = 'st on';
+
+  /* 顶部：类型 + 是否与免费版一致 */
+  const same = (prev.attachKey === key) && (prev.mbtiType === m.type);
+  const sameA = prev.attachKey === key;
+  const sameM = prev.mbtiType === m.type;
+  $('adv-grid').innerHTML =
+    '<div class="adv-cell"><div class="ac-k">进阶 · 依恋</div><div class="ac-v">' + at.emoji + ' ' + at.name + '</div></div>' +
+    '<div class="adv-cell"><div class="ac-k">进阶 · 人格</div><div class="ac-v">' + m.type + '</div></div>';
+
+  /* 浓度刻度 */
+  $('adv-dims').innerHTML =
+    '<div class="dimbar"><div class="top"><span>焦虑维度</span><span>' + s.anx + '%</span></div>' +
+    '<div class="track"><div class="fill" style="width:' + s.anx + '%"></div></div></div>' +
+    '<div class="dimbar" style="margin-top:12px;"><div class="top"><span>回避维度</span><span>' + s.avo + '%</span></div>' +
+    '<div class="track"><div class="fill" style="width:' + s.avo + '%"></div></div></div>';
+
+  const lines = [];
+  lines.push('<p><b>进阶版结论：</b>' + (same
+    ? '32 题加重后，你的类型与免费版完全一致——说明结果很稳，不是偶然。'
+    : (sameA ? '依恋类型与免费版一致，人格维度在加重后出现了微调，这说明你在人格上处于两个类型之间。'
+             : '加重题目后结果出现变化。这通常说明你的依恋状态正处在波动期，或免费版某几题感受不明确。')) + '</p>');
+  lines.push('<p><b>刻度变化：</b>免费版 焦虑 ' + (prev.anx != null ? prev.anx : '—') + '% / 回避 ' + (prev.avo != null ? prev.avo : '—') +
+             '%　→　进阶版 焦虑 ' + s.anx + '% / 回避 ' + s.avo + '%</p>');
+
+  if(!sameA || !sameM){
+    lines.push('<p style="color:#8b6b3d;background:#fdf8ef;border-radius:10px;padding:10px 12px;">' +
+      '⚠ 两次结果不完全一致，不代表任何一次是"错的"。依恋是状态、人格是底色，波动本来就会发生。' +
+      '真正值得留意的是：<b>哪几题让你犹豫</b>——那里通常藏着你最在意的东西。</p>');
+  }
+  $('adv-lines').innerHTML = lines.join('');
+
+  const p = $('adv-report');
+  if(p){
+    p.style.display = 'block';
+    setTimeout(()=>{ p.scrollIntoView({behavior:'smooth', block:'start'}); }, 120);
+  }
+  toast('进阶画像已生成');
+}
+
 function renderQ2(){
   const q = paper2[idx2];
   $('qhead2').textContent = '第 ' + (idx2+1) + ' 题';
@@ -1727,6 +2021,7 @@ function finishStage2(){
   show('s-report');
 
   if(localStorage.getItem('qjx_unlocked') === '1'){ revealDeep(); }
+  applyPaidState();
 }
 
 /* ---------------- 深度报告渲染 ---------------- */
@@ -1756,6 +2051,17 @@ function renderDeep(){
 
   const pw = $('paywall'); if(pw) pw.style.display = 'none';
   const dr = $('deep-report'); if(dr) dr.style.display = 'block';
+  resetAdv();
+}
+
+/* 付费墙 / 深度报告 的显示态（供解锁回读与重测复用） */
+function applyPaidState(){
+  const on = localStorage.getItem('qjx_unlocked') === '1';
+  const pw = $('paywall');
+  const dr = $('deep-report');
+  if(pw) pw.style.display = on ? 'none' : 'block';
+  if(dr) dr.style.display = on ? 'block' : 'none';
+  if(!on) resetAdv();
 }
 
 /* ---------------- 付费与引流 ---------------- */
@@ -1816,10 +2122,12 @@ function restartAll(){
 
 /* ---------------- 启动 ---------------- */
 window.addEventListener('load', ()=>{
+  /* 支持 ?unlock=1 或 #unlock 直接带回解锁态（星主发链接给会员用） */
   const u = new URLSearchParams(location.search);
-  if(u.get('unlock') === '1' || u.get('paid') === '1'){
+  if(u.get('unlock') === '1' || u.get('paid') === '1' || location.hash.indexOf('unlock') > -1){
     localStorage.setItem('qjx_unlocked', '1');
   }
+  applyPaidState();
 });
 
 </script>
