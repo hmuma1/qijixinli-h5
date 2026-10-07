@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6b4de6">
+<title>ECR 依恋类型 × MBTI 人格类型 双维测评 · 奇迹心li</title>
+<style>
+  :root{
+    --brand:#6b4de6;
+    --brand-soft:#efeaff;
+    --brand-deep:#4a2fb0;
+    --ink:#2b2b3a;
+    --ink-2:#6a6a7c;
+    --line:#eceaf6;
+    --bg:#f5f3ff;
+    --card:#ffffff;
+    --ok:#2fb380;
+    --warn:#e05a5a;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);
+    line-height:1.65;font-size:16px;
+    min-height:100vh;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 40px;}
+  .screen{display:none;animation:fade .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* 头部 */
+  .hero{
+    background:linear-gradient(150deg,#6b4de6 0%,#8a6bf0 55%,#a98cf5 100%);
+    color:#fff;padding:38px 24px 30px;border-radius:0 0 28px 28px;
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;
+    background:rgba(255,255,255,.14);border-radius:50%;
+  }
+  .hero .tag{
+    display:inline-block;font-size:12.5px;background:rgba(255,255,255,.22);
+    padding:4px 12px;border-radius:99px;margin-bottom:14px;letter-spacing:.5px;
+  }
+  .hero h1{font-size:25px;margin:0 0 10px;font-weight:700;letter-spacing:.5px;}
+  .hero p{margin:0;font-size:14px;opacity:.92;line-height:1.7;}
+
+  .card{
+    background:var(--card);border-radius:var(--radius);
+    margin:16px 16px 0;padding:22px 20px;
+    box-shadow:0 6px 24px rgba(107,77,230,.07);
+  }
+  .card h2{font-size:17px;margin:0 0 12px;font-weight:700;}
+  .card p{margin:0 0 10px;font-size:14.5px;color:var(--ink-2);}
+  .card ul{margin:8px 0;padding-left:20px;color:var(--ink-2);font-size:14.5px;}
+  .card li{margin:5px 0;}
+  .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .meta .chip{
+    font-size:12.5px;background:var(--brand-soft);color:var(--brand-deep);
+    padding:5px 12px;border-radius:99px;
+  }
+
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#6b4de6,#8a6bf0);color:#fff;
+    font-size:16.5px;font-weight:600;letter-spacing:.5px;
+    padding:16px;border-radius:14px;margin-top:18px;
+    box-shadow:0 8px 20px rgba(107,77,230,.28);
+    transition:transform .15s ease,opacity .15s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);box-shadow:none;}
+  .btn:disabled{opacity:.45;box-shadow:none;}
+
+  /* 进度条 */
+  .progress{
+    position:sticky;top:0;z-index:10;background:var(--bg);
+    padding:12px 16px 8px;
+  }
+  .progress .bar{height:6px;background:#e5e0f7;border-radius:99px;overflow:hidden;}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,#6b4de6,#a98cf5);border-radius:99px;transition:width .3s ease;}
+  .progress .num{font-size:12.5px;color:var(--ink-2);text-align:right;margin-top:6px;}
+
+  /* 题目 */
+  .q-head{padding:6px 16px 0;font-size:13px;color:var(--brand);font-weight:600;letter-spacing:.5px;}
+  .q-text{padding:6px 16px 18px;font-size:19px;font-weight:600;line-height:1.6;color:var(--ink);}
+  .opts{padding:0 16px;display:flex;flex-direction:column;gap:11px;}
+  .opt{
+    background:#fff;border:1.5px solid var(--line);border-radius:14px;
+    padding:15px 16px;font-size:15.5px;cursor:pointer;
+    display:flex;align-items:center;gap:12px;transition:all .15s;
+  }
+  .opt:active{transform:scale(.99);}
+  .opt .dot{
+    width:22px;height:22px;border-radius:50%;border:2px solid #d5cff0;
+    flex:none;transition:all .15s;
+  }
+  .opt.sel{border-color:var(--brand);background:var(--brand-soft);}
+  .opt.sel .dot{border-color:var(--brand);background:var(--brand);box-shadow:inset 0 0 0 4px #fff;}
+
+  .nav{display:flex;gap:12px;padding:22px 16px 0;}
+  .nav .btn{margin-top:0;}
+
+  /* 结果 */
+  .result-hero{
+    background:linear-gradient(150deg,#6b4de6,#8a6bf0);color:#fff;
+    border-radius:0 0 28px 28px;padding:34px 24px;text-align:center;
+  }
+  .result-hero .label{font-size:13px;opacity:.9;letter-spacing:1px;}
+  .result-hero .type{font-size:30px;font-weight:800;margin:8px 0 6px;letter-spacing:1px;}
+  .result-hero .sub{font-size:14.5px;opacity:.95;}
+  .score-row{display:flex;gap:12px;margin:16px 16px 0;}
+  .score-card{
+    flex:1;background:#fff;border-radius:14px;padding:14px 10px;text-align:center;
+    box-shadow:0 6px 20px rgba(107,77,230,.07);
+  }
+  .score-card .k{font-size:12px;color:var(--ink-2);}
+  .score-card .v{font-size:22px;font-weight:800;color:var(--brand);margin-top:4px;}
+
+  .dimbar{margin:14px 0;}
+  .dimbar .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .dimbar .track{height:9px;background:#eceaf6;border-radius:99px;overflow:hidden;}
+  .dimbar .fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#8a6bf0,#6b4de6);}
+
+  .lock{
+    margin:18px 16px 0;background:linear-gradient(135deg,#2b1a5e,#4a2fb0);
+    color:#fff;border-radius:var(--radius);padding:22px 20px;position:relative;overflow:hidden;
+  }
+  .lock::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 55%,rgba(43,26,94,.98) 100%);
+  }
+  .lock .inner{position:relative;z-index:2;}
+  .lock h3{margin:0 0 8px;font-size:17px;}
+  .lock p{margin:0 0 4px;font-size:14px;opacity:.9;}
+  .lock .blur-line{filter:blur(4px);opacity:.55;font-size:14px;margin:10px 0;}
+  .lock .price{font-size:15px;font-weight:700;color:#ffd76e;margin:10px 0 0;}
+
+  .footnote{padding:22px 24px 0;font-size:12px;color:#9a97ad;line-height:1.8;text-align:center;}
+
+  .copy-toast{
+    position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);
+    background:rgba(43,43,58,.94);color:#fff;font-size:14px;
+    padding:11px 22px;border-radius:99px;opacity:0;pointer-events:none;
+    transition:all .3s;z-index:99;
+  }
+  .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  /* ===== v2 新增：分段式与综合报告 ===== */
+  .stagebar{display:flex;gap:8px;padding:14px 16px 4px;}
+  .stagebar .st{
+    flex:1;text-align:center;font-size:12px;padding:7px 4px;border-radius:99px;
+    background:#e9e4fb;color:#7b74a8;font-weight:600;letter-spacing:.3px;
+  }
+  .stagebar .st.on{background:linear-gradient(135deg,#6b4de6,#8a6bf0);color:#fff;}
+  .stagebar .st.done{background:#d6f2e6;color:#2a8b65;}
+  .subhero{
+    background:linear-gradient(150deg,#6b4de6 0%,#8a6bf0 55%,#a98cf5 100%);
+    color:#fff;padding:32px 24px 26px;border-radius:0 0 28px 28px;
+  }
+  .subhero .label{font-size:12.5px;opacity:.85;letter-spacing:1px;}
+  .subhero h1{font-size:23px;margin:8px 0 8px;font-weight:700;}
+  .subhero p{margin:0;font-size:14px;opacity:.92;line-height:1.7;}
+  .mbti-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 2px;}
+  .mbti-grid .cell{
+    text-align:center;border-radius:12px;padding:9px 2px;font-size:12.5px;
+    background:#f1eefc;color:#8a83b0;font-weight:700;letter-spacing:.4px;
+  }
+  .mbti-grid .cell.hit{background:linear-gradient(135deg,#6b4de6,#a98cf5);color:#fff;box-shadow:0 5px 14px rgba(107,77,230,.3);}
+  .tagline{
+    background:#fff;border-left:4px solid var(--brand);border-radius:10px;
+    padding:14px 16px;margin:12px 0;font-size:14.5px;color:var(--ink);line-height:1.7;
+  }
+  .cross-item{padding:12px 0;border-bottom:1px dashed var(--line);}
+  .cross-item:last-child{border-bottom:none;}
+  .cross-item .k{font-size:13px;color:var(--brand);font-weight:700;margin-bottom:5px;}
+  .cross-item .v{font-size:14.5px;color:var(--ink-2);}
+  .cross-item .r{font-size:13.5px;color:#c06a3a;margin-top:6px;background:#fff8f2;border-radius:8px;padding:8px 11px;}
+  .pill{
+    display:inline-block;font-size:12.5px;padding:4px 11px;border-radius:99px;
+    background:#f1eefc;color:var(--brand-deep);margin:0 6px 6px 0;font-weight:600;
+  }
+  .stat-line{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13.5px;}
+  .stat-line .nm{width:44px;flex:none;color:var(--ink-2);}
+  .stat-line .tk{flex:1;height:8px;background:#eceaf6;border-radius:99px;overflow:hidden;}
+  .stat-line .tk i{display:block;height:100%;background:linear-gradient(90deg,#8a6bf0,#6b4de6);border-radius:99px;}
+  .stat-line .pct{width:52px;text-align:right;flex:none;color:var(--ink-2);font-variant-numeric:tabular-nums;}
+  .star-note{background:#fff8e6;border:1px dashed #e8c46a;border-radius:12px;padding:13px 15px;font-size:13.5px;color:#8a6a1a;line-height:1.75;}
+  .reset-line{text-align:center;font-size:12.5px;color:#9a97ad;padding:16px 20px 0;line-height:1.8;}
+
+/* ===== v3 新增：阶段开场 / 氛围 / 星球卡 ===== */
+
+/* 阶段大标题页 */
+.stage-hero{
+  text-align:center; padding:34px 20px 26px;
+  background:radial-gradient(circle at 50% 0%, #f3eeff 0%, transparent 68%);
+  border-radius:20px; margin-bottom:16px;
+}
+.stage-no{
+  display:inline-block; font-size:12px; letter-spacing:2px;
+  color:#8b7bb8; background:#f0ebff; padding:4px 14px;
+  border-radius:20px; margin-bottom:13px; font-weight:600;
+}
+.stage-title{
+  font-size:31px; font-weight:800; letter-spacing:1px;
+  color:var(--ink); margin-bottom:13px;
+}
+.stage-line{
+  width:38px; height:3px; margin:0 auto 15px;
+  background:linear-gradient(90deg,#c4b5fd,#8b7bb8);
+  border-radius:3px;
+}
+.stage-q{
+  font-size:15.5px; color:#7a7391; font-style:italic;
+  margin:0; letter-spacing:.3px;
+}
+
+/* 引导卡片（情感钩子） */
+.card.hook{
+  background:linear-gradient(140deg,#f6f2ff 0%, #fffdf8 100%);
+  border:1px solid #ece5fb;
+}
+.card.hook h2{ color:#6b5b95; }
+.card.soft{ background:#fbfaff; border:1px solid #f0edf8; }
+
+/* 星球卡 */
+.card.planet{
+  background:linear-gradient(140deg,#2a2340 0%, #3d3355 100%);
+  border:none; color:#efeafd;
+  position:relative; overflow:hidden;
+}
+.card.planet::after{
+  content:''; position:absolute; right:-46px; top:-46px;
+  width:140px; height:140px; border-radius:50%;
+  background:radial-gradient(circle, rgba(196,181,253,.30) 0%, transparent 70%);
+}
+.card.planet h2{ color:#fff; margin:11px 0 10px; }
+.card.planet p{ color:#c9c1e4; font-size:14.5px; }
+.card.planet strong{ color:#e9e3ff; }
+.planet-head{ display:flex; align-items:center; gap:9px; }
+.planet-badge{
+  font-size:12px; font-weight:700; letter-spacing:1px;
+  background:linear-gradient(90deg,#8b7bb8,#c4b5fd);
+  color:#fff; padding:4px 13px; border-radius:20px;
+}
+.planet-tip{
+  font-size:11.5px; color:#a79cc7; border:1px solid #55496f;
+  padding:2px 9px; border-radius:12px;
+}
+.planet-note{
+  margin-top:11px !important; font-size:13px !important;
+  color:#9a90bb !important; padding-top:11px;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+
+/* 题目切换淡入 */
+@keyframes qfade{
+  from{ opacity:0; transform:translateY(11px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.q-anim{ animation:qfade .3s cubic-bezier(.22,.68,.36,1); }
+
+/* 选项点选反馈 */
+.opt{ transition:all .18s ease; }
+.opt:active{ transform:scale(.985); }
+
+/* 进度条更细腻 */
+.progress .fill{
+  transition:width .38s cubic-bezier(.4,0,.2,1);
+  background:linear-gradient(90deg,#a78bfa,#8b7bb8);
+}
+
+/* 星球入口按钮（报告页用） */
+.btn.planet-btn{
+  background:linear-gradient(135deg,#6b5b95,#8b7bb8);
+  box-shadow:0 6px 18px rgba(107,91,149,.28);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<!-- ========== 0. 封面 ========== -->
+<section id="s-intro" class="screen active">
+  <div class="hero">
+    <span class="tag">ECR 依恋 × MBTI 人格 · 专业双维测评</span>
+    <h1>ECR 依恋类型 × MBTI 人格<br>双维测评</h1>
+    <p>为什么你越靠近越害怕，越在意越别扭？<br>答案，藏在你「怎么爱人」和「你是谁」的交点里。</p>
+  </div>
+
+  <div class="card">
+    <h2>这个测评会给你什么</h2>
+    <ul>
+      <li><strong>第 1 段 · ECR 依恋类型</strong>：安全型 / 焦虑型 / 回避型 / 恐惧型</li>
+      <li><strong>第 2 段 · MBTI 人格类型</strong>：你的四字母人格与 16 型定位</li>
+      <li><strong>综合报告</strong>：两套结果交叉解读，告诉你「你为什么会这样去爱」</li>
+    </ul>
+    <div class="meta">
+      <span class="chip">📖 共 48 题</span>
+      <span class="chip">⏱ 约 8 分钟</span>
+      <span class="chip">🔄 每次题序不同</span>
+      <span class="chip">🧠 依恋理论 + MBTI</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>为什么每次打开题目都不一样</h2>
+    <p>我们准备了<strong>远超单次题量</strong>的题库。每次进入测评，系统都会从题库中<strong>随机抽题、随机排序</strong>，所以你不会两次做到一模一样的卷子。</p>
+    <p>但请放心：<strong>题目在变，测得的东西不变</strong>。无论抽到哪些题，量表的维度结构和判定规则都是固定的——所以你的类型结果依然稳定、可靠。</p>
+  </div>
+
+  <div class="card">
+    <h2>测评依据</h2>
+    <p>依恋部分基于 <strong>ECR（Experiences in Close Relationships，亲密关系经历量表）</strong>，参考 Bowlby 与 Ainsworth 的<strong>依恋理论</strong>、Bartholomew &amp; Horowitz 的<strong>成人依恋四类型模型</strong>，以及 ECR（亲密关系经历量表）的焦虑/回避双维度框架；人格部分基于 <strong>MBTI（Myers-Briggs Type Indicator，迈尔斯-布里格斯类型指标）</strong>四维度二分法（E/I · S/N · T/F · J/P）。</p>
+    <p style="color:#9a97ad;font-size:13px;">结果仅供自我觉察参考，不构成医学诊断，也非临床心理评估。</p>
+  </div>
+
+  <button class="btn" onclick="startStage1()">开始测评 →</button>
+  <p class="footnote">© 奇迹心li　本测评用于自我探索，不替代专业诊断</p>
+</section>
+
+<!-- ========== 0.5 第 1 段开场 ========== -->
+<section id="s-pre1" class="screen">
+  <div class="stage-hero">
+    <div class="stage-no">第 1 段</div>
+    <div class="stage-title">依恋类型</div>
+    <div class="stage-line"></div>
+    <p class="stage-q">「你，是怎么去爱的？」</p>
+  </div>
+
+  <div class="card">
+    <h2>接下来这 24 题，测的是你爱人的方式</h2>
+    <p>同样是被爱，有人觉得踏实，有人觉得不安；同样是靠近，有人想贴得更紧，有人想往后退一点。这些反应不是「作」，也不是「冷」，它们来自你早年学会的<strong>依恋策略</strong>。</p>
+    <p>下面 24 题会从两个维度量你：<strong>焦虑</strong>（多怕被抛下）与<strong>回避</strong>（多怕太亲密）。两个分数一交叉，就落在四种依恋类型里。</p>
+    <div class="meta">
+      <span class="chip">📖 24 题</span>
+      <span class="chip">⏱ 约 4 分钟</span>
+      <span class="chip">🧭 4 型判定</span>
+    </div>
+  </div>
+
+  <div class="card soft">
+    <h2>答题前，记住三件事</h2>
+    <ul>
+      <li><strong>凭第一反应选</strong>——不要想「我应该怎样」，想「我实际怎样」。</li>
+      <li><strong>没有好坏对错</strong>——四种类型都健康，只是策略不同。</li>
+      <li><strong>一题一屏</strong>——选完会自动进入下一题，随时可以回上一题改。</li>
+    </ul>
+  </div>
+
+  <button class="btn" onclick="beginQuiz1()">好，开始第 1 段 →</button>
+  <button class="btn ghost" style="margin-top:10px;" onclick="show('s-intro')">← 返回</button>
+</section>
+
+<!-- ========== 1. 依恋答题 ========== -->
+<section id="s-quiz1" class="screen">
+  <div class="stagebar">
+    <div class="st on" id="stg1a">第 1 段 · 依恋类型</div>
+    <div class="st" id="stg1b">第 2 段 · 人格类型</div>
+    <div class="st" id="stg1c">综合报告</div>
+  </div>
+  <div class="progress">
+    <div class="bar"><div class="fill" id="pfill1"></div></div>
+    <div class="num"><span id="pnow1">1</span> / <span id="ptotal1">24</span></div>
+  </div>
+  <div class="q-head" id="qhead1">第 1 题</div>
+  <div class="q-text" id="qtext1">题目加载中…</div>
+  <div class="opts" id="opts1"></div>
+  <div class="nav">
+    <button class="btn ghost" id="btnPrev1" onclick="prevQ1()" style="flex:0 0 34%;">上一题</button>
+    <button class="btn" id="btnNext1" onclick="nextQ1()" disabled>下一题</button>
+  </div>
+</section>
+
+<!-- ========== 2. 依恋结果（免费层 A） ========== -->
+<section id="s-attach" class="screen">
+  <div class="result-hero">
+    <div class="label">第 1 段结果 · ECR 依恋类型</div>
+    <div class="type" id="a-type">— —</div>
+    <div class="sub" id="a-sub">— —</div>
+  </div>
+
+  <div class="card">
+    <h2>你的依恋画像</h2>
+    <p id="a-desc">— —</p>
+    <div class="dimbar">
+      <div class="top"><span>焦虑维度（怕被抛弃）</span><span id="a-anx-t">0%</span></div>
+      <div class="track"><div class="fill" id="a-anx-bar" style="width:0%"></div></div>
+    </div>
+    <div class="dimbar">
+      <div class="top"><span>回避维度（怕太亲密）</span><span id="a-avo-t">0%</span></div>
+      <div class="track"><div class="fill" id="a-avo-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="card hook">
+    <h2>但这只是「一半的你」</h2>
+    <p>依恋类型回答的是「你<strong>怎么爱人</strong>」——为什么你越在意越别扭，为什么你总在同一个地方受伤。</p>
+    <p>但它答不出另一个更根本的问题：<strong>你，是谁？</strong></p>
+    <p>同一份焦虑，长在 ENFP 身上是反复确认「你还喜欢我吗」，长在 ISTJ 身上是默默把每件事做到满分。同一种回避，有人是逃进忙碌，有人是逃进独处。<strong>不了解人格底色，就不会真正懂自己的依恋。</strong></p>
+  </div>
+
+  <div class="card soft">
+    <h2>第 2 段 · 人格类型（MBTI）</h2>
+    <p>接下来 24 题，从 E~I、S~N、T~F、J~P 四个维度，定出你的四字母人格。两套结果交叉，才拼出完整的你。</p>
+    <div class="meta">
+      <span class="chip">📖 24 题</span>
+      <span class="chip">⏱ 约 4 分钟</span>
+      <span class="chip">🎯 16 型定位</span>
+    </div>
+  </div>
+
+  <button class="btn" onclick="show('s-pre2')">继续第 2 段 · 看看我是谁 →</button>
+  <button class="btn ghost" style="margin-top:10px;" onclick="show('s-intro')">回到首页</button>
+  <p class="footnote">© 奇迹心li　测评结果仅供自我觉察参考，不构成医学诊断</p>
+</section>
+
+<!-- ========== 2.5 第 2 段开场（含星球入口） ========== -->
+<section id="s-pre2" class="screen">
+  <div class="stage-hero">
+    <div class="stage-no">第 2 段</div>
+    <div class="stage-title">人格类型</div>
+    <div class="stage-line"></div>
+    <p class="stage-q">「剥开依恋，你究竟是谁？」</p>
+  </div>
+
+  <div class="card">
+    <h2>接下来 24 题，测的是你的性格底色</h2>
+    <p>人格不是标签，是你处理世界的默认方式：<strong>能量从哪来</strong>（E/I）、<strong>怎么接收信息</strong>（S/N）、<strong>怎么做决定</strong>（T/F）、<strong>怎么安排生活</strong>（J/P）。</p>
+    <p>这 24 题很多是「二选一」——两边都像你的时候，选<strong>更自然、更不需要用力</strong>的那个。</p>
+    <div class="meta">
+      <span class="chip">📖 24 题</span>
+      <span class="chip">⏱ 约 4 分钟</span>
+      <span class="chip">🎯 16 型定位</span>
+    </div>
+  </div>
+
+  <div class="card planet">
+    <div class="planet-head">
+      <span class="planet-badge">奇迹星球</span>
+      <span class="planet-tip">进阶内容</span>
+    </div>
+    <h2>想先看看「深度报告」长什么样？</h2>
+    <p>完整的<strong>依恋 × 人格交叉深度报告</strong>，包含你的成因溯源、关系陷阱、调整路径，以及 30 天行动方案——这些内容不在免费结果里，只放在星球内部。</p>
+    <p class="planet-note">不急，你可以先做完第 2 段，拿到完整结果再决定。</p>
+  </div>
+
+  <button class="btn" onclick="startStage2()">好，开始第 2 段 →</button>
+  <button class="btn ghost" style="margin-top:10px;" onclick="show('s-attach')">← 回看我的依恋结果</button>
+</section>
+
+<!-- ========== 3. 人格答题 ========== -->
+<section id="s-quiz2" class="screen">
+  <div class="stagebar">
+    <div class="st done" id="stg2a">第 1 段 · 依恋类型</div>
+    <div class="st on" id="stg2b">第 2 段 · 人格类型</div>
+    <div class="st" id="stg2c">综合报告</div>
+  </div>
+  <div class="progress">
+    <div class="bar"><div class="fill" id="pfill2"></div></div>
+    <div class="num"><span id="pnow2">1</span> / <span id="ptotal2">24</span></div>
+  </div>
+  <div class="q-head" id="qhead2">第 1 题</div>
+  <div class="q-text" id="qtext2">题目加载中…</div>
+  <div class="opts" id="opts2"></div>
+  <div class="nav">
+    <button class="btn ghost" id="btnPrev2" onclick="prevQ2()" style="flex:0 0 34%;">上一题</button>
+    <button class="btn" id="btnNext2" onclick="nextQ2()" disabled>下一题</button>
+  </div>
+</section>
+
+<!-- ========== 4. 综合报告（免费层 B + 付费墙） ========== -->
+<section id="s-report" class="screen">
+  <div class="result-hero">
+    <div class="label">你的双维结果</div>
+    <div class="type" id="r-combo">— —</div>
+    <div class="sub" id="r-combo-sub">— —</div>
+  </div>
+
+  <div class="score-row">
+    <div class="score-card"><div class="k">ECR 依恋</div><div class="v" id="r-at">—</div></div>
+    <div class="score-card"><div class="k">MBTI 人格</div><div class="v" id="r-mt">—</div></div>
+  </div>
+
+  <div class="card">
+    <h2>一句话看懂你自己</h2>
+    <div class="tagline" id="r-tagline">— —</div>
+    <p id="r-tagline2" style="margin:0;font-size:14.5px;color:var(--ink-2);">— —</p>
+  </div>
+
+  <div class="card">
+    <h2>你的 16 型定位</h2>
+    <div class="mbti-grid" id="r-grid"></div>
+    <p style="margin:10px 0 0;"><span class="pill" id="r-mbti-name">—</span><span id="r-mbti-one" style="font-size:14.5px;color:var(--ink-2);">—</span></p>
+    <div class="stat-line"><span class="nm">E / I</span><span class="tk"><i id="r-bar-ei" style="width:0%"></i></span><span class="pct" id="r-pct-ei">—</span></div>
+    <div class="stat-line"><span class="nm">S / N</span><span class="tk"><i id="r-bar-sn" style="width:0%"></i></span><span class="pct" id="r-pct-sn">—</span></div>
+    <div class="stat-line"><span class="nm">T / F</span><span class="tk"><i id="r-bar-tf" style="width:0%"></i></span><span class="pct" id="r-pct-tf">—</span></div>
+    <div class="stat-line"><span class="nm">J / P</span><span class="tk"><i id="r-bar-jp" style="width:0%"></i></span><span class="pct" id="r-pct-jp">—</span></div>
+  </div>
+
+  <div class="card">
+    <h2>两套结果怎么合起来看</h2>
+    <div id="r-cross"></div>
+  </div>
+
+  <!-- 免费层的星球软性入口 -->
+  <div class="card planet">
+    <div class="planet-head">
+      <span class="planet-badge">奇迹星球</span>
+      <span class="planet-tip">同类型的人都在这里</span>
+    </div>
+    <h2>你会发现，你不是一个人</h2>
+    <p>星球里聚集了很多<strong>同一种依恋类型、同一种人格</strong>的人。他们的困惑和你惊人地像——有人把「焦虑型 × ENFP」的相处难题拆成了 12 个具体场景，也有人把自己的调整过程完整记了下来。</p>
+    <p class="planet-note">免费报告到这里就结束了。想继续往下走，两个选择：解锁下面的深度报告，或者直接进星球。</p>
+  </div>
+
+  <!-- 付费墙 -->
+  <div class="lock" id="paywall">
+    <div class="inner">
+      <h3>🔒 深度报告 · 完整版</h3>
+      <p>你已经看到了「你是什么样」，接下来是「为什么会这样、该怎么办」。</p>
+      <p class="blur-line">① 你的依恋模式是怎么形成的</p>
+      <p class="blur-line">② 你在关系里反复踩的 3 个坑</p>
+      <p class="blur-line">③ 属于你这类人的相处说明书</p>
+      <p class="blur-line">④ 21 天自我调整行动清单</p>
+      <p class="blur-line">⑤ 人格 × 依恋的 4 组定制建议</p>
+      <p class="price">完整版 ¥9.9（一次解锁，长期可看）</p>
+      <button class="btn" onclick="unlock()">解锁完整报告 →</button>
+      <button class="btn ghost" style="margin-top:10px;" onclick="checkPaid()">我已支付，查看报告</button>
+      <button class="btn ghost" style="margin-top:10px;" onclick="goConsult()">先找小管家聊聊（免费）</button>
+    </div>
+  </div>
+
+  <!-- 深度报告 -->
+  <div id="deep-report" style="display:none;">
+    <div class="card" style="margin-top:16px;">
+      <h2>① 你的依恋模式，是怎么形成的</h2>
+      <div id="dr-origin"></div>
+    </div>
+    <div class="card">
+      <h2>② 你在关系里反复踩的 3 个坑</h2>
+      <div id="dr-traps"></div>
+    </div>
+    <div class="card">
+      <h2>③ 属于你这类人的相处说明书</h2>
+      <div id="dr-guide"></div>
+    </div>
+    <div class="card">
+      <h2>④ 21 天自我调整行动清单</h2>
+      <div id="dr-plan"></div>
+    </div>
+    <div class="card">
+      <h2>⑤ 你的人格底色，放大了什么</h2>
+      <div id="dr-mbti"></div>
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,#efeaff,#fff);">
+      <h2>💜 还想更深一点？</h2>
+      <p>这份报告是基于量表规则的通用解读。如果你想知道「<strong>具体到我的这段关系，该怎么办</strong>」，可以进奇迹星球——里面有更细的分场景题库、真实案例拆解，和可以当面问的小管家。</p>
+      <button class="btn" onclick="goPlanet()">进奇迹星球看看 →</button>
+      <button class="btn ghost" style="margin-top:10px;" onclick="goConsult()">先免费聊聊</button>
+    </div>
+  </div>
+
+  <div class="card" style="background:#fff;">
+    <h2>📮 免费福利</h2>
+    <p>凭本次测评结果，可在公众号「奇迹心li」后台回复 <strong>依恋</strong>，领取一份《依恋风格相处小册子》PDF。</p>
+    <button class="btn ghost" onclick="goConsult()">复制我的结果，去公众号留言 →</button>
+  </div>
+
+  <button class="btn ghost" style="margin:16px;width:calc(100% - 32px);" onclick="restartAll()">重新测一次（会换一套题）</button>
+  <p class="footnote">© 奇迹心li　测评结果仅供自我觉察参考，不构成医学诊断</p>
+</section>
+
+</div>
+
+<div class="copy-toast" id="toast">已复制，去微信粘贴给小管家吧</div>
+
+
+<script>
+/* ============================================================
+   奇迹心li · 题库总集（单文件内联版）
+   模块 1/4：ECR 依恋量表题库 + MBTI 人格题库
+   ------------------------------------------------------------
+   · ECR：焦虑 20 题 / 回避 20 题，7 点计分，每次各抽 12 题
+   · MBTI：93 题标准题库，四维度，每次每维度抽 6 题
+   · 支持随机组卷（抽题 + 乱序 + 选项随机）
+   ============================================================ */
+
+/* ---------------- 一、ECR 亲密关系经历量表 ---------------- */
+
+const ECR_OPTS = [
+  {v:1, t:"完全不同意"},
+  {v:2, t:"比较不同意"},
+  {v:3, t:"有点不同意"},
+  {v:4, t:"说不清"},
+  {v:5, t:"有点同意"},
+  {v:6, t:"比较同意"},
+  {v:7, t:"完全同意"}
+];
+
+/* 焦虑维度（分越高越焦虑；rev:true 为反向计分，需 8 - v） */
+const ECR_ANX = [
+  {t:"我担心对方会离开我。", rev:false},
+  {t:"我担心对方不像我在乎他/她那样在乎我。", rev:false},
+  {t:"我需要对方反复保证他/她爱我，才能安心。", rev:false},
+  {t:"当对方不在我身边时，我会感到不安。", rev:false},
+  {t:"我常常想和对方融为一体，这种想法有时会吓到对方。", rev:false},
+  {t:"如果我不能让对方对我保持兴趣，我会感到不安或生气。", rev:false},
+  {t:"当对方不认可我时，我会觉得自己很糟糕。", rev:false},
+  {t:"我常常担心自己不够好，配不上对方。", rev:false},
+  {t:"当对方有一段时间不在我身边时，我会感到生气。", rev:false},
+  {t:"我很担心我的感情关系会出问题。", rev:false},
+  {t:"我需要对方很多的爱和保证，才能感到安心。", rev:false},
+  {t:"当对方不够亲近我时，我会感到挫败。", rev:false},
+  {t:"我常常希望对方对我的感情，和我对他/她的一样强烈。", rev:false},
+  {t:"对方冷淡一点，我就会反复琢磨是不是自己做错了什么。", rev:false},
+  {t:"我很容易因为对方的一个表情、一句话而想很多。", rev:false},
+  {t:"我害怕一个人待着，尤其是在感情出问题的时候。", rev:false},
+  {t:"被拒绝或被忽视，会让我难受很久。", rev:false},
+  {t:"我很怕被喜欢的人抛弃。", rev:false},
+  {t:"*我不太担心会被对方抛弃。", rev:true},
+  {t:"*当我不处于一段关系中时，我并不会感到焦虑。", rev:true}
+];
+
+/* 回避维度（分越高越回避） */
+const ECR_AVO = [
+  {t:"我不太愿意把内心深处的感受告诉对方。", rev:false},
+  {t:"我倾向于不向对方展示我脆弱的一面。", rev:false},
+  {t:"当对方想和我非常亲近时，我会感到不自在。", rev:false},
+  {t:"我宁愿不跟对方太亲近。", rev:false},
+  {t:"当对方开始亲近我时，我会不由自主地想退缩。", rev:false},
+  {t:"我发现很难让自己去依赖对方。", rev:false},
+  {t:"我常常想和对方保持一点距离。", rev:false},
+  {t:"把自己的心事完全敞开，会让我觉得不舒服。", rev:false},
+  {t:"比起依赖别人，我更习惯自己扛。", rev:false},
+  {t:"我不喜欢向对方表达「我需要你」这类话。", rev:false},
+  {t:"遇到情绪问题，我倾向于自己消化，不想麻烦别人。", rev:false},
+  {t:"我觉得靠得太近，反而容易失去自我。", rev:false},
+  {t:"我不太愿意和人有太深的情感纠缠。", rev:false},
+  {t:"对方想跟我聊感受、聊关系，我常想岔开话题。", rev:false},
+  {t:"就算很在意一个人，我也很难表现出来。", rev:false},
+  {t:"我常常在关系里留一手，保持一点距离才安全。", rev:false},
+  {t:"比起亲密，我更看重独立和自由。", rev:false},
+  {t:"*和对方分享我的私人想法，让我感到很自在。", rev:true},
+  {t:"*我发现与对方亲近是件相对容易的事。", rev:true},
+  {t:"*我觉得依赖对方是很舒服的事。", rev:true}
+];
+
+/* 每次抽题量 */
+const ECR_PICK_ANX = 12;
+const ECR_PICK_AVO = 12;
+
+/* ---------------- 二、MBTI 93 题标准题库 ----------------
+   每题二选一：a / b，各自带 dim（指向的字母）
+   dim ∈ {E,I,S,N,T,F,J,P} */
+
+const MBTI_BANK = [
+  {q:"当你要外出一整天，你会——", a:{t:"事先计划好做什么、什么时间做", dim:"J"}, b:{t:"说去就去，随机应变", dim:"P"}},
+  {q:"你认为自己是一个——", a:{t:"比较随兴的人", dim:"P"}, b:{t:"比较有条理的人", dim:"J"}},
+  {q:"假如你是一位老师，你更愿意教——", a:{t:"以事实为主的课程", dim:"S"}, b:{t:"涉及理论的课程", dim:"N"}},
+  {q:"在一个新的场合，你通常——", a:{t:"很容易和人混熟", dim:"E"}, b:{t:"比较沉静或矜持", dim:"I"}},
+  {q:"一般来说，你和哪种人比较合得来——", a:{t:"富于想象力的人", dim:"N"}, b:{t:"脚踏实地、现实的人", dim:"S"}},
+  {q:"你是否经常让——", a:{t:"情感支配你的理智", dim:"F"}, b:{t:"理智主宰你的情感", dim:"T"}},
+  {q:"处理许多事情时，你会喜欢——", a:{t:"凭兴致行事", dim:"P"}, b:{t:"按照计划行事", dim:"J"}},
+  {q:"你是否——", a:{t:"容易让人了解", dim:"E"}, b:{t:"较难让人了解", dim:"I"}},
+  {q:"按照程序表做事——", a:{t:"合你心意", dim:"J"}, b:{t:"让你感到束缚", dim:"P"}},
+  {q:"当你有一份特别的任务，你会喜欢——", a:{t:"开始前小心组织计划", dim:"J"}, b:{t:"边做边找需要做什么", dim:"P"}},
+  {q:"在大多数情况下，你会选择——", a:{t:"顺其自然", dim:"P"}, b:{t:"按程序表做事", dim:"J"}},
+  {q:"大多数人会说你是一个——", a:{t:"重视自我隐私的人", dim:"I"}, b:{t:"非常坦率开放的人", dim:"E"}},
+  {q:"你宁愿被人认为是一个——", a:{t:"实事求是的人", dim:"S"}, b:{t:"机灵、点子多的人", dim:"N"}},
+  {q:"在一大群人当中，通常是——", a:{t:"你介绍大家认识", dim:"E"}, b:{t:"别人介绍你", dim:"I"}},
+  {q:"你会跟哪种人做朋友——", a:{t:"常提出新点子的人", dim:"N"}, b:{t:"脚踏实地的人", dim:"S"}},
+  {q:"你倾向于——", a:{t:"重视感情多于逻辑", dim:"F"}, b:{t:"重视逻辑多于感情", dim:"T"}},
+  {q:"你比较喜欢——", a:{t:"坐观事情发展再作计划", dim:"P"}, b:{t:"很早就作计划", dim:"J"}},
+  {q:"你喜欢花很多时间——", a:{t:"一个人独处", dim:"I"}, b:{t:"和别人在一起", dim:"E"}},
+  {q:"和很多人一起相处，会——", a:{t:"令你活力倍增", dim:"E"}, b:{t:"常常令你心力交瘁", dim:"I"}},
+  {q:"你比较喜欢——", a:{t:"很早就把约会、聚会安排好", dim:"J"}, b:{t:"无拘无束，看当时有什么好玩就做什么", dim:"P"}},
+  {q:"计划一次旅程时，你较喜欢——", a:{t:"大部分时间跟着当天的感觉走", dim:"P"}, b:{t:"事先知道大部分日子会做什么", dim:"J"}},
+  {q:"在社交聚会中，你——", a:{t:"有时会感到郁闷", dim:"I"}, b:{t:"常常乐在其中", dim:"E"}},
+  {q:"你通常——", a:{t:"和别人容易混熟", dim:"E"}, b:{t:"倾向于自处一隅", dim:"I"}},
+  {q:"哪种人更吸引你——", a:{t:"思维敏捷、非常聪颖的人", dim:"N"}, b:{t:"实事求是、具丰富常识的人", dim:"S"}},
+  {q:"在日常工作中，你会——", a:{t:"比较喜欢处理需要分秒必争的突发任务", dim:"P"}, b:{t:"通常预先计划，以免在压力下工作", dim:"J"}},
+  {q:"你认为别人一般——", a:{t:"要花很长时间才认识你", dim:"I"}, b:{t:"用很短的时间便认识你", dim:"E"}},
+  {q:"下面哪一项更贴近你——", a:{t:"注重隐私", dim:"I"}, b:{t:"坦率开放", dim:"E"}},
+  {q:"下面哪一项更贴近你——", a:{t:"预先安排的", dim:"J"}, b:{t:"无计划的、随性的", dim:"P"}},
+  {q:"下面哪一项更贴近你——", a:{t:"抽象", dim:"N"}, b:{t:"具体", dim:"S"}},
+  {q:"下面哪一项更贴近你——", a:{t:"温柔", dim:"F"}, b:{t:"坚定", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"思考", dim:"T"}, b:{t:"感受", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"事实", dim:"S"}, b:{t:"意念", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"冲动", dim:"P"}, b:{t:"决定", dim:"J"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"热衷", dim:"E"}, b:{t:"文静", dim:"I"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"文静", dim:"I"}, b:{t:"外向", dim:"E"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"有系统", dim:"J"}, b:{t:"随意", dim:"P"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"理论", dim:"N"}, b:{t:"肯定", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"敏感", dim:"F"}, b:{t:"公正", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"令人信服", dim:"S"}, b:{t:"感人的", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"声明", dim:"S"}, b:{t:"概念", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"不受约束", dim:"P"}, b:{t:"预先安排", dim:"J"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"矜持", dim:"I"}, b:{t:"健谈", dim:"E"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"有条不紊", dim:"J"}, b:{t:"不拘小节", dim:"P"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"意念", dim:"N"}, b:{t:"实况", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"同情怜悯", dim:"S"}, b:{t:"远见", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"利益", dim:"T"}, b:{t:"祝福", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"务实的", dim:"S"}, b:{t:"理论的", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"朋友不多", dim:"I"}, b:{t:"朋友众多", dim:"E"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"有系统", dim:"J"}, b:{t:"即兴", dim:"P"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"富想象的", dim:"N"}, b:{t:"就事论事", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"亲切的", dim:"F"}, b:{t:"客观的", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"客观的", dim:"T"}, b:{t:"热情的", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"建造", dim:"S"}, b:{t:"发明", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"文静", dim:"I"}, b:{t:"爱合群", dim:"E"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"理论", dim:"N"}, b:{t:"事实", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"富同情", dim:"F"}, b:{t:"合逻辑", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"具分析力", dim:"T"}, b:{t:"多愁善感", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"合情合理", dim:"T"}, b:{t:"令人着迷", dim:"F"}},
+  {q:"要在本周内完成一个大项目，开始的时候你会——", a:{t:"把要做的工作依次列出", dim:"J"}, b:{t:"马上动工", dim:"P"}},
+  {q:"在社交场合中，你经常会感到——", a:{t:"和某些人很难打开话匣子、保持对话", dim:"I"}, b:{t:"和多数人都能从容长谈", dim:"E"}},
+  {q:"要做许多人也做的事，你比较喜欢——", a:{t:"按照一般认可的方法去做", dim:"S"}, b:{t:"构想一个自己的想法", dim:"N"}},
+  {q:"刚认识的朋友能否说出你的兴趣——", a:{t:"马上可以", dim:"E"}, b:{t:"要等真正了解你之后才可以", dim:"I"}},
+  {q:"你通常较喜欢的科目是——", a:{t:"讲授概念和原则的", dim:"N"}, b:{t:"讲授事实和数据的", dim:"S"}},
+  {q:"哪一种称许更高——", a:{t:"一贯感性的人", dim:"F"}, b:{t:"一贯理性的人", dim:"T"}},
+  {q:"你认为按照程序表做事——", a:{t:"有时需要，但一般来说你不太喜欢", dim:"P"}, b:{t:"大多数情况下有帮助且你喜欢", dim:"J"}},
+  {q:"和一群人在一起，你通常会选——", a:{t:"跟很熟悉的个别人谈话", dim:"I"}, b:{t:"参与大伙的谈话", dim:"E"}},
+  {q:"在社交聚会上，你会——", a:{t:"是说话很多的那个", dim:"E"}, b:{t:"让别人多说话", dim:"I"}},
+  {q:"把周末要完成的事列成清单，这个主意会——", a:{t:"合你意", dim:"J"}, b:{t:"使你提不起劲", dim:"P"}},
+  {q:"哪一种称许更高——", a:{t:"能干的", dim:"T"}, b:{t:"富有同情心", dim:"F"}},
+  {q:"你通常喜欢——", a:{t:"事先安排你的社交约会", dim:"J"}, b:{t:"随兴之所至做事", dim:"P"}},
+  {q:"做一项大型作业时，你会选——", a:{t:"边做边想该做什么", dim:"P"}, b:{t:"先把工作按部就班细分", dim:"J"}},
+  {q:"你能否滔滔不绝地与人聊天——", a:{t:"只限于跟有共同兴趣的人", dim:"I"}, b:{t:"几乎跟任何人都可以", dim:"E"}},
+  {q:"你会——", a:{t:"跟随一些证明有效的方法", dim:"S"}, b:{t:"分析还有什么毛病、针对尚未解决的难题", dim:"N"}},
+  {q:"为乐趣而阅读时，你会——", a:{t:"喜欢奇特或创新的表达方式", dim:"N"}, b:{t:"喜欢作者直话直说", dim:"S"}},
+  {q:"你宁愿为哪一种上司工作——", a:{t:"天性淳良，但常常前后不一的", dim:"F"}, b:{t:"言词尖锐，但永远合乎逻辑的", dim:"T"}},
+  {q:"你做事多数是——", a:{t:"按当天心情去做", dim:"P"}, b:{t:"照拟好的程序表去做", dim:"J"}},
+  {q:"你是否——", a:{t:"可以和任何人按需从容交谈", dim:"E"}, b:{t:"只是对某些人或在某些情况下才可以畅所欲言", dim:"I"}},
+  {q:"要作决定时，你认为比较重要的是——", a:{t:"根据自己的想法判断事实", dim:"T"}, b:{t:"考虑他人的感受和意见", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"想象的", dim:"N"}, b:{t:"真实的", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"仁慈慷慨的", dim:"F"}, b:{t:"意志坚定的", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"公正的", dim:"T"}, b:{t:"有情怀的", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"制作", dim:"S"}, b:{t:"设计", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"可能性", dim:"N"}, b:{t:"必然性", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"温柔", dim:"F"}, b:{t:"力量", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"实际", dim:"S"}, b:{t:"多愁善感", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"制造", dim:"S"}, b:{t:"创造", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"新颖的", dim:"N"}, b:{t:"已知的", dim:"S"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"同情", dim:"F"}, b:{t:"分析", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"坚持己见", dim:"T"}, b:{t:"温柔有爱心", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"具体的", dim:"S"}, b:{t:"抽象的", dim:"N"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"全心投入", dim:"F"}, b:{t:"有决心的", dim:"T"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"能干", dim:"T"}, b:{t:"仁慈", dim:"F"}},
+  {q:"下面哪一个词更合你心意——", a:{t:"实际", dim:"S"}, b:{t:"创新", dim:"N"}}
+];
+
+/* 每维度抽题量：4 维 × 6 题 = 24 题 */
+const MBTI_PICK_PER_DIM = 6;
+
+
+/* ============================================================
+   模块 2/4：随机组卷引擎
+   ------------------------------------------------------------
+   核心思想：题库远大于每次出题量，每次访问都重新洗牌
+   · 抽题：从每个维度的题库里随机抽固定题量
+   · 乱序：抽完的题整体再打乱，避免同类扎堆
+   · 选项乱序：二选一题目，A/B 位置随机翻转
+   · 结果稳定：题目随机，但维度判定只依赖「选了什么倾向」
+   ============================================================ */
+
+/* 通用洗牌（Fisher–Yates） */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickN(arr, n){
+  return shuffle(arr).slice(0, Math.min(n, arr.length));
+}
+
+/* ---------------- 依恋卷（ECR） ----------------
+   输出：24 题，anx / avo 各 12，全局乱序
+   每题结构：{ dim:'anx'|'avo', text, rev } */
+function buildAttachPaper(){
+  const anx = pickN(ECR_ANX, ECR_PICK_ANX).map(q=>({dim:"anx", text:q.t, rev:!!q.rev}));
+  const avo = pickN(ECR_AVO, ECR_PICK_AVO).map(q=>({dim:"avo", text:q.t, rev:!!q.rev}));
+  return shuffle(anx.concat(avo));
+}
+
+/* ---------------- 人格卷（MBTI） ----------------
+   输出：24 题，E/I、S/N、T/F、J/P 各 6
+   每题结构：{ text, opts:[{t,dim},{t,dim}] }，opts 顺序已随机
+   计分：选中的那个 opt 的 dim +1 */
+const MBTI_DIM_PAIRS = [["E","I"],["S","N"],["T","F"],["J","P"]];
+
+function buildMbtiPaper(){
+  const out = [];
+  MBTI_DIM_PAIRS.forEach(pair=>{
+    // 找出所有属于这一对的题
+    const pool = MBTI_BANK.filter(q=>{
+      const d1 = q.a.dim, d2 = q.b.dim;
+      return pair.indexOf(d1) > -1 && pair.indexOf(d2) > -1;
+    });
+    const chosen = pickN(pool, MBTI_PICK_PER_DIM);
+    chosen.forEach(q=>{
+      // 记录该题归属的维度对，后续交错排列要用（先记，再乱序选项）
+      const pairKey = [q.a.dim, q.b.dim].sort().join("");
+      let opts = [{t:q.a.t, dim:q.a.dim}, {t:q.b.t, dim:q.b.dim}];
+      if(Math.random() < 0.5) opts = [opts[1], opts[0]];   // 选项乱序
+      out.push({text:q.q, opts:opts, pair:pairKey});
+    });
+  });
+  // 四维度混合，但保证不会连续 3 题同维度——用简单交错洗牌
+  return interleave(out);
+}
+
+/* 交错排列：按维度分桶后轮流取，避免同维度连续出现 */
+function interleave(items){
+  const buckets = {};
+  items.forEach(it=>{
+    const d = it.pair || "X";
+    (buckets[d] = buckets[d] || []).push(it);
+  });
+  Object.keys(buckets).forEach(k=>{ buckets[k] = shuffle(buckets[k]); });
+  const keys = shuffle(Object.keys(buckets));
+  const out = [];
+  let more = true;
+  while(more){
+    more = false;
+    keys.forEach(k=>{
+      if(buckets[k].length){ out.push(buckets[k].shift()); more = true; }
+    });
+  }
+  return out;
+}
+
+/* ---------------- 计分 ----------------
+   ECR：7 点计分，rev 反向转换（8 - v），均分 → 0~100 */
+function scoreAttach(paper, answers){
+  let anxSum = 0, anxN = 0, avoSum = 0, avoN = 0;
+  paper.forEach((q, i)=>{
+    let v = answers[i];
+    if(v === null || v === undefined) return;
+    if(q.rev) v = 8 - v;
+    if(q.dim === "anx"){ anxSum += v; anxN++; }
+    else { avoSum += v; avoN++; }
+  });
+  const to100 = (s, n)=> n ? Math.round((s / n - 1) / 6 * 100) : 0;
+  return { anx: to100(anxSum, anxN), avo: to100(avoSum, avoN) };
+}
+
+/* MBTI：统计四维度各自被选中的字母次数，多者胜；平局按 I/N/F/P 兜底 */
+function scoreMbti(paper, answers){
+  const cnt = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  paper.forEach((q, i)=>{
+    const ai = answers[i];
+    if(ai === null || ai === undefined) return;
+    const opt = q.opts[ai];
+    if(opt) cnt[opt.dim]++;
+  });
+  const win = (x, y)=> cnt[x] > cnt[y] ? x : (cnt[y] > cnt[x] ? y : y);
+  const type = win("E","I") + win("S","N") + win("T","F") + win("J","P");
+  return { type: type, count: cnt };
+}
+
+
+/* ============================================================
+   依恋类型 × MBTI 交叉解读引擎
+   这是「付费层」的核心：把两个维度综合起来，给出个性化洞察
+   ============================================================ */
+
+/* 依恋四型的核心描述（免费层可见） */
+const ATTACH_TYPES = {
+  secure: {
+    key:"secure", name:"安全型", emoji:"🌿",
+    sub:"能亲密，也能独立——这是最舒展的关系状态",
+    short:"你在关系里既能安心靠近，也守得住自己。",
+    desc:"你在关系里既能安心靠近，也守得住自己。你相信对方，也相信自己值得被爱。遇到矛盾时，你倾向于沟通而不是逃避或攻击。这种状态不是天生的运气，而是你内在安全感的体现——请继续保持，它也让你成为别人关系里的「稳定器」。",
+    color:"#2fb380"
+  },
+  anxious: {
+    key:"anxious", name:"焦虑型", emoji:"💧",
+    sub:"越在乎，越不安——你很会爱，却常忘了爱自己",
+    short:"你对关系很投入，也很敏锐，对方一点点变化你都能捕捉到。",
+    desc:"你对关系很投入，也很敏锐，对方一点点变化你都能捕捉到。但这份敏锐常常变成内耗：你反复确认、过度解读、害怕被抛下。你渴望稳定又浓烈的爱，却容易在不安里把对方推远。你不是「太作」，你只是太怕失去。",
+    color:"#e0a24a"
+  },
+  avoidant: {
+    key:"avoidant", name:"回避型", emoji:"🍂",
+    sub:"越亲近，越想逃——不是不爱，是不敢太近",
+    short:"你很独立、很有边界，习惯一个人扛下所有。",
+    desc:"你很独立、很有边界，习惯一个人扛下所有。但太亲密的关系会让你本能地想后退：不是冷漠，而是你早已学会「不依赖别人，就不会受伤」。你嘴上说无所谓，心里其实也渴望被懂——只是伸不出那只手。",
+    color:"#5a8fd0"
+  },
+  fearful: {
+    key:"fearful", name:"恐惧型", emoji:"🌪",
+    sub:"既想靠近，又想逃开——爱对你来说，是又甜又怕的东西",
+    short:"你心里有两股相反的力：一边渴望被爱，一边又害怕受伤。",
+    desc:"你心里有两股相反的力：一边渴望被爱、被紧紧抱住，一边又害怕受伤、害怕被吞没。所以你常常进退两难——想靠近时先退缩，受了伤又拼命挽回。这不是矛盾，而是你的依恋系统在「想要」和「自我保护」之间反复拉扯。",
+    color:"#a06bd0"
+  }
+};
+
+function classifyAttach(anxScore, avoScore){
+  const hi = 50;
+  if(anxScore < hi && avoScore < hi) return "secure";
+  if(anxScore >= hi && avoScore < hi) return "anxious";
+  if(anxScore < hi && avoScore >= hi) return "avoidant";
+  return "fearful";
+}
+
+/* MBTI 16 型中文名与核心描述（免费层：类型名 + 一句话） */
+const MBTI_16 = {
+  ISTJ:{name:"物流师", one:"务实可靠，说到做到，是团队里最稳的那根柱子。"},
+  ISFJ:{name:"守卫者", one:"温暖细心，默默照顾身边的人，把责任看得比什么都重。"},
+  INFJ:{name:"提倡者", one:"外柔内刚，能敏锐读懂人心，也愿意为信念坚持。"},
+  INTJ:{name:"建筑师", one:"思路清晰、目标明确，喜欢把复杂的事想透再动手。"},
+  ISTP:{name:"鉴赏家", one:"冷静务实，动手能力强，遇事不慌，喜欢用行动解决问题。"},
+  ISFP:{name:"探险家", one:"温和敏感，活在当下，对美和真实有天然的直觉。"},
+  INFP:{name:"调停者", one:"理想主义，内心世界丰富，对在乎的人和事极其忠诚。"},
+  INTP:{name:"逻辑学家", one:"好奇心强，喜欢刨根问底，享受在思考里找到答案。"},
+  ESTP:{name:"企业家", one:"行动派，反应快，擅长在真实场景里即时解决问题。"},
+  ESFP:{name:"表演者", one:"热情外向，会玩也会带动气氛，走到哪里都自带光。"},
+  ENFP:{name:"竞选者", one:"充满热忱与想象力，总能发现别人身上的可能性。"},
+  ENTP:{name:"辩论家", one:"反应快、点子多，喜欢挑战既有观点，天生爱琢磨新东西。"},
+  ESTJ:{name:"总经理", one:"有组织力、执行力强，喜欢把计划落到实地。"},
+  ESFJ:{name:"执政官", one:"热心周到，重视和谐，是维系一群人关系的那个人。"},
+  ENFJ:{name:"主人公", one:"有感染力，善于鼓舞他人，愿意为群体的成长付出。"},
+  ENTJ:{name:"指挥官", one:"天生的推动者，目标感强，敢拍板也扛得住责任。"}
+};
+
+/* ============================================================
+   交叉洞察：依恋型 × MBTI 维度倾向 → 个性化解读
+   检索方式：先按依恋类型，再看关键人格维度
+   ============================================================ */
+
+/* E/I 维度对关系的影响 */
+const INSIGHT_EI = {
+  E: {label:"外向（E）",
+      attach:"你在关系里是「主动靠近型」：不喜欢冷场，会用聊天、分享、行动去拉近距离。",
+      risk:"但要注意：当你焦虑时，你会用「不停说话、不停联系」来缓解不安，这可能让对方有压力。"},
+  I: {label:"内向（I）",
+      attach:"你在关系里是「深度连接型」：话不多，但一旦认定，会给出很实在的陪伴。",
+      risk:"但要注意：当你回避时，「我不说、我先撤」是本能反应，对方常常读不懂你的沉默。"}
+};
+
+const INSIGHT_SN = {
+  S: {label:"实感（S）",
+      attach:"你更关注关系里的具体细节：他做了什么、说了什么、有没有做到。这让你对「实际行动」很敏感。",
+      risk:"风险是：容易盯着某个具体行为反复琢磨，而忽略了对方整体的心意。"},
+  N: {label:"直觉（N）",
+      attach:"你更关注关系里的「感觉和可能性」：他是不是真的懂我、我们有没有未来。这让你对「情绪氛围」很敏感。",
+      risk:"风险是：容易在脑内补完剧情，把「可能性」当成「事实」来焦虑。"}
+};
+
+const INSIGHT_TF = {
+  T: {label:"思考（T）",
+      attach:"遇到关系矛盾，你的第一反应是「分析问题、找解决方案」。这让你显得理性、靠谱。",
+      risk:"风险是：对方要的常常不是解决方案，而是「你懂我的感受」。讲道理有时会让对方更委屈。"},
+  F: {label:"情感（F）",
+      attach:"遇到关系矛盾，你的第一反应是「先照顾彼此的感受」。这让你显得体贴、有温度。",
+      risk:"风险是：为了维持和谐，你容易委屈自己、不敢说真话，长期积压反而爆发得更厉害。"}
+};
+
+const INSIGHT_JP = {
+  J: {label:"判断（J）",
+      attach:"你喜欢关系有明确的结构：确认关系、定下节奏、知道下一步是什么。确定性让你安心。",
+      risk:"风险是：当关系处在「不确定期」，你会格外难受，容易用逼问来换一个答案。"},
+  P: {label:"知觉（P）",
+      attach:"你习惯关系顺其自然：不喜欢被定义，享受当下的流动感。这让你显得松弛、不粘人。",
+      risk:"风险是：你的「不着急表态」，在焦虑型的人眼里，可能被读成「不在乎」。"}
+};
+
+function getInsights(attachKey, mbtiType){
+  const e = mbtiType[0], s = mbtiType[1], t = mbtiType[2], j = mbtiType[3];
+  return {
+    ei: INSIGHT_EI[e],
+    sn: INSIGHT_SN[s],
+    tf: INSIGHT_TF[t],
+    jp: INSIGHT_JP[j]
+  };
+}
+
+/* ============================================================
+   综合「一句话洞察」：把依恋 + 人格合成一句扎心总结
+   ============================================================ */
+const COMBO_LINE = {
+  secure: {
+    e:"你是一个既能爱人、也守得住自己的人，而且你还很愿意主动表达——这在人群里真的少见。",
+    i:"你是一个既能爱人、也守得住自己的人。你不吵不闹，但你的稳定，本身就是很珍贵的东西。"
+  },
+  anxious: {
+    e:"你的不安，往往藏在那些「主动找你说话」的时刻里——越热闹，越怕冷下来。",
+    i:"你的不安，往往藏在那些「不说但一直等」的时刻里——你比谁都渴望被看见，却比谁都不敢先伸手。"
+  },
+  avoidant: {
+    e:"你看上去很会social，但真正能走进你心里的人，可能一只手数得过来。",
+    i:"你早就习惯了自己消化一切。可你心里清楚，那句「我没事」，其实是想有人追问一句「真的吗」。"
+  },
+  fearful: {
+    e:"你一边热烈地想被爱，一边又随时准备着逃。你不是矛盾，你只是太早学会了自我保护。",
+    i:"你把最好的自己留给独处，把最警惕的一面留给亲密。你不是不爱，是不敢赌。"
+  }
+};
+
+/* ============================================================
+   深度报告内容：依恋四型 × 4 部分
+   （付费层核心内容，沿用 v1 结构，与新引擎字段对齐）
+   ============================================================ */
+const DEEP = {
+  secure: {
+    origin: [
+      "安全型的底色，来自你早年「被稳定回应」的经验。当一个人小时候的需要，无论是饿了、怕了还是委屈了，能被身边人及时、恰当地接住，他长大后就会内化一个信念：<b>我值得被爱，别人基本是可靠的</b>。",
+      "所以你不需要靠讨好、确认或试探来维系关系。你允许自己和对方亲近，也允许彼此有各自的空间。这种「松弛感」不是冷漠，而是安全感的外显。"
+    ],
+    traps: [
+      {n:"容易吸引到不安全型的人", d:"你的稳定会吸引焦虑型、回避型的人靠近。若你长期单方面「照顾对方情绪」，也可能被消耗。"},
+      {n:"过度自信地以为「沟通就行」", d:"对你有效的方式，未必对焦虑/回避型有效。对方的不安不是你讲道理能化解的。"},
+      {n:"把「不需要」当成成熟", d:"你独立是优点，但偶尔示弱、麻烦对方，反而能让关系更真实。"}
+    ],
+    guide: [
+      "和<b>焦虑型</b>相处：多给确定性——主动报备、明确表达爱意，能极大安抚对方。",
+      "和<b>回避型</b>相处：别逼太紧，给空间，但保持稳定的存在感，慢慢来。",
+      "和<b>恐惧型</b>相处：你稳定的回应，本身就是最好的治愈，别被对方的反复吓退。"
+    ],
+    plan: [
+      "第 1–7 天：做一份「关系安全感清单」，写下 3 件让你确信「我值得被爱」的事。",
+      "第 8–14 天：挑一个人，主动说一次「我需要你」或「我想你」，练习示弱。",
+      "第 15–21 天：回顾一段关系里你做得好的地方，把它变成可复制的经验。"
+    ]
+  },
+  anxious: {
+    origin: [
+      "焦虑型往往源自早年「回应不稳定」的经历。需要被照顾时，有时被满足、有时被忽略，于是你学到：<b>爱是不确定的，我必须时刻确认才能安心</b>。",
+      "这让你在关系里格外用力：你在意、你投入、你敏感，你能第一时间捕捉对方的情绪变化。这套系统曾经保护过你，但成年后的关系里，它变成了内耗的源头。"
+    ],
+    traps: [
+      {n:"反复确认与试探", d:"翻聊天记录、过度解读一句话、用「作」来测试对方还在不在乎——短期有效，长期把对方推远。"},
+      {n:"把对方当成情绪的全部", d:"当你的安全感全押在一个人身上，对方任何波动都会让你失衡。你需要的其实是「多元的支点」。"},
+      {n:"压抑还是爆发，两头跑", d:"要么憋着不说，要么情绪一涌而出。缺少一个「中间表达」的方式。"}
+    ],
+    guide: [
+      "和<b>安全型</b>相处：这是你的「充电宝」。对方稳定的回应会慢慢修复你的不安，多靠近这类人。",
+      "和<b>回避型</b>相处：最难组合。你越追，他越退。要练习「给他空间，但不消失」，别用情绪逼他。",
+      "和<b>焦虑型</b>相处：两人都敏感，容易互相引爆。约定好「吵架不冷战、不过夜」，非常重要。"
+    ],
+    plan: [
+      "第 1–7 天：情绪上头想发消息时，先等 15 分钟，再决定发不发。记录下 3 次「忍住的时刻」。",
+      "第 8–14 天：把「你为什么这么久不回我」换成「你还好吗，我有点想你」——用「我」句式表达需要。",
+      "第 15–21 天：卸载安全感绑架——每天给自己安排一件和伴侣无关、只属于自己的事，重建支点。"
+    ]
+  },
+  avoidant: {
+    origin: [
+      "回避型常常来自早年「需要独立、或者表达情绪不被接住」的经历。当你发现依赖别人会失望、示弱会被忽视，你就学会了：<b>谁都靠不住，靠自己最安全</b>。",
+      "于是你把自己的情绪关进一间小房间，钥匙只给自己。你表面冷静、独立、好相处，但内里，你只是把「想要」藏得很深。"
+    ],
+    traps: [
+      {n:"用「独处」逃避亲密", d:"关系一深就想退，嘴上说「我需要空间」，其实是在躲开可能受伤的靠近。"},
+      {n:"情绪表达功能弱", d:"你不是没有情绪，是从小没练习过「说」。对方常误读你为冷漠、不在乎。"},
+      {n:"理性化代替感受", d:"遇到冲突，你倾向于讲道理、找方案，回避了「我此刻的感受是什么」这层。"}
+    ],
+    guide: [
+      "和<b>焦虑型</b>相处：最难组合。对方的追与你的退会形成死循环。你要练习「不退场」，哪怕只是说一句「我需要缓一会儿，但我还在」。",
+      "和<b>安全型</b>相处：他们能给你安全感，请试着把心里的门开一条缝。",
+      "和<b>回避型</b>相处：两人都退，关系会越来越远。需要主动约定「定期沟通」的机制。"
+    ],
+    plan: [
+      "第 1–7 天：每天对身边人说一句关于「感受」的话（不是评价、不是道理），哪怕一句「今天有点累」。",
+      "第 8–14 天：想独处时，先告诉对方原因和时长——「我想安静一小时，一会儿找你」。",
+      "第 15–21 天：写一封不打算发出去的信，写下你对一段关系真正的感受，练习「触碰」自己的情绪。"
+    ]
+  },
+  fearful: {
+    origin: [
+      "恐惧型通常来自更复杂的早年经历，往往是「想靠近时受到了伤害」。爱和伤害被绑在了一起，于是你学会：<b>靠近会受伤，但离开又太孤独</b>——这两股力量一直在你心里打架。",
+      "所以你不是「善变」，也不是「矫情」。你只是在「想要」和「保护自己」之间，反复被拉扯。"
+    ],
+    traps: [
+      {n:"先推开，再拼命挽回", d:"想靠近时先防御性地推开对方，等对方真的走了，又陷入巨大的恐惧和不舍。"},
+      {n:"情绪大起大落", d:"容易被关系里的小事触发强烈的被抛弃感，反应常常超出事件本身。"},
+      {n:"对「被爱」既渴望又怀疑", d:"即使对方很好，你也很难真正相信「他会一直在」，总在等一个「他会不会离开」的答案。"}
+    ],
+    guide: [
+      "和<b>安全型</b>相处：最推荐。对方稳定、可预测的回应，会一点点帮你把「危险」改写回「安全」。",
+      "和<b>焦虑型</b>相处：你们都会被抛弃恐惧驱动，容易共振放大情绪，需要外部支持来稳定。",
+      "和<b>回避型</b>相处：两人都不安，容易一推一退。要格外需要「把话说清、把界限划明」。"
+    ],
+    plan: [
+      "第 1–7 天：识别「触发点」——记录 3 次你突然强烈不安的时刻，写清当时发生了什么。",
+      "第 8–14 天：练习「暂停」——想推开对方时，先对自己说「我现在是害怕，不是不爱」，等 30 分钟再行动。",
+      "第 15–21 天：找一件「小而稳定」的事（固定的散步、固定的问候），体验「稳定的关系是存在的」。"
+    ]
+  }
+};
+
+/* ============================================================
+   MBTI 16 型 × 依恋型 的「组合金句」
+   用于综合报告首屏——把两次测评合成一句话
+   ============================================================ */
+const MBTI_ATTACH_LINE = {
+  secure:   "而且你的「{T}」底色，让你在关系里既稳又有主见——你不容易被关系牵着走。",
+  anxious:  "再叠加你「{T}」的性格底色，你比一般人更在意关系的质量，也更容易把对方的一句话在心里绕好几圈。",
+  avoidant: "再叠加你「{T}」的性格底色，你需要的其实是「有人懂你，但不侵入你」——这两者并不矛盾。",
+  fearful:  "再叠加你「{T}」的性格底色，你对关系的感受比大多数人更浓烈，也因此更容易被自己困住。"
+};
+
+
+
+/* ============================================================
+   模块 4/4：页面控制与渲染
+   分段式流程：依恋（24题）→ 依恋结果 → 人格（24题）→ 综合报告
+   ============================================================ */
+
+/* 星球与客服配置 —— 后续改这里就行 */
+const ZSXQ_PAID = "https://wx.zsxq.com/group/51285812558114";   // 奇迹星球（付费）
+const ZSXQ_GROUP_NAME = "奇迹星球";
+
+let paper1 = [];        // 依恋卷
+let paper2 = [];        // 人格卷
+let ans1 = [];
+let idx1 = 0;
+let idx2 = 0;
+let ans2 = [];
+let RESULT = null;      // {anx, avo, attachKey, mbtiType, mbtiCount}
+
+function $(id){ return document.getElementById(id); }
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+/* ---------------- 第 1 段：依恋 ---------------- */
+function startStage1(){
+  paper1 = buildAttachPaper();
+  ans1 = new Array(paper1.length).fill(null);
+  idx1 = 0;
+  $('ptotal1').textContent = paper1.length;
+  renderQ1();
+  $('stg1a').className = 'st on';
+  $('stg1b').className = 'st';
+  $('stg1c').className = 'st';
+  show('s-pre1');   /* 先进第 1 段开场页 */
+}
+
+/* 由开场页按钮调用，真正进入答题 */
+function beginQuiz1(){
+  idx1 = 0;
+  renderQ1();
+  show('s-quiz1');
+}
+
+function renderQ1(){
+  const q = paper1[idx1];
+  $('qhead1').textContent = '第 ' + (idx1+1) + ' 题';
+  $('qtext1').textContent = q.text + (q.rev ? '　（请按真实感受作答）' : '');
+  $('pnow1').textContent = idx1 + 1;
+
+  const box = $('opts1');
+  box.innerHTML = '';
+  ECR_OPTS.forEach(o=>{
+    const d = document.createElement('div');
+    d.className = 'opt' + (ans1[idx1] === o.v ? ' sel' : '');
+    d.innerHTML = '<span class="dot"></span><span>' + o.t + '</span>';
+    d.onclick = ()=>{
+      ans1[idx1] = o.v;
+      /* 先给点选反馈，再自动推进到下一题 */
+      const all = box.querySelectorAll('.opt');
+      all.forEach(el=>el.classList.remove('sel'));
+      d.classList.add('sel');
+      $('btnNext1').disabled = false;
+      updatePfill1();
+      if(idx1 < paper1.length - 1){
+        setTimeout(()=>{ idx1++; renderQ1(); }, 260);
+      }else{
+        $('btnNext1').textContent = '看看我的依恋类型';
+      }
+    };
+    box.appendChild(d);
+  });
+
+  $('btnPrev1').disabled = (idx1 === 0);
+  $('btnNext1').disabled = (ans1[idx1] === null);
+  $('btnNext1').textContent = (idx1 === paper1.length - 1) ? '看看我的依恋类型' : '下一题';
+  updatePfill1();
+
+  /* 题目淡入动效 */
+  const body = $('qtext1');
+  body.classList.remove('q-anim');
+  void body.offsetWidth;
+  body.classList.add('q-anim');
+  box.classList.remove('q-anim');
+  void box.offsetWidth;
+  box.classList.add('q-anim');
+}
+
+function updatePfill1(){
+  const done = ans1.filter(a=>a !== null).length;
+  $('pfill1').style.width = (done / paper1.length * 100) + '%';
+}
+
+function prevQ1(){ if(idx1 > 0){ idx1--; renderQ1(); } }
+
+function nextQ1(){
+  if(ans1[idx1] === null) return;
+  if(idx1 < paper1.length - 1){ idx1++; renderQ1(); }
+  else { finishStage1(); }
+}
+
+function finishStage1(){
+  const s = scoreAttach(paper1, ans1);
+  const key = classifyAttach(s.anx, s.avo);
+  const t = ATTACH_TYPES[key];
+  RESULT = { anx:s.anx, avo:s.avo, attachKey:key };
+
+  $('a-type').textContent = t.emoji + ' ' + t.name;
+  $('a-sub').textContent = t.sub;
+  $('a-desc').textContent = t.desc;
+  $('a-anx-t').textContent = s.anx + '%';
+  $('a-avo-t').textContent = s.avo + '%';
+  $('a-anx-bar').style.width = s.anx + '%';
+  $('a-avo-bar').style.width = s.avo + '%';
+  show('s-attach');
+}
+
+/* ---------------- 第 2 段：人格 ---------------- */
+function startStage2(){
+  paper2 = buildMbtiPaper();
+  ans2 = new Array(paper2.length).fill(null);
+  idx2 = 0;
+  $('ptotal2').textContent = paper2.length;
+  renderQ2();
+  $('stg2a').className = 'st done';
+  $('stg2b').className = 'st on';
+  $('stg2c').className = 'st';
+  show('s-quiz2');
+}
+
+/* 第 2 段：从开场页进入答题（paper2 已由 startStage2 构建） */
+function beginQuiz2(){
+  if(!paper2 || !paper2.length){ startStage2(); return; }
+  idx2 = 0;
+  renderQ2();
+  show('s-quiz2');
+}
+
+function renderQ2(){
+  const q = paper2[idx2];
+  $('qhead2').textContent = '第 ' + (idx2+1) + ' 题';
+  $('qtext2').textContent = q.text;
+  $('pnow2').textContent = idx2 + 1;
+
+  const box = $('opts2');
+  box.innerHTML = '';
+  q.opts.forEach((o, i)=>{
+    const d = document.createElement('div');
+    d.className = 'opt' + (ans2[idx2] === i ? ' sel' : '');
+    d.innerHTML = '<span class="dot"></span><span>' + o.t + '</span>';
+    d.onclick = ()=>{
+      ans2[idx2] = i;
+      const all = box.querySelectorAll('.opt');
+      all.forEach(el=>el.classList.remove('sel'));
+      d.classList.add('sel');
+      $('btnNext2').disabled = false;
+      updatePfill2();
+      if(idx2 < paper2.length - 1){
+        setTimeout(()=>{ idx2++; renderQ2(); }, 260);
+      }else{
+        $('btnNext2').textContent = '生成我的综合报告';
+      }
+    };
+    box.appendChild(d);
+  });
+
+  $('btnPrev2').disabled = (idx2 === 0);
+  $('btnNext2').disabled = (ans2[idx2] === null);
+  $('btnNext2').textContent = (idx2 === paper2.length - 1) ? '生成我的综合报告' : '下一题';
+  updatePfill2();
+
+  /* 淡入动效 */
+  const t2 = $('qtext2');
+  t2.classList.remove('q-anim');
+  void t2.offsetWidth;
+  t2.classList.add('q-anim');
+  box.classList.remove('q-anim');
+  void box.offsetWidth;
+  box.classList.add('q-anim');
+}
+
+function updatePfill2(){
+  const done = ans2.filter(a=>a !== null).length;
+  $('pfill2').style.width = (done / paper2.length * 100) + '%';
+}
+
+function prevQ2(){ if(idx2 > 0){ idx2--; renderQ2(); } }
+
+function nextQ2(){
+  if(ans2[idx2] === null) return;
+  if(idx2 < paper2.length - 1){ idx2++; renderQ2(); }
+  else { finishStage2(); }
+}
+
+/* ---------------- 综合报告 ---------------- */
+const MBTI_ALL16 = ["ISTJ","ISFJ","INFJ","INTJ","ISTP","ISFP","INFP","INTP",
+                    "ESTP","ESFP","ENFP","ENTP","ESTJ","ESFJ","ENFJ","ENTJ"];
+
+function finishStage2(){
+  const m = scoreMbti(paper2, ans2);
+  RESULT.mbtiType = m.type;
+  RESULT.mbtiCount = m.count;
+
+  const at = ATTACH_TYPES[RESULT.attachKey];
+  const mbti = MBTI_16[m.type] || {name:"", one:""};
+
+  $('r-combo').textContent = at.emoji + ' ' + at.name + ' × ' + m.type;
+  $('r-combo-sub').textContent = at.sub;
+  $('r-at').textContent = at.name.replace('型','');
+  $('r-mt').textContent = m.type;
+
+  /* 16 型网格 */
+  const grid = $('r-grid');
+  grid.innerHTML = '';
+  MBTI_ALL16.forEach(k=>{
+    const c = document.createElement('div');
+    c.className = 'cell' + (k === m.type ? ' hit' : '');
+    c.textContent = k;
+    grid.appendChild(c);
+  });
+  $('r-mbti-name').textContent = m.type + ' · ' + mbti.name;
+  $('r-mbti-one').textContent = mbti.one;
+
+  /* 四维度百分比条 */
+  const pairs = [["E","I","ei"],["S","N","sn"],["T","F","tf"],["J","P","jp"]];
+  pairs.forEach(p=>{
+    const a = m.count[p[0]], b = m.count[p[1]];
+    const total = a + b || 1;
+    const pa = Math.round(a / total * 100);
+    const pb = 100 - pa;
+    const win = a >= b ? p[0] : p[1];
+    $('r-bar-' + p[2]).style.width = (a >= b ? pa : pb) + '%';
+    $('r-pct-' + p[2]).textContent = win + ' ' + Math.max(pa, pb) + '%';
+  });
+
+  /* 一句话金句 */
+  $('r-tagline').textContent = COMBO_LINE[RESULT.attachKey][m.type[0] === 'E' ? 'e' : 'i'];
+  $('r-tagline2').textContent = (MBTI_ATTACH_LINE[RESULT.attachKey] || '').replace('{T}', m.type);
+
+  /* 交叉解读 */
+  const ins = getInsights(RESULT.attachKey, m.type);
+  const items = [
+    {k:'你的人格底色：' + ins.ei.label, v:ins.ei.attach, r:ins.ei.risk},
+    {k:'你的信息接收方式：' + ins.sn.label, v:ins.sn.attach, r:ins.sn.risk},
+    {k:'你的决策方式：' + ins.tf.label, v:ins.tf.attach, r:ins.tf.risk},
+    {k:'你的关系节奏：' + ins.jp.label, v:ins.jp.attach, r:ins.jp.risk}
+  ];
+  $('r-cross').innerHTML = items.map(it=>
+    '<div class="cross-item"><div class="k">' + it.k + '</div><div class="v">' + it.v + '</div><div class="r">⚠ ' + it.r + '</div></div>'
+  ).join('');
+
+  $('stg2c').className = 'st on';
+  show('s-report');
+
+  if(localStorage.getItem('qjx_unlocked') === '1'){ revealDeep(); }
+}
+
+/* ---------------- 深度报告渲染 ---------------- */
+function renderDeep(){
+  if(!RESULT) return;
+  const d = DEEP[RESULT.attachKey];
+  if(!d) return;
+  $('dr-origin').innerHTML = d.origin.map(p=>'<p>' + p + '</p>').join('');
+  $('dr-traps').innerHTML = d.traps.map(t=>
+    '<p style="margin-bottom:12px;"><b style="color:#4a2fb0;">' + t.n + '</b><br>' + t.d + '</p>').join('');
+  $('dr-guide').innerHTML = d.guide.map(g=>'<p>· ' + g + '</p>').join('');
+  $('dr-plan').innerHTML = d.plan.map(p=>'<p>· ' + p + '</p>').join('');
+
+  /* ⑤ 人格 × 依恋定制建议 */
+  const ins = getInsights(RESULT.attachKey, RESULT.mbtiType);
+  const at = ATTACH_TYPES[RESULT.attachKey];
+  const t = RESULT.mbtiType;
+  const lines = [
+    '你是 <b>' + at.name + ' × ' + t + '</b>（' + (MBTI_16[t] ? MBTI_16[t].name : '') + '）。',
+    '你的人格底色是「' + ins.ei.label + '」，这意味着：' + ins.ei.attach,
+    '你接收信息偏「' + ins.sn.label + '」：' + ins.sn.attach,
+    '你做决定偏「' + ins.tf.label + '」：' + ins.tf.attach,
+    '你的关系节奏偏「' + ins.jp.label + '」：' + ins.jp.attach,
+    (MBTI_ATTACH_LINE[RESULT.attachKey] || '').replace('{T}', t)
+  ];
+  $('dr-mbti').innerHTML = lines.map(l=>'<p>' + l + '</p>').join('');
+
+  const pw = $('paywall'); if(pw) pw.style.display = 'none';
+  const dr = $('deep-report'); if(dr) dr.style.display = 'block';
+}
+
+/* ---------------- 付费与引流 ---------------- */
+function unlock(){
+  window.open(ZSXQ_PAID, '_blank');
+  setTimeout(()=>{ toast('付款后回来点「我已支付」'); }, 300);
+}
+
+function checkPaid(){
+  const u = new URLSearchParams(location.search);
+  if(u.get('unlock') === '1' || u.get('paid') === '1'){
+    localStorage.setItem('qjx_unlocked', '1');
+    revealDeep();
+    return true;
+  }
+  toast('暂未检测到支付，可先进星球或联系小管家');
+  return false;
+}
+
+function revealDeep(){
+  renderDeep();
+}
+
+function goPlanet(){
+  window.open(ZSXQ_PAID, '_blank');
+}
+
+function goConsult(){
+  const r = RESULT || {};
+  const text = '我刚做了你们的双维测评，结果是【' + (ATTACH_TYPES[r.attachKey] ? ATTACH_TYPES[r.attachKey].name : '') +
+               ' × ' + (r.mbtiType || '') + '】（依恋焦虑' + (r.anx != null ? r.anx : '-') +
+               ' / 回避' + (r.avo != null ? r.avo : '-') + '），想找小管家聊聊';
+  copyText(text);
+  toast('已复制！回到公众号粘贴发送即可');
+}
+
+function copyText(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  ta.remove();
+}
+
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>{ t.classList.remove('show'); }, 2200);
+}
+
+function restartAll(){
+  paper1 = []; paper2 = []; ans1 = []; ans2 = [];
+  idx1 = 0; idx2 = 0; RESULT = null;
+  show('s-intro');
+}
+
+/* ---------------- 启动 ---------------- */
+window.addEventListener('load', ()=>{
+  const u = new URLSearchParams(location.search);
+  if(u.get('unlock') === '1' || u.get('paid') === '1'){
+    localStorage.setItem('qjx_unlocked', '1');
+  }
+});
+
+</script>
+</body>
+</html>
