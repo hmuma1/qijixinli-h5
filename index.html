@@ -2585,10 +2585,17 @@ function restartAll(){
 
 /* ---------------- 启动 ---------------- */
 window.addEventListener('load', ()=>{
-  /* 支持 ?unlock=1 或 #unlock 直接带回解锁态（星主发链接给会员用） */
+  /* ★ v9：以「本次访问的链接」为唯一依据，杜绝两版串味
+     · 带 ?unlock=1 / ?paid=1 / #unlock  → 进阶版（会员），并记住解锁态
+     · 不带任何参数                       → 免费版，且清除旧的解锁态
+     这样：星球链接永远进进阶版；公众号菜单链接永远进免费版。 */
   const u = new URLSearchParams(location.search);
-  if(u.get('unlock') === '1' || u.get('paid') === '1' || location.hash.indexOf('unlock') > -1){
+  const byLink = (u.get('unlock') === '1' || u.get('paid') === '1' || location.hash.indexOf('unlock') > -1);
+  if(byLink){
     localStorage.setItem('qjx_unlocked', '1');
+  }else{
+    /* 不带参数 → 强制回到免费版，清掉浏览器记住的解锁态 */
+    localStorage.removeItem('qjx_unlocked');
   }
   applyPaidState();
 });
