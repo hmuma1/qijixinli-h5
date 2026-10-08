@@ -1188,7 +1188,7 @@ body.in-planet .js-planet-entry{ display:none !important; }
     <span class="bs-mark">奇</span>
     <span class="bs-txt">
       <span class="bs-t1">公众号「奇迹心li」</span>
-      <span class="bs-t2">回复「依恋」· 领取《依恋风格相处小册子》</span>
+      <span class="bs-t2">回复【结果】，发给公众号，我来给你再细说一说</span>
     </span>
     <span class="pb-go">›</span>
   </div>
@@ -1199,7 +1199,7 @@ body.in-planet .js-planet-entry{ display:none !important; }
 
 </div>
 
-<div class="copy-toast" id="toast">已复制，去微信粘贴给小管家吧</div>
+<div class="copy-toast" id="toast">已复制，去公众号「奇迹心li」粘贴发送</div>
 
 
 <script>
@@ -2554,11 +2554,11 @@ function goPlanet(){
 
 function goConsult(){
   const r = RESULT || {};
-  const text = '我刚做了你们的双维测评，结果是【' + (ATTACH_TYPES[r.attachKey] ? ATTACH_TYPES[r.attachKey].name : '') +
-               ' × ' + (r.mbtiType || '') + '】（依恋焦虑' + (r.anx != null ? r.anx : '-') +
-               ' / 回避' + (r.avo != null ? r.avo : '-') + '），想找小管家聊聊';
+  const text = '【结果】' + (ATTACH_TYPES[r.attachKey] ? ATTACH_TYPES[r.attachKey].name : '') +
+               ' × ' + (r.mbtiType || '') + '　依恋焦虑' + (r.anx != null ? r.anx : '-') + '% / 回避' + (r.avo != null ? r.avo : '-') + '%' +
+               '　—— 帮我看看我的类型';
   copyText(text);
-  toast('已复制！回到公众号粘贴发送即可');
+  toast('已复制！去公众号「奇迹心li」粘贴发送');
 }
 
 function copyText(text){
