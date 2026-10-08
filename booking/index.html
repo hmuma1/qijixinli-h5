@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>怎么预约 · 奇迹心li</title>
+<style>
+:root{
+  --ink:#2f2b3d; --ink2:#5c5570; --ink3:#8b849e;
+  --purple:#7c5ce0; --purple-l:#a78bfa; --purple-xl:#c4b5fd;
+  --line:#efeaf9; --card:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(167,139,250,.15) 0%, transparent 42%),
+    radial-gradient(circle at 88% 10%, rgba(196,181,253,.12) 0%, transparent 38%),
+    linear-gradient(180deg,#faf9ff 0%, #f4f2fd 100%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+  padding:0 0 30px;
+}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+
+/* 顶部 */
+.hero{padding:34px 4px 22px;text-align:center}
+.hero .mark{
+  width:56px;height:56px;border-radius:17px;margin:0 auto 15px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:23px;font-weight:800;color:#fff;letter-spacing:1px;
+  background:linear-gradient(135deg,#7c5ce0,#a78bfa);
+  box-shadow:0 8px 22px rgba(124,92,224,.30);
+}
+.hero h1{font-size:22px;font-weight:800;letter-spacing:.6px}
+.hero .sub{font-size:13px;color:var(--ink3);margin-top:9px;letter-spacing:.4px}
+.hero .rule{
+  width:36px;height:2px;margin:16px auto 0;
+  background:linear-gradient(90deg,transparent,var(--purple-l),transparent);
+}
+
+/* 卡片 */
+.card{
+  background:rgba(255,255,255,.90);border-radius:17px;padding:17px 18px;
+  margin-bottom:12px;border:1px solid var(--line);
+  box-shadow:0 3px 14px rgba(107,91,149,.05);
+}
+.card h2{
+  font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:11px;
+  display:flex;align-items:center;gap:8px;
+}
+.card h2 .n{
+  flex:0 0 auto;width:20px;height:20px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#7c5ce0,#a78bfa);
+}
+.card p{font-size:14px;color:var(--ink2);line-height:1.82;margin-bottom:9px}
+.card p:last-child{margin-bottom:0}
+.card p b{color:var(--purple);font-weight:700}
+
+/* 方式列表 */
+.way{
+  display:flex;align-items:flex-start;gap:12px;padding:13px 0;
+  border-bottom:1px dashed var(--line);
+}
+.way:last-child{border-bottom:none;padding-bottom:2px}
+.way .ico{
+  flex:0 0 36px;width:36px;height:36px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  background:linear-gradient(135deg,rgba(167,139,250,.16),rgba(196,181,253,.11));
+  color:var(--purple);
+}
+.way .body{flex:1;min-width:0}
+.way .t{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.5}
+.way .d{font-size:13px;color:var(--ink3);line-height:1.72;margin-top:4px}
+.way .d b{color:var(--purple);font-weight:700}
+
+/* 价格 */
+.price-box{
+  background:linear-gradient(140deg,#241a45 0%,#3a2a6b 54%,#46356f 100%);
+  border-radius:17px;padding:22px 20px;margin-bottom:12px;
+  box-shadow:0 12px 30px rgba(36,26,69,.24);
+  position:relative;overflow:hidden;
+}
+.price-box::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;
+  border-radius:50%;background:radial-gradient(circle,rgba(196,181,253,.22),transparent 70%);
+}
+.pb-t{font-size:12px;color:#a79cc7;letter-spacing:2px;margin-bottom:14px;position:relative}
+.pb-row{
+  display:flex;align-items:baseline;gap:9px;margin-bottom:9px;position:relative;
+}
+.pb-row .k{font-size:13.5px;color:#cfc6e4;flex:0 0 auto;padding-top:3px}
+.pb-row .v{
+  font-size:21px;font-weight:800;background:linear-gradient(135deg,#ffe9a8,#ffc94d);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.pb-row .u{font-size:12px;color:#9e91bd}
+.pb-note{
+  font-size:12.5px;color:#b8a9d8;line-height:1.72;margin-top:13px;position:relative;
+  padding-top:13px;border-top:1px solid rgba(255,255,255,.08);
+}
+.pb-note b{color:#ffe9a8}
+
+/* 按钮 */
+.btn{
+  display:block;width:100%;padding:15px;border:none;border-radius:14px;
+  font-size:15.5px;font-weight:700;color:#fff;letter-spacing:.4px;
+  background:linear-gradient(135deg,#7c5ce0 0%,#8b6bf0 50%,#a78bfa 100%);
+  box-shadow:0 8px 22px rgba(124,92,224,.30), 0 2px 6px rgba(124,92,224,.16);
+  cursor:pointer;position:relative;overflow:hidden;
+  margin-bottom:11px;text-align:center;
+}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.15) 0%,transparent 52%);
+  pointer-events:none;
+}
+.btn:active{transform:scale(.985)}
+.btn.ghost{
+  background:rgba(255,255,255,.86);color:var(--purple);
+  box-shadow:0 2px 10px rgba(107,91,149,.09);border:1px solid var(--line);
+}
+.btn.ghost::after{display:none}
+
+/* 提示条 */
+.tip{
+  padding:13px 15px;border-radius:13px;font-size:13px;line-height:1.76;
+  background:linear-gradient(135deg,rgba(167,139,250,.09),rgba(196,181,253,.06));
+  color:#4a4460;margin-bottom:12px;
+}
+.tip b{color:var(--purple)}
+
+/* 合规脚注 */
+.foot{
+  font-size:11.5px;color:var(--ink3);line-height:1.75;text-align:center;
+  padding:14px 8px 0;opacity:.78;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mark">预</div>
+    <h1>怎么找我聊</h1>
+    <div class="sub">先看清怎么约 · 再决定要不要约</div>
+    <div class="rule"></div>
+  </div>
+
+  <!-- 先免费 -->
+  <div class="tip">
+    <b>不着急付费。</b>如果你只是想说说心里的事，公众号「奇迹心li」里直接发消息就行——<b>私信永远免费</b>，我看到会回。
+  </div>
+
+  <!-- 三种方式 -->
+  <div class="card">
+    <h2><span class="n">1</span>三种方式，按你的方便选</h2>
+
+    <div class="way">
+      <div class="ico">✉</div>
+      <div class="body">
+        <div class="t">公众号私信（免费）</div>
+        <div class="d">直接在公众号里说话就行。想说什么说什么，<b>不用组织语言</b>。适合先聊两句、看看合不合适。</div>
+      </div>
+    </div>
+
+    <div class="way">
+      <div class="ico">◎</div>
+      <div class="body">
+        <div class="t">语音房（免费旁听）</div>
+        <div class="d">每晚 <b>19:30</b> 有语音房间，可以先来听听，不用说话也不尴尬。</div>
+      </div>
+    </div>
+
+    <div class="way">
+      <div class="ico">◈</div>
+      <div class="body">
+        <div class="t">一对一咨询（付费）</div>
+        <div class="d">需要认真聊、聊得深一点的时候。<b>在公众号回复「预约」</b>，我会把具体流程发给你。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 价格 -->
+  <div class="price-box">
+    <div class="pb-t">一 对 一 咨 询</div>
+    <div class="pb-row">
+      <span class="k">单次起步</span>
+      <span class="v">50</span><span class="u">元</span>
+    </div>
+    <div class="pb-row">
+      <span class="k">按小时</span>
+      <span class="v">180</span><span class="u">元 / 小时</span>
+    </div>
+    <div class="pb-note">
+      不用一次买很多。先约一次，聊得舒服再说下一次。<br>
+      <b>公众号私信始终免费</b>，付费只针对一对一咨询。
+    </div>
+  </div>
+
+  <!-- 按钮 -->
+  <button class="btn" onclick="backToMp()">回公众号回复「预约」 →</button>
+  <button class="btn ghost" onclick="backToMp()">先私信聊两句（免费）</button>
+
+  <!-- 合规 -->
+  <div class="foot">
+    © 奇迹心li　·　本页仅说明预约方式<br>
+    咨询为心理陪伴与情绪支持，<b>不提供医学诊断、不开具处方</b><br>
+    如出现持续两周以上的严重状态，或出现伤害自己的念头，请及时前往医院精神心理科，或拨打 <b>12356</b> 心理援助热线
+  </div>
+
+</div>
+
+<script>
+/* 引导回公众号（微信内直接关闭/返回即回到对话，外部浏览器给提示） */
+function backToMp(){
+  if(/MicroMessenger/i.test(navigator.userAgent)){
+    // 微信内：尝试返回上一页（即公众号对话）
+    if(history.length > 1){ history.back(); }
+    else { alert('请点右上角「···」→「返回」回到公众号，然后回复「预约」'); }
+  }else{
+    alert('请回到微信，打开公众号「奇迹心li」，回复「预约」');
+  }
+}
+</script>
+</body>
+</html>
