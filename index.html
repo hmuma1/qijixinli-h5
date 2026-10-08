@@ -837,8 +837,8 @@ body.in-planet .js-planet-entry{ display:none !important; }
       <li><strong>综合报告</strong>：两套结果交叉解读</li>
     </ul>
     <div class="meta">
-      <span class="chip">📖 共 48 题</span>
-      <span class="chip">⏱ 约 8 分钟</span>
+      <span class="chip">📖 <span id="ch-q">共 48 题</span></span>
+      <span class="chip">⏱ <span id="ch-t">约 8 分钟</span></span>
       <span class="chip">🔄 每次题序不同</span>
     </div>
     <details class="fold">
@@ -851,7 +851,7 @@ body.in-planet .js-planet-entry{ display:none !important; }
     </details>
   </div>
 
-  <button class="btn" onclick="startStage1()">开始测评 →</button>
+  <button class="btn" onclick="startMain()" id="btn-main">开始测评 →</button>
   <p class="footnote">© 奇迹心li　本测评用于自我探索，不替代专业诊断</p>
 </section>
 
@@ -1987,6 +1987,15 @@ function startStage1(){
   show('s-pre1');   /* 先进第 1 段开场页 */
 }
 
+/* ★ v8 首页主按钮：已解锁(星球会员) → 直奔进阶卷；未解锁 → 走免费版流程 */
+function startMain(){
+  if(localStorage.getItem('qjx_unlocked') === '1'){
+    startAdvanced();     /* 星球会员：直接开做 72 题深度版，无需先做免费版 */
+  }else{
+    startStage1();       /* 免费用户：48 题免费版 */
+  }
+}
+
 /* 由开场页按钮调用，真正进入答题 */
 function beginQuiz1(){
   idx1 = 0;
@@ -2105,7 +2114,9 @@ function runAdvanced(){
   return { p1:p1, a1:a1, p2:p2, a2:a2, i1:0, i2:0, phase:'quiz1' };
 }
 
-/* 进阶卷入口（只允许付费解锁者） */
+/* 进阶卷入口（只允许付费解锁者）
+   ★ v8：进阶卷 = 完全独立的测评。不要求先做免费版。
+   若之前做过免费版（RESULT 存在），则顺带记下用于"刻度对比"；没有也照常测。 */
 function startAdvanced(){
   if(localStorage.getItem('qjx_unlocked') !== '1'){
     toast('进阶加长版需先在星球解锁');
@@ -2113,8 +2124,8 @@ function startAdvanced(){
     return;
   }
   ADV = runAdvanced();
-  ADV.combo = RESULT;              // 记住免费版的类型，进阶报告要用
-  ADV_PREV = RESULT;
+  ADV.combo = RESULT;              // 有免费版结果就带上（仅用于对比），没有则为 null
+  ADV_PREV = RESULT;               // 同上；本轮实测：为 null 时对比段自动降级
   renderAdvQ();
   show('s-adv-quiz');
   toast('已进入进阶版 · 共 ' + (ADV.p1.length + ADV.p2.length) + ' 题');
@@ -2228,7 +2239,7 @@ function prevAdvQ(){
   }
 }
 
-/* ---- 进阶卷：出结果（与免费版对比，做精细画像） ---- */
+/* ---- 进阶卷：出结果（★ v8：独立出报告，不依赖免费版） ---- */
 function finishAdvanced(){
   if(!ADV) return;
   const s = scoreAttach(ADV.p1, ADV.a1);
@@ -2236,8 +2247,13 @@ function finishAdvanced(){
   const m = scoreMbti(ADV.p2, ADV.a2);
   const at = ATTACH_TYPES[key];
   const prev = ADV_PREV || {};
+  const hasPrev = (prev.attachKey != null);   // ★ 是否真有免费版结果可对比
 
   $('adv-st-c').className = 'st on';
+
+  /* ★ v8 核心：把进阶卷结果写成 RESULT —— 深度报告(renderDeep)就能直接渲染，
+     会员无需先做免费版 48 题。 */
+  RESULT = { anx:s.anx, avo:s.avo, attachKey:key, mbtiType:m.type, mbtiCount:m.count };
 
   /* 顶部：类型 + 是否与免费版一致 */
   const same = (prev.attachKey === key) && (prev.mbtiType === m.type);
@@ -2255,14 +2271,22 @@ function finishAdvanced(){
     '<div class="track"><div class="fill" style="width:' + s.avo + '%"></div></div></div>';
 
   const lines = [];
-  lines.push('<p><b>进阶版结论：</b>' + (same
-    ? '32 题加重后，你的类型与免费版完全一致——说明结果很稳，不是偶然。'
-    : (sameA ? '依恋类型与免费版一致，人格维度在加重后出现了微调，这说明你在人格上处于两个类型之间。'
-             : '加重题目后结果出现变化。这通常说明你的依恋状态正处在波动期，或免费版某几题感受不明确。')) + '</p>');
-  lines.push('<p><b>刻度变化：</b>免费版 焦虑 ' + (prev.anx != null ? prev.anx : '—') + '% / 回避 ' + (prev.avo != null ? prev.avo : '—') +
-             '%　→　进阶版 焦虑 ' + s.anx + '% / 回避 ' + s.avo + '%</p>');
+  if(hasPrev){
+    /* 有免费版结果 → 显示刻度对比（原来那套） */
+    lines.push('<p><b>进阶版结论：</b>' + (same
+      ? '加重题目后，你的类型与免费版完全一致——说明结果很稳，不是偶然。'
+      : (sameA ? '依恋类型与免费版一致，人格维度在加重后出现了微调，这说明你在人格上处于两个类型之间。'
+               : '加重题目后结果出现变化。这通常说明你的依恋状态正处在波动期，或免费版某几题感受不明确。')) + '</p>');
+    lines.push('<p><b>刻度变化：</b>免费版 焦虑 ' + (prev.anx != null ? prev.anx : '—') + '% / 回避 ' + (prev.avo != null ? prev.avo : '—') +
+               '%　→　进阶版 焦虑 ' + s.anx + '% / 回避 ' + s.avo + '%</p>');
+  }else{
+    /* ★ 无免费版结果 → 直接给进阶结论，不提"对比" */
+    lines.push('<p><b>进阶版结论：</b>这份结果由 ' + (ADV.p1.length + ADV.p2.length) + ' 道加长题算出，' +
+      '依恋部分四个维度全覆盖，分辨力比短版更高。你的依恋底色是 <b>' + at.name + '</b>，' +
+      '人格类型是 <b>' + m.type + '</b>。下面是你完整的深度报告。</p>');
+  }
 
-  if(!sameA || !sameM){
+  if(hasPrev && (!sameA || !sameM)){
     lines.push('<p style="color:#8b6b3d;background:#fdf8ef;border-radius:10px;padding:10px 12px;">' +
       '⚠ 两次结果不完全一致，不代表任何一次是"错的"。依恋是状态、人格是底色，波动本来就会发生。' +
       '真正值得留意的是：<b>哪几题让你犹豫</b>——那里通常藏着你最在意的东西。</p>');
@@ -2275,6 +2299,9 @@ function finishAdvanced(){
     setTimeout(()=>{ p.scrollIntoView({behavior:'smooth', block:'start'}); }, 120);
   }
   toast('进阶画像已生成');
+
+  /* ★ v8：进阶测完，直接展开完整深度报告（8 大板块），无需先做免费版 */
+  revealDeep();
 }
 
 function renderQ2(){
@@ -2408,10 +2435,11 @@ function renderDeep(){
   /* ── 卷首：类型 + 一句定位 ── */
   const cv = $('dr-cover');
   if(cv){
+    const isPlanet = localStorage.getItem('qjx_unlocked') === '1';
     cv.innerHTML =
       '<div class="dc-emoji">' + (d.mark || '✦') + '</div>' +
       '<div class="dc-title">' + d.title + '</div>' +
-      '<div class="dc-sub">依恋深度报告 · 完整版</div>' +
+      '<div class="dc-sub">' + (isPlanet ? '进阶深度报告 · 完整版' : '双维测评报告 · 完整版') + '</div>' +
       '<div class="dc-rule"></div>' +
       '<div class="dc-toc">' +
         '<span>壹 · 你在哪里</span><span>贰 · 为什么</span><span>叁 · 关系循环</span>' +
@@ -2491,6 +2519,12 @@ function applyPaidState(){
   });
   const tail = $('dr-tail');
   if(tail) tail.style.display = on ? 'block' : 'none';
+
+  /* ★ v8：解锁态下，首页直接是「深度版」，会员无需先做免费版 */
+  const q = $('ch-q'), t = $('ch-t'), b = $('btn-main');
+  if(q) q.textContent = on ? '共 72 题' : '共 48 题';
+  if(t) t.textContent = on ? '约 13 分钟' : '约 8 分钟';
+  if(b) b.textContent = on ? '开始深度测评 →' : '开始测评 →';
 }
 
 /* ---------------- 付费与引流 ---------------- */
