@@ -70,27 +70,44 @@
     } catch (e) {}
   }
 
-  /* ---------- 陪伴氛围（v1.13，v1.14 改 0-8）：随机人数的「守护」意象 ----------
-     号主定调：陪伴感 > 孤独感；范围 0-8（0 人时陪伴感转到「火」本身，
-     偶尔空场也让数字更像真的——大部分时间有人，偶尔一个人，才像真实世界）。
-     每次仪式后刷新（人来人往，比死数字自然）。
+  /* ---------- 陪伴氛围（v1.13 起，v1.15 实时化）：篝火旁的「人」 ----------
+     号主定调：进入火边就有数字，且随时间真实漂移（1→2→5→3），
+     变动不频繁（20-45s 一次，±1~2），9 个位置（自己占 1，访客 0-8）。
+     实时徽标在 s-write 屏常驻；提交完成时取当前值定格到结果屏。
      纪律（不可越界）：
        ① 只呈现人数与守护意象——无人名、无对话、无「对方正在看你」，
           永不升级为任何形式的「互动」；
        ② 数字是氛围修辞，不是功能承诺——用户不会因它做任何决策。 */
-  var COMPANION_MIN = 0, COMPANION_MAX = 8;
-  function companionCount() {
-    return COMPANION_MIN + Math.floor(Math.random() * (COMPANION_MAX - COMPANION_MIN + 1));
+  var COMPANION_MAX = 8;   /* 9 个位置，自己占 1 个，其余 0-8 */
+  function randInt(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  var liveN = 0, liveTimer = null;
+  function paintLive() {
+    var el = $('companion-live-num');
+    if (el) el.textContent = liveN;   /* 阿拉伯数字，号主钦定 */
   }
-  /* 0 人是特殊时刻：不硬说「还有 0 个人」（不像话），也不留空场——
-     陪伴感从「人」转到「火」，且保留真实感（8/9 概率有人，1/9 一个人） */
+  function driftLive() {
+    var d = randInt(1, 2) * (Math.random() < 0.5 ? -1 : 1);
+    liveN = Math.max(0, Math.min(COMPANION_MAX, liveN + d));
+    paintLive();
+    liveTimer = setTimeout(driftLive, 20000 + Math.random() * 25000);  /* 20-45s 才动一次 */
+  }
+  function startLive() {
+    stopLive();
+    liveN = randInt(0, COMPANION_MAX);
+    paintLive();
+    liveTimer = setTimeout(driftLive, 25000 + Math.random() * 20000);  /* 进来先稳 25-45s */
+  }
+  function stopLive() {
+    if (liveTimer) { clearTimeout(liveTimer); liveTimer = null; }
+  }
+  /* 结果屏定格：提交瞬间的人数。0 人是特殊时刻——不硬说「还有 0 个人」，
+     陪伴感从「人」转到「火」本身；大部分时间有人、偶尔一个人，才像真的 */
   function renderCompanion() {
-    var n = companionCount();
-    if (n === 0) {
+    if (liveN === 0) {
       $('fire-companion').textContent = '此刻，篝火边只你一个人';
       $('fire-guard').textContent = '火还醒着，陪你';
     } else {
-      $('fire-companion').textContent = '此刻，篝火边还有 ' + n + ' 个人';
+      $('fire-companion').textContent = '此刻，篝火边还有 ' + liveN + ' 个人';
       $('fire-guard').textContent = '有人守着火，就像有人守着你';
     }
   }
@@ -128,9 +145,13 @@
 
   /* ============================================================
      音效：Web Audio 现场合成（零音频文件，无加载失败风险）
-     - 环境燃烧声：白噪声 + 低通 + 缓慢起伏（火的呼吸感）
-     - 点火「噗」：噪声 + 低通下滑 + 快速衰减
-     - 火星噼啪：随机短脉冲（高通噪声 burst）
+     v1.15 音效家族重做（号主：「嗖」突兀不和谐、碎裂没声、整体要融洽）：
+     统一「火家族」音色三原则——
+       ① 同源：仪式音效全部用滤波噪声，与环境燃烧声（白噪+低通）是一家人
+       ② 忌上扬：火不会「起飞」——频率只下滑或平移，绝不上扬（上扬=嗖感来源）
+       ③ 慢包络：attack ≥ 80ms + 音量 ≤ 0.2，杜绝 click 与突兀
+     保留不动：ambience（环境燃烧，号主钦定不用改）、crackle（噼啪）、
+               chime/twinkle（心愿金光/化星，正弦泛音天生柔和）
      ============================================================ */
   var AudioFX = {
     ctx: null, master: null, ambGain: null, enabled: true, crackleTimer: null,
@@ -185,38 +206,42 @@
         try { this.ambGain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.6); } catch (e) {}
       }
     },
-    /* 提交「嗖」：噪声带通频率上扬 + 缓入缓出（信封起飞感，不生硬） */
+    /* 提交「噗」（v1.15 重做）：替代旧 whoosh 的「嗖」——
+       低通噪声 + 频率缓降（600→300Hz，火被点燃后稳住的感觉），
+       慢起 90ms / 缓落 400ms，像柴堆闷燃那一声。不上扬、不尖、量小 */
     whoosh: function () {
       if (!this.ctx || !this.enabled) return;
       var t = this.ctx.currentTime;
       var src = this.ctx.createBufferSource();
-      src.buffer = this.noiseBuffer(1.2);
-      var bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass'; bp.Q.value = 1.2;
-      bp.frequency.setValueAtTime(420, t);
-      bp.frequency.exponentialRampToValueAtTime(3600, t + 0.9);
+      src.buffer = this.noiseBuffer(0.8);
+      var lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.Q.value = 0.7;
+      lp.frequency.setValueAtTime(600, t);
+      lp.frequency.exponentialRampToValueAtTime(300, t + 0.45);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.32, t + 0.14);
-      g.gain.setValueAtTime(0.32, t + 0.55);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
-      src.connect(bp); bp.connect(g); g.connect(this.master);
-      src.start(t); src.stop(t + 1.15);
+      g.gain.exponentialRampToValueAtTime(0.2, t + 0.09);   /* 慢起，去 click */
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55); /* 缓落，不硬切 */
+      src.connect(lp); lp.connect(g); g.connect(this.master);
+      src.start(t); src.stop(t + 0.6);
     },
-    /* 纸裂小爆：每字碎裂一声，短促高频 */
+    /* 炭火迸裂（v1.15 重做）：每字碎裂一声。旧版 1600-4000Hz 太尖太轻
+       被环境声盖住（号主「烧掉好像没有音效」）。降到 900-1900Hz 的
+       「闷响」频段，衰减 80ms 更圆润，音量略提——与环境噼啪同族 */
     crack: function () {
       if (!this.ctx || !this.enabled) return;
       var t = this.ctx.currentTime;
       var src = this.ctx.createBufferSource();
-      src.buffer = this.noiseBuffer(0.05);
+      src.buffer = this.noiseBuffer(0.08);
       var bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass'; bp.Q.value = 0.8;
-      bp.frequency.value = 1600 + Math.random() * 2400;
+      bp.type = 'bandpass'; bp.Q.value = 0.9;
+      bp.frequency.value = 900 + Math.random() * 1000;   /* 900-1900Hz 炭火段 */
       var g = this.ctx.createGain();
-      g.gain.setValueAtTime(0.14 + Math.random() * 0.08, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.16 + Math.random() * 0.06, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
       src.connect(bp); bp.connect(g); g.connect(this.master);
-      src.start(t); src.stop(t + 0.07);
+      src.start(t); src.stop(t + 0.09);
     },
     /* 金光「叮」：双正弦清亮泛音，心愿模式金光起时 */
     chime: function () {
@@ -233,21 +258,23 @@
         o.connect(g); o.start(t); o.stop(t + 0.95);
       }, this);
     },
-    /* 心愿飘出：轻量上升气声 */
+    /* 心愿升空气（v1.15 重做）：旧版 700→4200Hz 上扬=「嗖」的同款毛病。
+       改为低通噪声 + 频率仅轻微上移（500→1100Hz，表示「飘远」但不越中频），
+       慢起 200ms / 缓落，与提交「噗」、碎裂「闷响」同一火家族音色 */
     swooshUp: function (v) {
       if (!this.ctx || !this.enabled) return;
       var t = this.ctx.currentTime;
       var src = this.ctx.createBufferSource();
       src.buffer = this.noiseBuffer(1);
-      var bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass'; bp.Q.value = 1.5;
-      bp.frequency.setValueAtTime(700, t);
-      bp.frequency.exponentialRampToValueAtTime(4200, t + 0.85);
+      var lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.Q.value = 0.8;
+      lp.frequency.setValueAtTime(500, t);
+      lp.frequency.exponentialRampToValueAtTime(1100, t + 0.85);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(v || 0.18, t + 0.18);
+      g.gain.exponentialRampToValueAtTime(v || 0.16, t + 0.2);  /* 慢起 */
       g.gain.exponentialRampToValueAtTime(0.0001, t + 1);
-      src.connect(bp); bp.connect(g); g.connect(this.master);
+      src.connect(lp); lp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 1.05);
     },
     /* 星闪「铃」：大三和弦泛音 + 长衰减，心愿化作星星时（v1.4） */
@@ -623,6 +650,7 @@
       AudioFX.ambience();
       AudioFX.crackle();
     }
+    startLive();   /* v1.15：进入火边，实时陪伴人数开始 */
     setTimeout(function () { input.focus(); }, 400);
   });
 
@@ -843,6 +871,7 @@
   var lastQuote = '';
 
   function showResult(text) {
+    stopLive();   /* v1.15：提交完成，人数定格（结果屏显示当前值，定时器停） */
     var code = makeCode();
     var pool = poolOf(mode);
     var quote = pick(pool);
@@ -887,6 +916,7 @@
     charCount.textContent = '0 / 140';
     refreshIgniteState();
     AudioFX.ambienceUp();
+    startLive();   /* v1.15：新的一次「进来」，人数重新随机 */
     show('s-write');
     setTimeout(function () { input.focus(); }, 400);
   });
