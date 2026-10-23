@@ -155,27 +155,45 @@
   };
 
   /* ============================================================
-     星空
+     星空 + 城市边缘夜景（远山剪影 + 地平线城市灯火）
      ============================================================ */
   var starsCanvas = $('stars-canvas'), sctx = starsCanvas.getContext('2d');
-  var stars = [];
+  var stars = [], cityLights = [];
   function sizeStars() {
     starsCanvas.width = innerWidth;
     starsCanvas.height = innerHeight;
+    var horizon = innerHeight * 0.7;
     stars = [];
     var n = Math.floor(innerWidth * innerHeight / 6500);
     for (var i = 0; i < n; i++) {
       stars.push({
         x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight * 0.82,
+        y: Math.random() * innerHeight * 0.66,
         r: rand(0.4, 1.6),
         p: Math.random() * Math.PI * 2,
         sp: rand(0.008, 0.03)
       });
     }
+    /* 城市灯火：贴着地平线，疏落暖黄，微微闪 */
+    cityLights = [];
+    var m = Math.floor(innerWidth / 15);
+    for (var j = 0; j < m; j++) {
+      cityLights.push({
+        x: Math.random() * innerWidth,
+        y: horizon - rand(-4, innerHeight * 0.05),
+        r: rand(0.7, 1.5),
+        p: Math.random() * Math.PI * 2,
+        sp: rand(0.01, 0.045),
+        a: rand(0.35, 0.85)
+      });
+    }
   }
   function drawStars() {
-    sctx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+    var w = starsCanvas.width, h = starsCanvas.height;
+    var horizon = h * 0.7;
+    sctx.clearRect(0, 0, w, h);
+
+    /* 1. 星星（只在地平线以上） */
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i];
       s.p += s.sp;
@@ -185,6 +203,35 @@
       sctx.fillStyle = 'rgba(255, 244, 225,' + a.toFixed(3) + ')';
       sctx.fill();
     }
+
+    /* 2. 远山剪影（城市边缘） */
+    sctx.beginPath();
+    sctx.moveTo(0, horizon);
+    sctx.bezierCurveTo(w * 0.14, horizon - h * 0.055, w * 0.22, horizon - h * 0.015, w * 0.36, horizon - h * 0.04);
+    sctx.bezierCurveTo(w * 0.5, horizon - h * 0.075, w * 0.62, horizon + h * 0.012, w * 0.76, horizon - h * 0.02);
+    sctx.bezierCurveTo(w * 0.88, horizon - h * 0.05, w * 0.95, horizon, w, horizon - h * 0.012);
+    sctx.lineTo(w, h);
+    sctx.lineTo(0, h);
+    sctx.closePath();
+    sctx.fillStyle = 'rgba(7, 4, 14, 0.94)';
+    sctx.fill();
+
+    /* 3. 城市灯火（山脊线上，远处万家灯火） */
+    for (var k = 0; k < cityLights.length; k++) {
+      var c = cityLights[k];
+      c.p += c.sp;
+      var la = c.a * (0.55 + 0.45 * Math.sin(c.p));
+      sctx.beginPath();
+      sctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      sctx.fillStyle = 'rgba(255, 214, 160,' + la.toFixed(3) + ')';
+      sctx.fill();
+      /* 灯光晕 */
+      sctx.beginPath();
+      sctx.arc(c.x, c.y, c.r * 3.2, 0, Math.PI * 2);
+      sctx.fillStyle = 'rgba(255, 190, 120,' + (la * 0.12).toFixed(3) + ')';
+      sctx.fill();
+    }
+
     requestAnimationFrame(drawStars);
   }
   sizeStars();
@@ -214,9 +261,28 @@
     }
     loop();
   }
+  /* 画柴堆：三根交叉圆木，火从柴后头冒出来 */
+  function drawLogs(ctx, cx, base, s) {
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(52, 32, 18, 0.95)';
+    ctx.lineWidth = 6.5 * s;
+    ctx.beginPath(); ctx.moveTo(cx - 24 * s, base + 5); ctx.lineTo(cx + 20 * s, base - 11); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx - 20 * s, base - 11); ctx.lineTo(cx + 24 * s, base + 5); ctx.stroke();
+    ctx.strokeStyle = 'rgba(64, 40, 22, 0.95)';
+    ctx.lineWidth = 8 * s;
+    ctx.beginPath(); ctx.moveTo(cx - 28 * s, base + 9); ctx.lineTo(cx + 28 * s, base + 2); ctx.stroke();
+    /* 柴头炭火光 */
+    ctx.fillStyle = 'rgba(255, 120, 40, 0.5)';
+    ctx.beginPath(); ctx.arc(cx - 24 * s, base + 5, 3 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 24 * s, base + 5, 3 * s, 0, Math.PI * 2); ctx.fill();
+  }
+
   Fire.prototype.step = function () {
     var ctx = this.ctx;
     ctx.clearRect(0, 0, this.w, this.h);
+
+    /* 柴堆（先画，火粒子盖中部，两头露出来） */
+    drawLogs(ctx, this.cx, this.base, this.w / 220);
 
     // 主火苗粒子
     var rate = 3 + this.boost * 2;
@@ -249,10 +315,10 @@
       p = this.parts[i];
       p.x += p.vx; p.y += p.vy; p.life -= p.decay;
       if (p.life <= 0) { this.parts.splice(i, 1); continue; }
-      // 颜色：亮金 → 橙 → 深红 → 透明
+      // 颜色：亮金 → 橙 → 深红 → 透明（提高橙色占比，小温暖感）
       var l = p.life;
-      if (l > 0.72) k = 'rgba(255,214,140,' + (0.85 * l).toFixed(3) + ')';
-      else if (l > 0.4) k = 'rgba(255,157,69,' + (0.7 * l).toFixed(3) + ')';
+      if (l > 0.66) k = 'rgba(255,214,140,' + (0.85 * l).toFixed(3) + ')';
+      else if (l > 0.36) k = 'rgba(255,157,69,' + (0.7 * l).toFixed(3) + ')';
       else k = 'rgba(216,70,30,' + (0.5 * l).toFixed(3) + ')';
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size * (0.4 + l * 0.6), 0, Math.PI * 2);
@@ -282,14 +348,14 @@
   };
   Fire.prototype.setBoost = function (v) { this.boost = v; };
 
-  var fire = new Fire($('fire-canvas'), { w: 300, h: 380 });
+  var fire = new Fire($('fire-canvas'), { w: 220, h: 270, baseRatio: 0.92 });
 
-  /* 仪式时：火焰放大 */
+  /* 仪式时：火焰放大（中景小火堆 → 依然克制，不暴涨） */
   function fireGrow() {
     $('fire-canvas').style.transition = 'width .9s ease, height .9s ease';
-    $('fire-canvas').style.width = '460px';
-    $('fire-canvas').style.height = '560px';
-    fire.setBoost(2.6);
+    $('fire-canvas').style.width = '330px';
+    $('fire-canvas').style.height = '410px';
+    fire.setBoost(1.7);
   }
   function fireCalm() {
     $('fire-canvas').style.width = '';
@@ -319,11 +385,11 @@
 
   var PROMPTS = {
     farewell: '今晚，想烧掉什么？',
-    wish: '今晚，想送上什么？'
+    wish: '今晚，心里有什么心愿？'
   };
   var PLACEHOLDERS = {
     farewell: '写下一件具体的事，越具体，火越烧得干净',
-    wish: '写下一个心愿，具体一点的'
+    wish: '写下一个具体的心愿，越具体越好'
   };
 
   /* 模式切换 */
@@ -501,36 +567,38 @@
   var posterFire = $('poster-fire');
   (function drawPosterFire() {
     var ctx = posterFire.getContext('2d');
-    posterFire.width = 520; posterFire.height = 620;
-    var w = 520, h = 620;
+    posterFire.width = 460; posterFire.height = 560;
+    var w = 460, h = 560;
     /* 预渲染 60 帧粒子后的静态火 */
     var parts = [];
     for (var f = 0; f < 60; f++) {
       for (var i = 0; i < 6; i++) {
         parts.push({
-          x: w / 2 + rand(-70, 70),
-          y: h * 0.88,
+          x: w / 2 + rand(-60, 60),
+          y: h * 0.86,
           vx: rand(-0.3, 0.3),
-          vy: rand(-1.4, -3.2),
+          vy: rand(-1.4, -3.0),
           life: 1,
           decay: rand(0.012, 0.026),
-          size: rand(8, 22)
+          size: rand(7, 19)
         });
       }
     }
     ctx.clearRect(0, 0, w, h);
+    /* 柴堆 */
+    drawLogs(ctx, w / 2, h * 0.86, w / 220);
     for (var k = 0; k < parts.length; k++) {
       var p = parts[k];
       var l = p.life;
-      var col = l > 0.72 ? 'rgba(255,214,140,' + (0.8 * l) + ')'
-              : l > 0.4 ? 'rgba(255,157,69,' + (0.65 * l) + ')'
+      var col = l > 0.66 ? 'rgba(255,214,140,' + (0.8 * l) + ')'
+              : l > 0.36 ? 'rgba(255,157,69,' + (0.65 * l) + ')'
               : 'rgba(216,70,30,' + (0.45 * l) + ')';
       ctx.beginPath();
       ctx.arc(p.x + p.vx * 40, p.y + p.vy * 40, p.size * (0.4 + l * 0.6), 0, Math.PI * 2);
       ctx.fillStyle = col;
       ctx.fill();
     }
-    var glow = ctx.createRadialGradient(w / 2, h * 0.9, 0, w / 2, h * 0.9, 150);
+    var glow = ctx.createRadialGradient(w / 2, h * 0.88, 0, w / 2, h * 0.88, 130);
     glow.addColorStop(0, 'rgba(255,140,50,0.25)');
     glow.addColorStop(1, 'rgba(255,140,50,0)');
     ctx.fillStyle = glow;
