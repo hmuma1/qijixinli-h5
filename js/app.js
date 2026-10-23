@@ -104,6 +104,11 @@
         try { this.ambGain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 0.5); } catch (e) {}
       }
     },
+    ambienceUp: function () {
+      if (this.ambGain && this.ctx && this.enabled) {
+        try { this.ambGain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.6); } catch (e) {}
+      }
+    },
     whoosh: function () {
       if (!this.ctx || !this.enabled) return;
       var t = this.ctx.currentTime;
@@ -261,20 +266,20 @@
     }
     loop();
   }
-  /* 画柴堆：三根交叉圆木，火从柴后头冒出来 */
+  /* 画柴堆：三根交叉圆木，火从柴后头冒出来（深棕粗木，和火光强对比） */
   function drawLogs(ctx, cx, base, s) {
     ctx.lineCap = 'round';
-    ctx.strokeStyle = 'rgba(52, 32, 18, 0.95)';
-    ctx.lineWidth = 6.5 * s;
-    ctx.beginPath(); ctx.moveTo(cx - 24 * s, base + 5); ctx.lineTo(cx + 20 * s, base - 11); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx - 20 * s, base - 11); ctx.lineTo(cx + 24 * s, base + 5); ctx.stroke();
-    ctx.strokeStyle = 'rgba(64, 40, 22, 0.95)';
-    ctx.lineWidth = 8 * s;
-    ctx.beginPath(); ctx.moveTo(cx - 28 * s, base + 9); ctx.lineTo(cx + 28 * s, base + 2); ctx.stroke();
-    /* 柴头炭火光 */
-    ctx.fillStyle = 'rgba(255, 120, 40, 0.5)';
-    ctx.beginPath(); ctx.arc(cx - 24 * s, base + 5, 3 * s, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx + 24 * s, base + 5, 3 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(44, 26, 14, 0.96)';
+    ctx.lineWidth = 7.5 * s;
+    ctx.beginPath(); ctx.moveTo(cx - 26 * s, base + 6); ctx.lineTo(cx + 22 * s, base - 12); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx - 22 * s, base - 12); ctx.lineTo(cx + 26 * s, base + 6); ctx.stroke();
+    ctx.strokeStyle = 'rgba(60, 37, 21, 0.96)';
+    ctx.lineWidth = 9.5 * s;
+    ctx.beginPath(); ctx.moveTo(cx - 30 * s, base + 11); ctx.lineTo(cx + 30 * s, base + 3); ctx.stroke();
+    /* 柴头炭火 */
+    ctx.fillStyle = 'rgba(255, 120, 40, 0.55)';
+    ctx.beginPath(); ctx.arc(cx - 26 * s, base + 6, 3.2 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 26 * s, base + 6, 3.2 * s, 0, Math.PI * 2); ctx.fill();
   }
 
   Fire.prototype.step = function () {
@@ -348,14 +353,14 @@
   };
   Fire.prototype.setBoost = function (v) { this.boost = v; };
 
-  var fire = new Fire($('fire-canvas'), { w: 220, h: 270, baseRatio: 0.92 });
+  var fire = new Fire($('fire-canvas'), { w: 175, h: 215, baseRatio: 0.9 });
 
-  /* 仪式时：火焰放大（中景小火堆 → 依然克制，不暴涨） */
+  /* 仪式时：火焰适度放大（依然克制，不暴涨） */
   function fireGrow() {
     $('fire-canvas').style.transition = 'width .9s ease, height .9s ease';
-    $('fire-canvas').style.width = '330px';
-    $('fire-canvas').style.height = '410px';
-    fire.setBoost(1.7);
+    $('fire-canvas').style.width = '250px';
+    $('fire-canvas').style.height = '310px';
+    fire.setBoost(1.5);
   }
   function fireCalm() {
     $('fire-canvas').style.width = '';
@@ -384,8 +389,8 @@
   var charCount = $('char-count');
 
   var PROMPTS = {
-    farewell: '今晚，想烧掉什么？',
-    wish: '今晚，心里有什么心愿？'
+    farewell: '今晚你想烧掉什么？',
+    wish: '今晚你有什么心愿？'
   };
   var PLACEHOLDERS = {
     farewell: '写下一件具体的事，越具体，火越烧得干净',
@@ -413,9 +418,13 @@
     btnIgnite.disabled = len < 2;
   });
 
-  /* 开始 */
+  /* 开始：进入火边，环境燃烧声起（用户手势内初始化，符合微信播放政策） */
   $('btn-start').addEventListener('click', function () {
     show('s-write');
+    if (AudioFX.ensure() && AudioFX.enabled) {
+      AudioFX.ambience();
+      AudioFX.crackle();
+    }
     setTimeout(function () { input.focus(); }, 400);
   });
 
@@ -465,11 +474,10 @@
     var text = input.value.trim();
     if (text.length < 2) return;
     busy = true;
-    /* 音效：用户手势内初始化（微信自动播放政策要求），点火「噗」+ 环境声 + 噼啪 */
+    /* 音效：环境声应已在（点「点燃篝火」时起）；此处补点火「噗」，没有环境声则兜底起 */
     if (AudioFX.ensure() && AudioFX.enabled) {
-      AudioFX.ambience();
+      if (!AudioFX.ambGain) { AudioFX.ambience(); AudioFX.crackle(); }
       AudioFX.whoosh();
-      AudioFX.crackle();
     }
     show('s-fire');
     fireGrow();
@@ -528,6 +536,7 @@
     input.value = '';
     charCount.textContent = '0 / 140';
     btnIgnite.disabled = true;
+    AudioFX.ambienceUp();
     show('s-write');
     setTimeout(function () { input.focus(); }, 400);
   });
