@@ -50,6 +50,26 @@
     return out;
   }
 
+  /* ---------- 每日点火限额（v1.10）：仪式是珍贵的，不能无限次 ---------- */
+  var DAILY_LIMIT = 5;
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+  function dailyCount() {
+    try {
+      var raw = localStorage.getItem('xinli_bonfire_daily');
+      var o = raw ? JSON.parse(raw) : null;
+      if (!o || o.d !== todayStr()) return 0;   /* 跨天自动重置 */
+      return o.n || 0;
+    } catch (e) { return 0; }
+  }
+  function incDaily() {
+    try {
+      localStorage.setItem('xinli_bonfire_daily', JSON.stringify({ d: todayStr(), n: dailyCount() + 1 }));
+    } catch (e) {}
+  }
+
   /* ============================================================
      音效：Web Audio 现场合成（零音频文件，无加载失败风险）
      - 环境燃烧声：白噪声 + 低通 + 缓慢起伏（火的呼吸感）
@@ -494,6 +514,7 @@
   var input = $('write-input');
   var btnIgnite = $('btn-ignite');
   var charCount = $('char-count');
+  var writeTip = $('write-tip');
 
   var PROMPTS = {
     farewell: '今晚你想烧掉什么？',
@@ -518,12 +539,22 @@
     });
   });
 
-  /* 字数与点火按钮 */
-  input.addEventListener('input', function () {
+  /* 字数与点火按钮（含每日限额态：用完禁用 + 温柔提示，次日自动恢复） */
+  function refreshIgniteState() {
     var len = input.value.length;
     charCount.textContent = len + ' / 140';
+    var left = DAILY_LIMIT - dailyCount();
+    if (left <= 0) {
+      btnIgnite.disabled = true;
+      writeTip.textContent = '今天的火已经添够了，剩下的留给明天';
+      return;
+    }
     btnIgnite.disabled = len < 2;
-  });
+    writeTip.textContent = left <= 2
+      ? '今晚还能点燃 ' + left + ' 次'
+      : '写完点「点火」，3、2、1，交给这堆火';
+  }
+  input.addEventListener('input', refreshIgniteState);
 
   /* 开始：进入火边，环境燃烧声起（用户手势内初始化，符合微信播放政策） */
   $('btn-start').addEventListener('click', function () {
@@ -726,6 +757,7 @@
     if (busy) return;
     var text = input.value.trim();
     if (text.length < 2) return;
+    if (dailyCount() >= DAILY_LIMIT) { refreshIgniteState(); return; }   /* 双保险 */
     busy = true;
     /* 音效：环境声应已在（点「点燃篝火」时起）；此处补点火「噗」，没有环境声则兜底起 */
     if (AudioFX.ensure() && AudioFX.enabled) {
@@ -776,6 +808,8 @@
     var n = 0;
     try { n = (parseInt(localStorage.getItem(key), 10) || 0) + 1; localStorage.setItem(key, String(n)); } catch (e) {}
     $('visit-count').textContent = n > 1 ? '这是你第 ' + n + ' 次点燃篝火' : '';
+    /* 完成一次仪式才计入每日限额（中途退出不计数，认真写完的才算） */
+    incDaily();
 
     /* 供海报使用 */
     $('poster-code').textContent = '#' + code;
@@ -788,7 +822,7 @@
   $('btn-again').addEventListener('click', function () {
     input.value = '';
     charCount.textContent = '0 / 140';
-    btnIgnite.disabled = true;
+    refreshIgniteState();
     AudioFX.ambienceUp();
     show('s-write');
     setTimeout(function () { input.focus(); }, 400);
