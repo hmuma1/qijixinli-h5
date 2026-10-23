@@ -423,6 +423,13 @@ body {
   margin-bottom: 30px;
   text-shadow: 0 0 18px rgba(255, 200, 107, 0.45);
 }
+/* v1.10：火苗编号说明（纯纪念编号，诚实告知、不虚构功能） */
+.fire-code-note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(216, 205, 188, 0.45);
+}
 
 .quote-text {
   font-size: 19px; line-height: 2.1;
