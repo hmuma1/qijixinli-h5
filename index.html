@@ -28,6 +28,16 @@ var _hmt = _hmt || [];
 <!-- 夜空星点 -->
 <canvas id="stars-canvas"></canvas>
 
+<!-- 远景层次（v1.17）：远处城市灯火 + 两层远山剪影。
+     号主反馈「黑漆漆一片，看不清山的轮廓、城市的轮廓」——
+     真相是主页面从来没有山和城市（grep 确认），所以不是提亮，是新建。
+     自远及近：星星 → 城市灯火 → 远山 → 近山 → 火光晕 → 篝火。
+     纪律：山与城都压在「稍微能看清」的淡度——远景只服务氛围与纵深，
+     绝不抢篝火的主角位，也绝不挡住星星（山后无星恰是真实感来源） -->
+<div class="skyline-city" aria-hidden="true"></div>
+<div class="far-hills" aria-hidden="true"></div>
+<div class="near-hills" aria-hidden="true"></div>
+
 <!-- 火光环境晕（让火苗融入夜空与地面，不是孤立贴图） -->
 <div id="fire-glow"></div>
 
@@ -44,8 +54,9 @@ var _hmt = _hmt || [];
       <p class="intro-slogan">写下，点燃，然后放下</p>
       <p class="intro-sub">今晚，这里有一堆火，<br>和一个安静的位置</p>
       <button class="btn-main" id="btn-start">点燃篝火</button>
-      <!-- v1.13：「没有围观」与陪伴氛围矛盾，「没有打扰」保全私人感且与共在兼容 -->
-      <p class="intro-tip">没有账号，没有打扰，此刻的篝火一直为你点燃</p>
+      <!-- v1.17：号主反馈「没有账号啥意思？是不是打错了」——否定式表述确实费解，
+           改为肯定式「不用注册」，零门槛的亲切感不变，不再有歧义 -->
+      <p class="intro-tip">不用注册，没有打扰，此刻的篝火一直为你点燃</p>
     </div>
   </section>
 
@@ -60,7 +71,12 @@ var _hmt = _hmt || [];
       <textarea class="write-input" id="write-input" maxlength="140"
         placeholder="写下一件具体的事，越具体，火越烧得干净"></textarea>
       <div class="write-meta"><span id="char-count">0 / 140</span></div>
-      <button class="btn-main" id="btn-ignite" disabled>点 火</button>
+      <!-- v1.17：「还能点燃 N 次」常驻按钮右侧同一行（号主：放在偏右侧一点）。
+           限额满时右侧变「今晚的火已满」，按钮禁用 + write-tip 温柔文案不变 -->
+      <div class="ignite-row">
+        <button class="btn-main" id="btn-ignite" disabled>点 火</button>
+        <span class="ignite-left" id="ignite-left">今晚还能点燃 <b>5</b> 次</span>
+      </div>
       <p class="write-tip" id="write-tip">写完点「点火」，3、2、1，交给这堆火</p>
       <!-- 实时陪伴（v1.15）：进入火边就显示，人数随时间漂移（20-45s/次，±1~2）。
            纯氛围修辞——无人名、无对话、无互动，永不升级（纪律见 app.js 注释） -->
@@ -112,6 +128,10 @@ var _hmt = _hmt || [];
     <!-- 海报夜空星点（v1.15）：主页面星空进不了离屏海报，CSS 静态星层补上 -->
     <div class="poster-stars"></div>
     <div class="poster-city"></div>
+    <!-- 双线装裱框（v1.17）：号主要「精致、高级、像一个精致的卡片」。
+         两层淡金细框模仿装裱卡纸——真实 div（非伪元素）保证 html2canvas 拍得到 -->
+    <div class="poster-frame-outer"></div>
+    <div class="poster-frame-inner"></div>
     <p class="poster-brand">来自「奇迹心li」· 奇li篝火</p>
     <!-- 编号徽章光晕（v1.15）：一枚淡金光晕托住编号，纪念币质感 -->
     <div class="poster-code-wrap">
@@ -122,7 +142,11 @@ var _hmt = _hmt || [];
     <p class="poster-date" id="poster-date"></p>
     <div class="poster-hr"></div>
     <p class="poster-quote" id="poster-quote"></p>
-    <p class="poster-sub">完整心理测评 · 小程序搜「心li笔记」</p>
+    <!-- 签文下线（v1.17）：与上线对称，夹出「签条」——被双线夹住的文字才像题字 -->
+    <div class="poster-hr poster-hr-after"></div>
+    <!-- 落款两行式（v1.17）：一行太挤，两行 + 中间小点才有出版物的 colophon 感 -->
+    <p class="poster-sub">完整心理测评</p>
+    <p class="poster-sub-sub">小程序搜「心li笔记」</p>
     <!-- 暗角（v1.15）：四边压暗，视觉聚焦中心 -->
     <div class="poster-vignette"></div>
   </div>
