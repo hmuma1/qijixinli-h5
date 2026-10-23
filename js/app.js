@@ -859,19 +859,21 @@
     });
   }
 
-  /* 海报离屏区里也画一堆火（静态几帧即可，html2canvas 拍的是当前帧） */
+  /* 海报离屏区里也画一堆火（v1.11 修复：旧版只 push 不推进帧——
+     360 个粒子全叠在同一位置且 life 全为 1，画出来是一团实心亮黄色块。
+     现先逐帧模拟 90 帧（位置/生命/衰减真推进），再把「当前存活」的粒子
+     画成静态火：底部密、上部疏、颜色分层，html2canvas 拍的是这一帧） */
   var posterFire = $('poster-fire');
   (function drawPosterFire() {
     var ctx = posterFire.getContext('2d');
     posterFire.width = 460; posterFire.height = 560;
     var w = 460, h = 560;
-    /* 预渲染 60 帧粒子后的静态火 */
     var parts = [];
-    for (var f = 0; f < 60; f++) {
-      for (var i = 0; i < 6; i++) {
+    for (var f = 0; f < 90; f++) {
+      for (var i = 0; i < 5; i++) {
         parts.push({
-          x: w / 2 + rand(-60, 60),
-          y: h * 0.86,
+          x: w / 2 + rand(-55, 55),
+          y: h * 0.86 + rand(-10, 4),
           vx: rand(-0.3, 0.3),
           vy: rand(-1.4, -3.0),
           life: 1,
@@ -879,21 +881,28 @@
           size: rand(7, 19)
         });
       }
+      /* 推进一帧：上升 + 减速 + 生命衰减，死掉的移除 */
+      for (var k = parts.length - 1; k >= 0; k--) {
+        var p = parts[k];
+        p.x += p.vx; p.y += p.vy; p.vy *= 0.995; p.life -= p.decay;
+        if (p.life <= 0) parts.splice(k, 1);
+      }
     }
     ctx.clearRect(0, 0, w, h);
     /* 柴堆 */
     drawLogs(ctx, w / 2, h * 0.86, w / 220);
-    for (var k = 0; k < parts.length; k++) {
-      var p = parts[k];
-      var l = p.life;
+    /* 画当前存活粒子（已有自然火形） */
+    for (var m = 0; m < parts.length; m++) {
+      var q = parts[m], l = q.life;
       var col = l > 0.66 ? 'rgba(255,214,140,' + (0.8 * l) + ')'
               : l > 0.36 ? 'rgba(255,157,69,' + (0.65 * l) + ')'
               : 'rgba(216,70,30,' + (0.45 * l) + ')';
       ctx.beginPath();
-      ctx.arc(p.x + p.vx * 40, p.y + p.vy * 40, p.size * (0.4 + l * 0.6), 0, Math.PI * 2);
+      ctx.arc(q.x, q.y, q.size * (0.4 + l * 0.6), 0, Math.PI * 2);
       ctx.fillStyle = col;
       ctx.fill();
     }
+    /* 底部余烬光（与地面衔接） */
     var glow = ctx.createRadialGradient(w / 2, h * 0.88, 0, w / 2, h * 0.88, 130);
     glow.addColorStop(0, 'rgba(255,140,50,0.25)');
     glow.addColorStop(1, 'rgba(255,140,50,0)');
