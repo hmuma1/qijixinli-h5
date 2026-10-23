@@ -213,6 +213,7 @@ body {
 
 /* ---------- 屏 3 · 点火仪式 ---------- */
 .fire-stage {
+  position: relative;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   height: 100%; width: 100%;
@@ -248,40 +249,74 @@ body {
   position: relative;
 }
 
-/* —— 心愿模式：金光 → 放大 → 飘出画面（像信封飞走） —— */
-.burn-line.glow { animation: wish-glow 0.8s ease forwards; }
+/* —— 仪式大字（v1.4）：短文本字巨大，长文本自动收缩不炸屏 —— */
+.burn-line.big-xl { font-size: 44px; line-height: 1.7; letter-spacing: 0.06em; }
+.burn-line.big-lg { font-size: 34px; line-height: 1.8; letter-spacing: 0.04em; }
+.burn-line.big-md { font-size: 26px; line-height: 1.9; }
+.burn-line.big-sm { font-size: 19px; line-height: 2; }
+
+/* —— 心愿模式：金光 → 放大 2.8 倍上飘 → 顶点化作星星（v1.4） —— */
+.burn-line.glow { animation: wish-glow 0.9s ease forwards; }
 @keyframes wish-glow {
   to {
     color: #ffe9b8;
     text-shadow: 0 0 22px rgba(255, 210, 120, 0.95), 0 0 55px rgba(255, 180, 80, 0.55);
   }
 }
-.burn-line.float-up { animation: wish-float 1.6s cubic-bezier(.34, .8, .4, 1) forwards; }
+.burn-line.float-up { animation: wish-float 1.9s cubic-bezier(.34, .8, .4, 1) forwards; }
 @keyframes wish-float {
-  to { transform: translate(-50%, -110px) scale(1.4); opacity: 0; }
+  to { transform: translate(-50%, -160px) scale(2.8); opacity: 0; }
 }
 
-/* —— 烧掉模式：字抖 → 缩 → 消，同时炸出纸片 —— */
-.ch.cracking { animation: char-crack 0.55s ease-in forwards; }
+/* 星星：文字到顶点后绽放，闪烁停留，再缩小升空「变成天上的星星」 */
+.wish-star {
+  position: absolute;
+  left: 50%; top: 24%;
+  width: 76px; height: 76px;
+  margin: -38px 0 0 -38px;
+  background: radial-gradient(circle, #fff7e0 0%, #ffd97a 35%, rgba(255, 190, 90, 0.35) 62%, rgba(255, 190, 90, 0) 78%);
+  clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 16px rgba(255, 205, 110, 0.9));
+}
+.wish-star.bloom { animation: star-bloom 0.7s cubic-bezier(.34, 1.4, .4, 1) forwards; }
+@keyframes star-bloom {
+  0%   { opacity: 0; transform: scale(0.1); }
+  60%  { opacity: 1; transform: scale(1.25); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.wish-star.blink { animation: star-blink 1.4s ease-in-out infinite alternate; }
+@keyframes star-blink {
+  from { opacity: 0.72; transform: scale(1); }
+  to   { opacity: 1; transform: scale(1.08); }
+}
+.wish-star.rise { animation: star-rise 2.2s ease-in forwards; }
+@keyframes star-rise {
+  to { opacity: 0; transform: translateY(-90px) scale(0.35); }
+}
+
+/* —— 烧掉模式：字抖 → 缩 → 消，同时炸出大纸片 —— */
+.ch.cracking { animation: char-crack 0.7s ease-in forwards; }
 @keyframes char-crack {
   0%   { transform: none; color: var(--ink); }
-  25%  { transform: scale(1.1) rotate(-1.2deg); color: #e8b478; }
+  25%  { transform: scale(1.12) rotate(-1.2deg); color: #e8b478; }
   60%  { transform: scale(0.96) rotate(0.6deg); color: #b87a4a; }
   100% { transform: scale(0.68); opacity: 0; color: #7a5236; }
 }
 .ch .shard {
   position: absolute;
   left: 50%; top: 50%;
-  width: 5px; height: 7px;
+  width: 11px; height: 15px;
   background: linear-gradient(135deg, #d8c9b4, #a89680);
   opacity: 0;
   pointer-events: none;
 }
-.ch.cracking .shard { animation: shard-fly 0.85s ease-out forwards; }
+.ch.cracking .shard { animation: shard-fly 1.1s ease-out forwards; }
 @keyframes shard-fly {
   0%   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); }
   45%  { opacity: 0.9; transform: translate(calc(-50% + var(--dx) * 0.6), calc(-50% + var(--dy))) rotate(var(--rot)); }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) * 1.8 + 42px)) rotate(var(--rot)) scale(0.3); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) * 1.8 + 64px)) rotate(var(--rot)) scale(0.3); }
 }
 
 /* ---------- 屏 4 · 结果 ---------- */
