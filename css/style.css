@@ -224,7 +224,9 @@ body {
 }
 
 /* ---------- 屏 2 · 写下 ---------- */
-.write-box { width: 100%; max-width: 400px; }
+/* v1.17.1：号主反馈「全挤在火焰上方，拥挤」——整体上移给火留呼吸，
+   内部间距同步压缩（见 write-meta / ignite-row / write-tip / companion-live） */
+.write-box { width: 100%; max-width: 400px; margin-bottom: 56px; }
 
 .mode-switch {
   display: flex;
@@ -283,15 +285,18 @@ body {
 .write-meta {
   display: flex; justify-content: flex-end;
   font-size: 12px; color: var(--ink-faint);
-  margin: 8px 4px 26px;
+  margin: 8px 4px 14px;   /* v1.17.1：26→14，点火行贴近输入框组 */
 }
 
-/* 点火按钮 + 剩余次数同一行（v1.17）：号主要「还能点燃几次放偏右侧一点」。
-   次数常驻可看——额度是产品诚实度的一部分，藏起来反而让人点爆按钮才被告知 */
+/* 点火按钮 + 剩余次数（v1.17.1 重排）：号主要「点火靠左、次数靠右、
+   中间分开、次数文字贴着按键下边缘、整行贴近输入框」。
+   space-between = 一个极左一个极右（中间自然分开，不再紧挨）；
+   flex-end = 次数文字底边与按键底边齐（贴着下沿）；
+   不再居中——居中就是这一行往下沉、挤在火焰上方的元凶 */
 .ignite-row {
-  display: flex; align-items: center; justify-content: center;
-  gap: 16px;
-  margin-top: 26px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 2px;
 }
 .ignite-left {
   font-size: 12px; letter-spacing: 0.08em;
@@ -312,7 +317,7 @@ body {
 .write-tip {
   text-align: center;
   font-size: 12px; color: var(--ink-faint);
-  margin-top: 18px;
+  margin-top: 14px;   /* v1.17.1：18→14，上移 */
 }
 
 /* 实时陪伴徽标（v1.15）：进入火边就显示，呼吸圆点 + 阿拉伯数字。
@@ -321,7 +326,7 @@ body {
    徽标与按钮的剩余次数形成一组信息，右侧留白问题同时解决 */
 .companion-live {
   display: flex; align-items: center; justify-content: center; gap: 9px;
-  margin: 14px 0 0;
+  margin: 12px 0 0;   /* v1.17.1：14→12，顺势再上移一点，火焰上方不再拥挤 */
   font-size: 12px; letter-spacing: 0.14em;
   color: rgba(216, 205, 188, 0.55);
 }
