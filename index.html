@@ -62,6 +62,9 @@ var _hmt = _hmt || [];
       <div class="write-meta"><span id="char-count">0 / 140</span></div>
       <button class="btn-main" id="btn-ignite" disabled>点 火</button>
       <p class="write-tip" id="write-tip">写完点「点火」，3、2、1，交给这堆火</p>
+      <!-- 实时陪伴（v1.15）：进入火边就显示，人数随时间漂移（20-45s/次，±1~2）。
+           纯氛围修辞——无人名、无对话、无互动，永不升级（纪律见 app.js 注释） -->
+      <p class="companion-live"><span class="pulse-dot"></span>篝火旁 · <b id="companion-live-num">0</b></p>
     </div>
   </section>
 
@@ -106,14 +109,22 @@ var _hmt = _hmt || [];
 <div id="poster-wrap" aria-hidden="true">
   <div id="poster-card">
     <canvas id="poster-fire"></canvas>
+    <!-- 海报夜空星点（v1.15）：主页面星空进不了离屏海报，CSS 静态星层补上 -->
+    <div class="poster-stars"></div>
     <div class="poster-city"></div>
     <p class="poster-brand">来自「奇迹心li」· 奇li篝火</p>
-    <p class="poster-code" id="poster-code"></p>
-    <!-- 方案A「今夜纪念卡」：日期 + 时段戳，让海报成为「这一晚」的凭证，
-         回答「用户为什么要保存海报」——保存的是此刻，不是产品广告 -->
+    <!-- 编号徽章光晕（v1.15）：一枚淡金光晕托住编号，纪念币质感 -->
+    <div class="poster-code-wrap">
+      <span class="code-glow"></span>
+      <p class="poster-code" id="poster-code"></p>
+    </div>
+    <!-- 方案A「今夜纪念卡」：日期 + 时段戳，让海报成为「这一晚」的凭证 -->
     <p class="poster-date" id="poster-date"></p>
+    <div class="poster-hr"></div>
     <p class="poster-quote" id="poster-quote"></p>
     <p class="poster-sub">完整心理测评 · 小程序搜「心li笔记」</p>
+    <!-- 暗角（v1.15）：四边压暗，视觉聚焦中心 -->
+    <div class="poster-vignette"></div>
   </div>
 </div>
 
