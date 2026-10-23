@@ -70,6 +70,18 @@
     } catch (e) {}
   }
 
+  /* ---------- 陪伴氛围（v1.13）：随机 2-6 人的「守护」意象 ----------
+     号主定调：陪伴感 > 孤独感；最少 2 人（不让用户觉得只剩自己），
+     最多 6 人（不像闹市）；每次仪式后刷新（人来人往，比死数字自然）。
+     纪律（不可越界）：
+       ① 只呈现人数与守护意象——无人名、无对话、无「对方正在看你」，
+          永不升级为任何形式的「互动」；
+       ② 数字是氛围修辞，不是功能承诺——用户不会因它做任何决策。 */
+  var COMPANION_MIN = 2, COMPANION_MAX = 6;
+  function companionCount() {
+    return COMPANION_MIN + Math.floor(Math.random() * (COMPANION_MAX - COMPANION_MIN + 1));
+  }
+
   /* ---------- 今夜印记（v1.12 方案A）：日期 + 时段，海报成为「这一晚」的纪念卡 ---------- */
   function tonightStamp() {
     var d = new Date();
@@ -827,6 +839,7 @@
     lastQuote = quote;
 
     $('fire-code').textContent = '#' + code;
+    $('fire-companion').textContent = '此刻，篝火边还有 ' + companionCount() + ' 个人';
 
     /* 回应淡入 */
     var qEl = $('quote-text');
