@@ -267,6 +267,50 @@ body {
   white-space: pre;
   position: relative;
 }
+/* .glyph（原字内层）：放大/烘烤的挂点。.ch 上永远不做 transform——
+   父级 transform 会连带缩放/旋转所有下落的碎块（v1.8 铁律）；
+   .glyph 与 .frag 平级，互不影响 */
+.burn-line .glyph { display: inline-block; }
+
+/* ============================================================
+   仪式进度条（v1.9）：很细一条，告诉用户还要等多久
+   颜色即语义：烧掉=灰白细线，心愿=暖金细线；
+   到「快到碎裂 / 快到升空」时走满并淡出，动作随即开始
+   ============================================================ */
+.ritual-progress {
+  position: absolute;
+  left: 50%;
+  bottom: -30px;                 /* 紧跟文字块底部（由 JS 移入 burn-line 内，不论字体/行数） */
+  transform: translateX(-50%);
+  width: 132px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+  z-index: 3;
+}
+.ritual-progress.on { opacity: 1; }
+.ritual-progress.done { opacity: 0; }
+.ritual-progress i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 2px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, rgba(200, 190, 175, 0), rgba(210, 200, 185, 0.8));
+}
+.ritual-progress.wish i {
+  background: linear-gradient(90deg, rgba(255, 200, 110, 0.05), rgba(255, 214, 140, 0.9));
+}
+.ritual-progress.run i { animation: prog-fill var(--pdur, 4500ms) linear forwards; }
+@keyframes prog-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
 
 /* —— 仪式大字（v1.5）：短文本字巨大，长文本自动收缩不炸屏 —— */
 .burn-line.big-xl { font-size: 44px; line-height: 1.7; letter-spacing: 0.06em; text-shadow: 0 0 22px rgba(232, 151, 49, 0.22); }
@@ -302,12 +346,21 @@ body {
    ② 碎裂：原字隐去，**字本身随机裂成 6-9 个小碎块**（继承字色）
    ③ 碎块：一裂开就连贯下落（重力加速），边落边炭化变暗，不停留
    ============================================================ */
-.ch.toasting { animation: char-toast 0.9s ease-in forwards; }
+/* v1.9：烧掉前文字先明显放大再碎裂——治愈感来自「被托起来」的仪式感。
+   放大挂在 .glyph（原字内层），.ch 不做 transform（父级 transform 会连带
+   缩放/旋转所有下落的碎块——铁律见下）；烘烤接棒放大终态，尺寸无缝 */
+.ch.blooming .glyph { animation: char-bloom 2400ms cubic-bezier(.22, .68, .32, 1) forwards; }
+@keyframes char-bloom {
+  0%   { transform: scale(1); }
+  100% { transform: scale(var(--bs, 1.55)); }
+}
+/* 烘烤：近黑 → 暖灰（火舌舔舐，微抖），全程保持放大后的尺寸 var(--bs) */
+.ch.toasting .glyph { animation: char-toast 0.9s ease-in forwards; }
 @keyframes char-toast {
-  0%   { color: #14100d; transform: none; }
-  35%  { color: #2e2825; transform: scale(1.03) rotate(-0.4deg); }
-  70%  { color: #4f4740; transform: scale(1.02) rotate(0.3deg); }
-  100% { color: #6b6157; transform: scale(1) rotate(0); }
+  0%   { color: #14100d; transform: scale(var(--bs, 1.55)) rotate(0deg); }
+  35%  { color: #2e2825; transform: scale(calc(var(--bs, 1.55) * 1.02)) rotate(-0.5deg); }
+  70%  { color: #4f4740; transform: scale(calc(var(--bs, 1.55) * 1.02)) rotate(0.4deg); }
+  100% { color: #6b6157; transform: scale(var(--bs, 1.55)) rotate(0deg); }
 }
 .ch.cracking { animation: char-crack 0.7s ease-in forwards; }
 /* 铁律：父级 .ch 上永远不要出现 opacity<1 或 transform——
@@ -328,13 +381,15 @@ body {
   pointer-events: none;
 }
 .ch.cracking .frag { animation: frag-fly var(--fdur, 2800ms) cubic-bezier(.35, .05, .8, .5) forwards; }
+/* scale 基值乘 --bs（JS 设的放大倍率）：碎块保持放大后的尺寸接棒下落，
+   末段再乘 0.72 边落边缩小炭化 */
 @keyframes frag-fly {
-  0%   { opacity: 1; transform: translate(0, 0) rotate(0); filter: brightness(0.95); }
-  30%  { opacity: 0.96; transform: translate(calc(var(--fdx) * 0.3), calc(var(--fdy) * 0.22)) rotate(calc(var(--frot) * 0.3)); filter: brightness(0.8); }
-  65%  { opacity: 0.72; transform: translate(calc(var(--fdx) * 0.65), calc(var(--fdy) * 0.58)) rotate(calc(var(--frot) * 0.65)); filter: brightness(0.55); }
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0) scale(var(--bs, 1)); filter: brightness(0.95); }
+  30%  { opacity: 0.96; transform: translate(calc(var(--fdx) * 0.3), calc(var(--fdy) * 0.22)) rotate(calc(var(--frot) * 0.3)) scale(var(--bs, 1)); filter: brightness(0.8); }
+  65%  { opacity: 0.72; transform: translate(calc(var(--fdx) * 0.65), calc(var(--fdy) * 0.58)) rotate(calc(var(--frot) * 0.65)) scale(var(--bs, 1)); filter: brightness(0.55); }
   100% {
     opacity: 0;
-    transform: translate(var(--fdx), var(--fdy)) rotate(var(--frot)) scale(0.72);
+    transform: translate(var(--fdx), var(--fdy)) rotate(var(--frot)) scale(calc(var(--bs, 1) * 0.72));
     filter: brightness(0.3);
   }
 }
