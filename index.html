@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>心li篝火</title>
+<title>奇li篝火</title>
 <meta name="description" content="写下，点燃，然后放下。">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -21,7 +21,7 @@
   <section class="screen active" id="s-intro">
     <div class="intro-box">
       <p class="intro-brand">奇迹心li</p>
-      <h1 class="intro-title">心li篝火</h1>
+      <h1 class="intro-title">奇li篝火</h1>
       <p class="intro-slogan">写下，点燃，然后放下</p>
       <p class="intro-sub">今晚，这里有一堆火，<br>和一个安静的位置</p>
       <button class="btn-main" id="btn-start">点燃今晚</button>
@@ -34,14 +34,14 @@
     <div class="write-box">
       <div class="mode-switch" id="mode-switch">
         <button class="mode-btn active" data-mode="farewell">烧掉</button>
-        <button class="mode-btn" data-mode="wish">送上</button>
+        <button class="mode-btn" data-mode="wish">心愿</button>
       </div>
       <p class="write-prompt" id="write-prompt">今晚，想烧掉什么？</p>
       <textarea class="write-input" id="write-input" maxlength="140"
         placeholder="写下一件具体的事，越具体，火越烧得干净"></textarea>
       <div class="write-meta"><span id="char-count">0 / 140</span></div>
       <button class="btn-main" id="btn-ignite" disabled>点 火</button>
-      <p class="write-tip" id="write-tip">写完点「点火」，3、2、1，烧完就放下</p>
+      <p class="write-tip" id="write-tip">写完点「点火」，3、2、1，交给这堆火</p>
     </div>
   </section>
 
@@ -76,7 +76,8 @@
 <div id="poster-wrap" aria-hidden="true">
   <div id="poster-card">
     <canvas id="poster-fire"></canvas>
-    <p class="poster-brand">来自「奇迹心li」· 心li篝火</p>
+    <div class="poster-city"></div>
+    <p class="poster-brand">来自「奇迹心li」· 奇li篝火</p>
     <p class="poster-code" id="poster-code"></p>
     <p class="poster-quote" id="poster-quote"></p>
     <p class="poster-sub">完整心理测评 · 小程序搜「心li笔记」</p>
