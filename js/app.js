@@ -70,16 +70,29 @@
     } catch (e) {}
   }
 
-  /* ---------- 陪伴氛围（v1.13）：随机 2-6 人的「守护」意象 ----------
-     号主定调：陪伴感 > 孤独感；最少 2 人（不让用户觉得只剩自己），
-     最多 6 人（不像闹市）；每次仪式后刷新（人来人往，比死数字自然）。
+  /* ---------- 陪伴氛围（v1.13，v1.14 改 0-8）：随机人数的「守护」意象 ----------
+     号主定调：陪伴感 > 孤独感；范围 0-8（0 人时陪伴感转到「火」本身，
+     偶尔空场也让数字更像真的——大部分时间有人，偶尔一个人，才像真实世界）。
+     每次仪式后刷新（人来人往，比死数字自然）。
      纪律（不可越界）：
        ① 只呈现人数与守护意象——无人名、无对话、无「对方正在看你」，
           永不升级为任何形式的「互动」；
        ② 数字是氛围修辞，不是功能承诺——用户不会因它做任何决策。 */
-  var COMPANION_MIN = 2, COMPANION_MAX = 6;
+  var COMPANION_MIN = 0, COMPANION_MAX = 8;
   function companionCount() {
     return COMPANION_MIN + Math.floor(Math.random() * (COMPANION_MAX - COMPANION_MIN + 1));
+  }
+  /* 0 人是特殊时刻：不硬说「还有 0 个人」（不像话），也不留空场——
+     陪伴感从「人」转到「火」，且保留真实感（8/9 概率有人，1/9 一个人） */
+  function renderCompanion() {
+    var n = companionCount();
+    if (n === 0) {
+      $('fire-companion').textContent = '此刻，篝火边只你一个人';
+      $('fire-guard').textContent = '火还醒着，陪你';
+    } else {
+      $('fire-companion').textContent = '此刻，篝火边还有 ' + n + ' 个人';
+      $('fire-guard').textContent = '有人守着火，就像有人守着你';
+    }
   }
 
   /* ---------- 今夜印记（v1.12 方案A）：日期 + 时段，海报成为「这一晚」的纪念卡 ---------- */
@@ -101,7 +114,7 @@
        poster_save     海报被打开（验证海报到底有没有人保存）
        limit_blocked   点火额度用完仍来点（粘性信号）
        mode_switch_*   切换烧掉/心愿（看大家更常玩哪种） */
-  var BAIDU_SITE_ID = '__BAIDU_SITE_ID__';
+  var BAIDU_SITE_ID = 'e8ffc5809fb30e7ae87e03bc0fce1bfc';
   var Analytics = {
     ready: function () {
       return /^[0-9a-f]{32}$/i.test(BAIDU_SITE_ID) &&
@@ -839,7 +852,7 @@
     lastQuote = quote;
 
     $('fire-code').textContent = '#' + code;
-    $('fire-companion').textContent = '此刻，篝火边还有 ' + companionCount() + ' 个人';
+    renderCompanion();
 
     /* 回应淡入 */
     var qEl = $('quote-text');
