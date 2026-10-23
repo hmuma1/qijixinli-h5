@@ -355,17 +355,25 @@
     /* 柴堆（先画，火粒子盖中部，两头露出来） */
     drawLogs(ctx, this.cx, this.base, this.w / 220);
 
-    // 主火苗粒子
+    // 主火苗粒子（v1.6 自然火形：上尖下宽 + 热流摆动 + 参差顶端）
     var rate = 3 + this.boost * 2;
     for (var i = 0; i < rate; i++) {
+      var vy = rand(-1.1, -3.8) * (0.75 + this.boost * 0.3);
+      /* 飞得越高的粒子出生越居中——火舌自然向上收尖 */
+      var narrow = (vy + 1.1) / 2.7;
+      var xr = rand(-this.spread, this.spread) * (1 - 0.5 * narrow) * (0.5 + 0.5 * Math.random());
       this.parts.push({
-        x: this.cx + rand(-this.spread, this.spread) * (0.6 + 0.4 * Math.random()),
-        y: this.base + rand(-6, 6),
-        vx: rand(-0.35, 0.35),
-        vy: rand(-1.5, -3.4) * (0.7 + this.boost * 0.35),
+        x: this.cx + xr,
+        y: this.base + rand(-10, 4),
+        vx: rand(-0.22, 0.22),
+        vy: vy,
+        wob: rand(0.02, 0.06),       /* 热流摆动频率 */
+        wobA: rand(0.12, 0.45),      /* 摆幅 */
+        ph: rand(0, Math.PI * 2),    /* 相位 */
+        age: 0,
         life: 1,
-        decay: rand(0.012, 0.026) / (0.75 + this.boost * 0.25),
-        size: rand(7, 20) * (0.8 + this.boost * 0.3)
+        decay: rand(0.009, 0.03) / (0.8 + this.boost * 0.2),
+        size: rand(9, 24) * (0.8 + this.boost * 0.3)
       });
     }
 
@@ -384,16 +392,23 @@
     var p, k;
     for (i = this.parts.length - 1; i >= 0; i--) {
       p = this.parts[i];
-      p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+      p.age++;
+      /* 横向热流摆动 + 上升减速，火舌扭动不呆板 */
+      p.x += p.vx + Math.sin(p.age * p.wob + p.ph) * p.wobA;
+      p.y += p.vy;
+      p.vy *= 0.995;
+      p.life -= p.decay;
       if (p.life <= 0) { this.parts.splice(i, 1); continue; }
       // 颜色：亮金 → 橙 → 深红 → 透明（提高橙色占比，小温暖感）
       var l = p.life;
       if (l > 0.66) k = 'rgba(255,214,140,' + (0.85 * l).toFixed(3) + ')';
       else if (l > 0.36) k = 'rgba(255,157,69,' + (0.7 * l).toFixed(3) + ')';
       else k = 'rgba(216,70,30,' + (0.5 * l).toFixed(3) + ')';
+      /* 上升中粒子收缩：火舌向顶端收细，末端渐隐 */
+      var r = p.size * (0.14 + l * 0.86);
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * (0.4 + l * 0.6), 0, Math.PI * 2);
-      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * (0.4 + l * 0.6));
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
       g.addColorStop(0, k);
       g.addColorStop(1, 'rgba(216,70,30,0)');
       ctx.fillStyle = g;
@@ -410,7 +425,7 @@
       ctx.fill();
     }
 
-    // 底部余烬光
+    // 底部余烬光（与地面衔接）
     var glow = ctx.createRadialGradient(this.cx, this.base, 0, this.cx, this.base, 90 * this.boost);
     glow.addColorStop(0, 'rgba(255,140,50,0.22)');
     glow.addColorStop(1, 'rgba(255,140,50,0)');
@@ -420,18 +435,21 @@
   Fire.prototype.setBoost = function (v) { this.boost = v; };
 
   var fire = new Fire($('fire-canvas'), { w: 175, h: 215, baseRatio: 0.9 });
+  var fireGlow = $('fire-glow');
 
-  /* 仪式时：火焰适度放大（依然克制，不暴涨） */
+  /* 仪式时：火焰适度放大（依然克制，不暴涨），环境光晕同步增强 */
   function fireGrow() {
     $('fire-canvas').style.transition = 'width .9s ease, height .9s ease';
     $('fire-canvas').style.width = '250px';
     $('fire-canvas').style.height = '310px';
     fire.setBoost(1.5);
+    if (fireGlow) fireGlow.style.opacity = '1';
   }
   function fireCalm() {
     $('fire-canvas').style.width = '';
     $('fire-canvas').style.height = '';
     fire.setBoost(1);
+    if (fireGlow) fireGlow.style.opacity = '';
   }
 
   /* ============================================================
@@ -517,13 +535,14 @@
   }
 
   /* ============================================================
-     仪式核心：双模式（v1.5 品质升级）
+     仪式核心：双模式（v1.6 morph 连续性 + 火焰融入环境）
      布局铁律：文字在火堆上空燃烧/升飘，不与火苗重叠，内容始终清晰
-     - 烧掉：大字停留 4s → 逐字三段渐变：烘烤（近黑→深棕→橙棕）→
-       碎裂（橙→灰白炭化）+ 大纸屑热气上托后重力飘落、慢慢变暗消散
+     - 烧掉：大字停留 4s → 逐字三段渐变：烘烤（近黑→深灰→暖灰，不好的
+       内容只走黑灰系，暖色只属于火）→ 碎裂（灰→灰白炭化），同时
+       **字本身裂成三块纸片**飞散，另有灰色碎纸屑补氛围
      - 心愿：大字停留 3.5s → 颜色慢慢变亮（暗→金→白金）→ 慢慢放大
-       上飘 → 化作小光点与文字同步飞向夜空深处 → 变遥远闪烁的星 →
-       慢慢淡出（心愿不烧）
+       上飘化开 → **其中凝聚出一颗小光点**（承接文字体量收缩）→ 飞向
+       夜空深处变成遥远闪烁的星 → 慢慢淡出（心愿不烧；好内容走暖金）
      全部音效均在「点火」手势链内触发，合规
      ============================================================ */
   function ritualText(text, done) {
@@ -559,7 +578,7 @@
       return;
     }
 
-    /* 烧掉：逐字三段（烘烤 → 碎裂炭化 → 大纸屑重力飘散） */
+    /* 烧掉：逐字三段（烘烤 → 碎裂炭化 → 字本身裂成纸片飞散） */
     var chars = text.split('');
     var frag = document.createDocumentFragment();
     var spans = [];
@@ -567,6 +586,13 @@
       var s = document.createElement('span');
       s.className = 'ch';
       s.textContent = chars[i];
+      /* 三个切片副本：碎裂时「字本身」裂成纸片（v1.6 morph） */
+      ['c1', 'c2', 'c3'].forEach(function (cc) {
+        var ck = document.createElement('span');
+        ck.className = 'chunk ' + cc;
+        ck.textContent = chars[i];
+        s.appendChild(ck);
+      });
       frag.appendChild(s);
       spans.push(s);
     }
@@ -586,8 +612,8 @@
         var s = spans[i];
         s.classList.remove('toasting');
         s.classList.add('cracking');
-        /* 每个字碎出 8-12 片大纸屑，方向/旋转随机 */
-        var n = 8 + Math.floor(Math.random() * 5);
+        /* 每个字另炸 5-7 片灰色碎纸屑，补碎屑氛围 */
+        var n = 5 + Math.floor(Math.random() * 3);
         for (var k = 0; k < n; k++) {
           var sh = document.createElement('span');
           sh.className = 'shard';
