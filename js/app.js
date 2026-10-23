@@ -431,6 +431,32 @@
     glow.addColorStop(1, 'rgba(255,140,50,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, this.w, this.h);
+
+    /* 四边柔化（v1.8）：把画布自身 alpha 按渐变乘掉——火苗四面化入环境。
+       不用 CSS mask：mask-composite:add 是并集语义，横/纵不透明区互相抵消，
+       中部的底边 fade 被中间列盖住，余光画到画布底边成一条硬横线（v1.7 教训）。
+       destination-in 相乘语义 = 四边各自独立淡出，最可靠 */
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-in';
+    var ft = ctx.createLinearGradient(0, 0, 0, this.h * 0.16);
+    ft.addColorStop(0, 'rgba(0,0,0,0)');
+    ft.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx.fillStyle = ft;
+    ctx.fillRect(0, 0, this.w, this.h * 0.16);
+    var fb = ctx.createLinearGradient(0, this.h * 0.64, 0, this.h);
+    fb.addColorStop(0, 'rgba(0,0,0,1)');
+    fb.addColorStop(0.92, 'rgba(0,0,0,0.25)');
+    fb.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = fb;
+    ctx.fillRect(0, this.h * 0.64, this.w, this.h * 0.36);
+    var fx = ctx.createLinearGradient(0, 0, this.w, 0);
+    fx.addColorStop(0, 'rgba(0,0,0,0)');
+    fx.addColorStop(0.3, 'rgba(0,0,0,1)');
+    fx.addColorStop(0.7, 'rgba(0,0,0,1)');
+    fx.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = fx;
+    ctx.fillRect(0, 0, this.w, this.h);
+    ctx.restore();
   };
   Fire.prototype.setBoost = function (v) { this.boost = v; };
 
@@ -532,25 +558,47 @@
   }
 
   /* ============================================================
-     仪式核心：双模式（v1.7 纸片慢动作 + 四面去框 + 删星）
+     仪式核心：双模式（v1.8 每字独立碎裂下落 / 每字独立上飘 / 火四面柔化）
      布局铁律：文字在火堆上空燃烧/升飘，不与火苗重叠，内容始终清晰
-     - 烧掉：大字停留 4s → 逐字三段：烘烤（近黑→深灰→暖灰）→ 碎裂
-       （灰→灰白炭化），字本体隐去、**字本身裂成的三块纸片 + 10-14 片
-       手撕不规则碎纸**缓慢飘落（3.4s 慢动作），纸片寿命与文字同量级
-     - 心愿：大字停留 3.5s → 颜色慢慢变亮（暗→金→白金）→ 慢慢放大 2.8 倍
-       上飘，一路飘出画面顶部飞向远方天空（不烧；好内容走暖金白）
+     - 烧掉：大字停留 4s → 逐字独立：烘烤（近黑→深灰→暖灰）→ 碎裂，
+       原字隐去、**字本身随机裂成 6-9 个小碎块**，一裂开就连贯下落
+       （重力加速、边落边炭化，不停留），没有额外的纸屑
+     - 心愿：大字停留 3.5s → 整行渐亮（暗→金→白金）→ 每个字独立缓慢
+       上飘（有高有低、有左有右、各自路径与时长）→ 淡出（不烧）
      全部音效均在「点火」手势链内触发，合规
      ============================================================ */
-  /* 手撕碎纸的不规则轮廓（每片随机，像手撕的毛边） */
-  function randomShardPath() {
-    var n = 5 + Math.floor(Math.random() * 3);
-    var pts = [];
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * Math.PI * 2;
-      var r = 0.6 + Math.random() * 0.4;
-      pts.push((50 + Math.cos(a) * 50 * r).toFixed(1) + '% ' + (50 + Math.sin(a) * 50 * r).toFixed(1) + '%');
+  /* 随机碎裂轮廓：把字形横向随机切成 n 段（部分段再左右切），
+     合起来完整覆盖——碎裂瞬间视觉无缝，每字裂法都不同 */
+  function randomFragBands(n) {
+    var cuts = [];
+    var prev = 0.1;
+    for (var i = 1; i < n; i++) {
+      prev = prev + (1 - prev) * (0.35 + Math.random() * 0.5);
+      cuts.push(prev);
     }
-    return 'polygon(' + pts.join(', ') + ')';
+    var bands = [];
+    var top = 0;
+    for (var j = 0; j < cuts.length; j++) {
+      var bot = cuts[j];
+      if (Math.random() < 0.3) {
+        /* 这一条再左右切两半，裂得更碎 */
+        var mid = 30 + Math.random() * 40;
+        bands.push('inset(' + (top * 100).toFixed(1) + '% ' + (100 - mid).toFixed(1) + '% ' + ((1 - bot) * 100).toFixed(1) + '% 0)');
+        bands.push('inset(' + (top * 100).toFixed(1) + '% 0 ' + ((1 - bot) * 100).toFixed(1) + '% ' + mid.toFixed(1) + '%)');
+      } else {
+        bands.push('inset(' + (top * 100).toFixed(1) + '% 0 ' + ((1 - bot) * 100).toFixed(1) + '% 0)');
+      }
+      top = bot;
+    }
+    /* 最后一条（cuts 末尾到 100%） */
+    if (Math.random() < 0.3) {
+      var mid2 = 30 + Math.random() * 40;
+      bands.push('inset(' + (top * 100).toFixed(1) + '% ' + (100 - mid2).toFixed(1) + '% 0 0)');
+      bands.push('inset(' + (top * 100).toFixed(1) + '% 0 0 ' + mid2.toFixed(1) + '%)');
+    } else {
+      bands.push('inset(' + (top * 100).toFixed(1) + '% 0 0 0)');
+    }
+    return bands;
   }
 
   function ritualText(text, done) {
@@ -560,24 +608,7 @@
     var len = text.length;
     burnLine.classList.add(len <= 8 ? 'big-xl' : len <= 16 ? 'big-lg' : len <= 40 ? 'big-md' : 'big-sm');
 
-    if (mode === 'wish') {
-      /* 心愿不烧：停留 → 渐亮 → 放大上飘，一路飞向远方天空（v1.7 删星） */
-      burnLine.textContent = text;
-      setTimeout(function () {
-        burnLine.classList.add('glow');
-        AudioFX.chime();
-      }, 3500);
-      setTimeout(function () {
-        burnLine.classList.add('float-up');
-        AudioFX.swooshUp(0.16);
-      }, 4800);
-      /* 心愿飘到高处：一声远去的铃 */
-      setTimeout(function () { AudioFX.twinkle(); }, 7200);
-      setTimeout(done, 8800);
-      return;
-    }
-
-    /* 烧掉：逐字三段（烘烤 → 碎裂炭化 → 字本身裂成纸片缓慢飘落） */
+    /* 两种模式都逐字独立成 span：烧掉=每字独立碎裂；心愿=每字独立上飘 */
     var chars = text.split('');
     var frag = document.createDocumentFragment();
     var spans = [];
@@ -585,23 +616,39 @@
       var s = document.createElement('span');
       s.className = 'ch';
       /* 原字包一层 .glyph：碎裂时可单独隐去（裸文本节点无法单独隐藏，
-         而隐藏父级 .ch 会把纸片子树一起透明掉） */
+         而隐藏父级 .ch 会把碎块子树一起透明掉） */
       var g = document.createElement('span');
       g.className = 'glyph';
       g.textContent = chars[i];
       s.appendChild(g);
-      /* 三个切片副本：碎裂时「字本身」裂成纸片（v1.6 morph） */
-      ['c1', 'c2', 'c3'].forEach(function (cc) {
-        var ck = document.createElement('span');
-        ck.className = 'chunk ' + cc;
-        ck.textContent = chars[i];
-        s.appendChild(ck);
-      });
       frag.appendChild(s);
       spans.push(s);
     }
     burnLine.appendChild(frag);
 
+    if (mode === 'wish') {
+      /* 心愿不烧：停留 → 渐亮 → 每字独立路径缓慢上飘，飞向远方天空（v1.8 删星） */
+      setTimeout(function () {
+        burnLine.classList.add('glow');
+        AudioFX.chime();
+      }, 3500);
+      spans.forEach(function (s, i) {
+        setTimeout(function () {
+          s.classList.add('rising');
+          s.style.setProperty('--rise', (200 + Math.random() * 220).toFixed(0) + 'px');     /* 上飘 200-420px：有高有低 */
+          s.style.setProperty('--drift', (Math.random() * 120 - 60).toFixed(0) + 'px');     /* 横向 ±60：有左有右 */
+          s.style.setProperty('--rdur', (2600 + Math.random() * 1600).toFixed(0) + 'ms');   /* 2.6-4.2s：各自节奏 */
+          s.style.setProperty('--rrot', (Math.random() * 24 - 12).toFixed(1) + 'deg');
+          if (i === 0) AudioFX.swooshUp(0.14);
+        }, 4800 + Math.random() * 1300);   /* 0-1.3s 错峰起飞，不排成一行往上冲 */
+      });
+      /* 心愿飘到高处：一声远去的铃 */
+      setTimeout(function () { AudioFX.twinkle(); }, 7800);
+      setTimeout(done, 10600);
+      return;
+    }
+
+    /* 烧掉：每字独立——烘烤 → 碎裂成小块 → 立即连贯下落 */
     var hold = 4000;                           /* 大字停留时长 */
     var toast = 900;                           /* 烘烤（炭化渐变）时长 */
     var stagger = chars.length > 20 ? 30 : 70; /* 每字启动间隔，一张一张；长文自动加快 */
@@ -610,41 +657,39 @@
       setTimeout(function () {
         spans[i].classList.add('toasting');
         fire.setBoost(1.9);
-      }, hold + i * stagger);
-      /* ② 碎裂：暖灰 → 亮灰 → 灰白炭化，原字隐去，纸片出场缓慢飘落 */
+      }, hold + i * stagger + (Math.random() * 60 - 30));
+      /* ② 碎裂：原字隐去，字本身随机裂成小块，立即连贯下落 */
       setTimeout(function () {
         var s = spans[i];
         s.classList.remove('toasting');
         s.classList.add('cracking');
-        /* 原字当场隐去（切片同位置同色接棒，视觉无缝） */
+        /* 原字当场隐去（碎块同位置同色接棒，视觉无缝） */
         var gl = s.querySelector('.glyph');
         if (gl) gl.style.opacity = '0';
-        /* 每字炸 12-18 片手撕碎纸：随机尺寸 + 随机撕裂纹 + 出生点散布 + 微延迟 */
-        var n = 12 + Math.floor(Math.random() * 7);
-        for (var k = 0; k < n; k++) {
-          var sh = document.createElement('span');
-          sh.className = 'shard';
-          sh.style.width = (10 + Math.random() * 10).toFixed(0) + 'px';
-          sh.style.height = (14 + Math.random() * 12).toFixed(0) + 'px';
-          sh.style.left = 'calc(50% + ' + (Math.random() * 28 - 14).toFixed(0) + 'px)';
-          sh.style.top = 'calc(50% + ' + (Math.random() * 20 - 10).toFixed(0) + 'px)';
-          sh.style.clipPath = randomShardPath();
-          sh.style.animationDelay = (Math.random() * 0.26).toFixed(2) + 's';
-          /* v1.7 横向展开轨迹：纸屑飘向火焰两侧夜空，不垂直落进亮焰被淹没 */
-          sh.style.setProperty('--dx', (Math.random() * 340 - 170).toFixed(0) + 'px');
-          sh.style.setProperty('--dy', (Math.random() * 80 + 10).toFixed(0) + 'px');
-          sh.style.setProperty('--rot', (Math.random() * 1080 - 540).toFixed(0) + 'deg');
-          s.appendChild(sh);
+        /* 字本身裂成 6-9 块（长文 4-6 块，防低端机卡顿）：随机横切+部分左右切 */
+        var n = chars.length > 20 ? 4 + Math.floor(Math.random() * 3) : 6 + Math.floor(Math.random() * 4);
+        var bands = randomFragBands(n);
+        for (var k = 0; k < bands.length; k++) {
+          var fr = document.createElement('span');
+          fr.className = 'frag';
+          fr.textContent = c;
+          fr.style.clipPath = bands[k];
+          fr.style.setProperty('--fdx', (Math.random() * 200 - 100).toFixed(0) + 'px');       /* 横向 ±100 */
+          fr.style.setProperty('--fdy', (150 + Math.random() * 130).toFixed(0) + 'px');       /* 连贯下落 150-280px */
+          fr.style.setProperty('--frot', (Math.random() * 900 - 450).toFixed(0) + 'deg');     /* 翻滚 */
+          fr.style.setProperty('--fdur', (2400 + Math.random() * 1200).toFixed(0) + 'ms');    /* 2.4-3.6s */
+          fr.style.animationDelay = (Math.random() * 0.1).toFixed(2) + 's';
+          s.appendChild(fr);
         }
         AudioFX.crack();
-      }, hold + i * stagger + toast);
+      }, hold + i * stagger + toast + (Math.random() * 60 - 30));
     });
 
     /* 末字碎裂瞬间：火星脉冲（火焰短暂窜高，仍克制） */
-    var lastAt = hold + chars.length * stagger + toast;
+    var lastAt = hold + chars.length * stagger + toast + 60;
     setTimeout(function () { fire.setBoost(2.4); }, lastAt);
-    /* 纸片慢动作飘落 3.4s + 余量后收尾 */
-    setTimeout(done, lastAt + 3600);
+    /* 碎块连贯下落 + 余量后收尾 */
+    setTimeout(done, lastAt + 3800);
   }
 
   btnIgnite.addEventListener('click', function () {
