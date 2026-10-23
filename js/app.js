@@ -174,6 +174,23 @@
       src.connect(bp); bp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 1.05);
     },
+    /* 星闪「铃」：大三和弦泛音 + 长衰减，心愿化作星星时（v1.4） */
+    twinkle: function () {
+      if (!this.ctx || !this.enabled) return;
+      var t = this.ctx.currentTime;
+      var g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.13, t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+      g.connect(this.master);
+      [2093, 2637, 3136].forEach(function (f) {
+        var o = this.ctx.createOscillator();
+        o.type = 'sine'; o.frequency.value = f;
+        var og = this.ctx.createGain();
+        og.gain.value = f === 2093 ? 1 : 0.5;
+        o.connect(og); og.connect(g); o.start(t); o.stop(t + 1.9);
+      }, this);
+    },
     crackle: function () {
       if (!this.ctx || !this.enabled) return;
       var t = this.ctx.currentTime;
@@ -500,31 +517,46 @@
   }
 
   /* ============================================================
-     仪式核心：双模式
-     - 烧掉：停留 → 逐字纸片碎裂（char-crack + 纸屑飞散）+ 纸裂音 + 火星脉冲
-     - 心愿：停留 → 金光（wish-glow + 叮）→ 放大飘出画面（wish-float + 上升嗖）
+     仪式核心：双模式（v1.4 大字 + 长停留 + 心愿化星）
+     - 烧掉：大字停留 4s → 逐字纸片碎裂（大纸屑飞散）+ 纸裂音 + 火星脉冲
+     - 心愿：大字停留 3.5s → 金光 + 叮 → 放大 2.8 倍上飘 → 顶点化作星星，
+       闪烁停留后缩小升空（变成天上的星星）+ 上升嗖/星闪铃
      全部音效均在「点火」手势链内触发，合规
      ============================================================ */
   function ritualText(text, done) {
     burnLine.innerHTML = '';
     burnLine.className = 'burn-line';
+    /* 仪式大字：短文本字巨大，长文本自动收缩不炸屏 */
+    var len = text.length;
+    burnLine.classList.add(len <= 8 ? 'big-xl' : len <= 16 ? 'big-lg' : len <= 40 ? 'big-md' : 'big-sm');
 
     if (mode === 'wish') {
-      /* 心愿不烧：整句停留 → 闪着金光 → 放大，像信封一样飘出画面 */
+      /* 心愿不烧：大字停留 → 金光 → 放大上飘 → 顶点化作星星 → 缩小升空 */
       burnLine.textContent = text;
       setTimeout(function () {
         burnLine.classList.add('glow');
         AudioFX.chime();
-      }, 1500);
+      }, 3500);
       setTimeout(function () {
         burnLine.classList.add('float-up');
         AudioFX.swooshUp();
-      }, 2400);
-      setTimeout(done, 4300);
+      }, 4600);
+      /* 文字飘到顶点：星星绽放 + 星闪铃 */
+      setTimeout(function () {
+        var star = document.createElement('div');
+        star.className = 'wish-star bloom';
+        burnLine.parentNode.appendChild(star);
+        AudioFX.twinkle();
+        setTimeout(function () { star.classList.add('blink'); }, 800);
+        /* 闪烁停留约 1.4s 后，缩小升空，变成天上的星星 */
+        setTimeout(function () { star.classList.add('rise'); }, 2200);
+        setTimeout(function () { if (star.parentNode) star.parentNode.removeChild(star); }, 4600);
+      }, 6200);
+      setTimeout(done, 10600);
       return;
     }
 
-    /* 烧掉：逐字碎裂 */
+    /* 烧掉：逐字碎裂（大字 + 大纸屑） */
     var chars = text.split('');
     var frag = document.createDocumentFragment();
     var spans = [];
@@ -537,19 +569,19 @@
     }
     burnLine.appendChild(frag);
 
-    var hold = 1500;      /* 文字停留时长 */
-    var stagger = chars.length > 20 ? 26 : 60; /* 每字碎裂间隔，一张一张；长文自动加快不拖沓 */
+    var hold = 4000;                                  /* 大字停留时长 */
+    var stagger = chars.length > 20 ? 30 : 70;        /* 每字碎裂间隔，一张一张；长文自动加快 */
     chars.forEach(function (c, i) {
       setTimeout(function () {
         var s = spans[i];
         s.classList.add('cracking');
-        /* 每个字碎出 4-6 片纸屑，方向/旋转随机 */
-        var n = 4 + Math.floor(Math.random() * 3);
+        /* 每个字碎出 6-9 片大纸屑，方向/旋转随机 */
+        var n = 6 + Math.floor(Math.random() * 4);
         for (var k = 0; k < n; k++) {
           var sh = document.createElement('span');
           sh.className = 'shard';
-          sh.style.setProperty('--dx', (Math.random() * 120 - 60).toFixed(0) + 'px');
-          sh.style.setProperty('--dy', (Math.random() * 70 - 10).toFixed(0) + 'px');
+          sh.style.setProperty('--dx', (Math.random() * 140 - 70).toFixed(0) + 'px');
+          sh.style.setProperty('--dy', (Math.random() * 80 - 12).toFixed(0) + 'px');
           sh.style.setProperty('--rot', (Math.random() * 720 - 360).toFixed(0) + 'deg');
           s.appendChild(sh);
         }
@@ -560,8 +592,8 @@
     /* 末字碎裂瞬间：火星脉冲（火焰短暂窜高，仍克制） */
     var lastAt = hold + chars.length * stagger;
     setTimeout(function () { fire.setBoost(2.2); }, lastAt);
-    /* 纸屑飞散 0.85s + 余量后收尾 */
-    setTimeout(done, lastAt + 900);
+    /* 纸屑飞散 1.1s + 余量后收尾 */
+    setTimeout(done, lastAt + 1000);
   }
 
   btnIgnite.addEventListener('click', function () {
