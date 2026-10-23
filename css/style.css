@@ -282,23 +282,27 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 157, 69, 0.12);
 }
 
+/* v1.17.2：字数行并入点火行——margin 归零（间距由 ignite-row 统一管），
+   顶边与点火按钮顶边齐（align-self: flex-start） */
 .write-meta {
   display: flex; justify-content: flex-end;
+  align-self: flex-start;
   font-size: 12px; color: var(--ink-faint);
-  margin: 8px 4px 14px;   /* v1.17.1：26→14，点火行贴近输入框组 */
+  margin: 0;
 }
 
-/* 点火按钮 + 剩余次数（v1.17.1 重排）：号主要「点火靠左、次数靠右、
-   中间分开、次数文字贴着按键下边缘、整行贴近输入框」。
-   space-between = 一个极左一个极右（中间自然分开，不再紧挨）；
-   flex-end = 次数文字底边与按键底边齐（贴着下沿）；
-   不再居中——居中就是这一行往下沉、挤在火焰上方的元凶 */
+/* v1.17.2：号主要「点火按钮上边缘和 0/140 数字上边缘在一条线上，
+   两者离留言框下边框距离一样」。字数行合并进点火行，一行三点：
+   点火（左）· 剩余次数（中，底边与按钮底边齐）· 0/140（右，顶边与按钮顶边齐）。
+   flex-start = 按钮与字数顶边齐（按钮上边框离输入框 8px，就是字数原来的距离）；
+   align-self: flex-end = 次数文字贴按钮下沿 */
 .ignite-row {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  margin-top: 12px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-top: 8px;
   padding: 0 2px;
 }
 .ignite-left {
+  align-self: flex-end;   /* v1.17.2：与点火按钮底边齐（贴着下沿） */
   font-size: 12px; letter-spacing: 0.08em;
   color: var(--ink-faint);
   white-space: nowrap;
