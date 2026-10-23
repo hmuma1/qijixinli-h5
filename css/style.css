@@ -67,15 +67,9 @@ body {
   width: 260px; height: 300px;
   z-index: 1; pointer-events: none;
   transition: opacity 0.6s ease;
-  /* 四面渐隐遮罩（v1.7）：左右 + 上下双层并集，canvas 四边全部化入环境，彻底无框。
-     羽化带取宽（左右 34% / 上 15% / 下 90% 起）：火体收敛在中央 40% 内，
-     外层低密度粒子在宽羽化带里彻底溶解，不留竖直软边 */
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, #000 34%, #000 66%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, #000 15%, #000 66%, transparent 90%);
-  mask-image:
-    linear-gradient(to right, transparent 0%, #000 34%, #000 66%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, #000 15%, #000 66%, transparent 90%);
+  /* 四面柔化做在 canvas 绘制里（JS 每帧 destination-in 乘 alpha），不用 CSS mask：
+     v1.7 教训——mask-composite:add 是并集语义，横向/纵向不透明区互相抵消，
+     中部的底边 fade 被中间列盖住，火苗余光画到画布底边形成一条硬横线 */
 }
 
 /* ---------- 屏幕切换 ---------- */
@@ -281,8 +275,8 @@ body {
 .burn-line.big-sm { font-size: 19px; line-height: 2; text-shadow: 0 0 16px rgba(232, 151, 49, 0.16); }
 
 /* ============================================================
-   心愿模式（v1.5）：大字停留 → 颜色慢慢变亮（暗→金→白金）
-   → 慢慢放大上飘 → 化作小光点飞向夜空深处 → 变遥远闪烁的星
+   心愿模式（v1.8）：大字停留 → 整行渐亮（暗→金→白金）
+   → 每个字独立缓慢上飘（有高有低、有左有右，各自路径）→ 淡出
    ============================================================ */
 .burn-line.glow { animation: wish-glow 1.2s ease forwards; }
 @keyframes wish-glow {
@@ -293,20 +287,20 @@ body {
     text-shadow: 0 0 24px rgba(255, 210, 120, 0.95), 0 0 60px rgba(255, 180, 80, 0.55);
   }
 }
-.burn-line.float-up { animation: wish-float 3.6s cubic-bezier(.45, .05, .3, 1) forwards; }
-@keyframes wish-float {
-  0%   { transform: translate(-50%, 0) scale(1); color: #ffe9b8; opacity: 1; }
-  40%  { color: #fff3d4; }
-  100% { transform: translate(-50%, -260px) scale(2.8); color: #fffbe8; opacity: 0; }
+/* 每字独立上飘：rise 上飘高度 / drift 横向 / rdur 时长 / rrot 转角 均由 JS 随机 */
+.ch.rising { animation: char-rise var(--rdur, 3200ms) cubic-bezier(.3, .35, .35, .95) forwards; }
+@keyframes char-rise {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0); }
+  100% { opacity: 0; transform: translate(var(--drift, 0), calc(var(--rise, 300px) * -1)) rotate(var(--rrot, 0)); }
 }
 
 /* ============================================================
-   烧掉模式（v1.6）：黑灰三段渐变 + 字本身裂成纸片
+   烧掉模式（v1.8）：黑灰语义 + 每字独立碎裂下落
    语义铁律：烧的是「不好的内容」——只走黑→灰→灰白（灰烬），
    全程无红无橙（暖色只属于火焰本身）
    ① 烘烤：近黑 → 深灰黑 → 暖灰（火舌舔舐，微抖）
-   ② 碎裂：暖灰 → 亮灰 → 灰白（烧成灰烬），字裂成三块纸片飞散
-   ③ 纸片：热气上托后重力飘落，慢慢变暗淡出
+   ② 碎裂：原字隐去，**字本身随机裂成 6-9 个小碎块**（继承字色）
+   ③ 碎块：一裂开就连贯下落（重力加速），边落边炭化变暗，不停留
    ============================================================ */
 .ch.toasting { animation: char-toast 0.9s ease-in forwards; }
 @keyframes char-toast {
@@ -317,57 +311,31 @@ body {
 }
 .ch.cracking { animation: char-crack 0.7s ease-in forwards; }
 /* 铁律：父级 .ch 上永远不要出现 opacity<1 或 transform——
-   父级 opacity 会乘以整棵子树（chunk/shard 自己的 opacity 再高也会被清零），
-   父级 transform 会连带缩放/旋转所有飞散纸片。原字由 JS 包了 .glyph 后单独隐藏 */
+   父级 opacity 会乘以整棵子树（frag 自己的 opacity 再高也会被清零），
+   父级 transform 会连带缩放/旋转所有下落的碎块。原字由 JS 包了 .glyph 后单独隐藏 */
 @keyframes char-crack {
   0%   { color: #6b6157; }
   100% { color: #8a7f72; }
 }
 
-/* 字的三块切片：碎裂时「字本身」裂成纸片飞走（v1.6 morph） */
-.ch .chunk {
+/* 字本身裂成的碎块：clip-path 由 JS 每字随机生成（随机横切+部分左右切），
+   合起来完整覆盖字形——碎裂瞬间视觉无缝，随后各自翻滚连贯下落 */
+.ch .frag {
   position: absolute;
   inset: 0;
   opacity: 0;
   color: inherit;
   pointer-events: none;
 }
-.ch.cracking .chunk { animation: chunk-fly 3.4s cubic-bezier(.3, .5, .35, 1) forwards; }
-.ch.cracking .chunk.c1 { clip-path: inset(0 0 46% 0);   --cdx: -90px; --cdy: -55px; }
-.ch.cracking .chunk.c2 { clip-path: inset(46% 0 0 0);   --cdx: 85px;  --cdy: -45px; }
-.ch.cracking .chunk.c3 { clip-path: polygon(0 0, 40% 0, 0 62%); --cdx: -45px; --cdy: -20px; }
-@keyframes chunk-fly {
+.ch.cracking .frag { animation: frag-fly var(--fdur, 2800ms) cubic-bezier(.35, .05, .8, .5) forwards; }
+@keyframes frag-fly {
   0%   { opacity: 1; transform: translate(0, 0) rotate(0); filter: brightness(0.95); }
-  15%  { opacity: 1; transform: translate(calc(var(--cdx) * 0.07), calc(var(--cdy) * 0.07 - 40px)) rotate(-2deg); filter: brightness(0.9); }
-  50%  { opacity: 0.99; transform: translate(calc(var(--cdx) * 0.45), calc(var(--cdy) * 0.45 - 25px)) rotate(4deg); filter: brightness(0.8); }
-  78%  { opacity: 0.92; transform: translate(calc(var(--cdx) * 0.85), calc(var(--cdy) * 0.85)) rotate(6deg); filter: brightness(0.62); }
+  30%  { opacity: 0.96; transform: translate(calc(var(--fdx) * 0.3), calc(var(--fdy) * 0.22)) rotate(calc(var(--frot) * 0.3)); filter: brightness(0.8); }
+  65%  { opacity: 0.72; transform: translate(calc(var(--fdx) * 0.65), calc(var(--fdy) * 0.58)) rotate(calc(var(--frot) * 0.65)); filter: brightness(0.55); }
   100% {
     opacity: 0;
-    transform: translate(var(--cdx), calc(var(--cdy) + 45px)) rotate(7deg) scale(0.6);
-    filter: brightness(0.34);
-  }
-}
-
-/* 碎纸屑（v1.7）：浅灰白纸灰 + 手撕不规则形（clip-path 由 JS 每片随机生成）
-   + 慢动作：3.4s 缓慢飘落，前 70% 保持明亮可辨，末段才慢慢炭化变暗出 */
-.ch .shard {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 13px; height: 17px;
-  background: linear-gradient(135deg, #d9d1c4, #b4ab9d);
-  opacity: 0;
-  pointer-events: none;
-}
-.ch.cracking .shard { animation: shard-fly 3.4s cubic-bezier(.3, .5, .35, 1) forwards; }
-@keyframes shard-fly {
-  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); filter: brightness(1); }
-  15%  { opacity: 1; transform: translate(calc(-50% + var(--dx) * 0.05), calc(-50% - 50px)) rotate(calc(var(--rot) * 0.1)); filter: brightness(0.97); }
-  50%  { opacity: 0.99; transform: translate(calc(-50% + var(--dx) * 0.5), calc(-50% - 20px + var(--dy) * 0.3)) rotate(calc(var(--rot) * 0.4)); filter: brightness(0.92); }
-  78%  { opacity: 0.9; transform: translate(calc(-50% + var(--dx) * 0.88), calc(-50% + var(--dy) * 0.6 + 20px)) rotate(calc(var(--rot) * 0.78)); filter: brightness(0.78); }
-  100% {
-    opacity: 0;
-    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) + 30px)) rotate(var(--rot)) scale(0.55);
-    filter: brightness(0.4);
+    transform: translate(var(--fdx), var(--fdy)) rotate(var(--frot)) scale(0.72);
+    filter: brightness(0.3);
   }
 }
 
