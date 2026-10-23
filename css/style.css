@@ -245,13 +245,43 @@ body {
 .burn-line .ch {
   display: inline-block;
   white-space: pre;
-  animation: char-burn 1.15s ease-in forwards;
+  position: relative;
 }
-@keyframes char-burn {
-  0%   { color: var(--ink); text-shadow: none; }
-  35%  { color: var(--fire-2); text-shadow: 0 0 12px rgba(255, 200, 107, 0.9); }
-  100% { color: transparent; text-shadow: 0 0 18px rgba(232, 97, 31, 0.9);
-         transform: translateY(-26px) scale(0.86); }
+
+/* —— 心愿模式：金光 → 放大 → 飘出画面（像信封飞走） —— */
+.burn-line.glow { animation: wish-glow 0.8s ease forwards; }
+@keyframes wish-glow {
+  to {
+    color: #ffe9b8;
+    text-shadow: 0 0 22px rgba(255, 210, 120, 0.95), 0 0 55px rgba(255, 180, 80, 0.55);
+  }
+}
+.burn-line.float-up { animation: wish-float 1.6s cubic-bezier(.34, .8, .4, 1) forwards; }
+@keyframes wish-float {
+  to { transform: translate(-50%, -110px) scale(1.4); opacity: 0; }
+}
+
+/* —— 烧掉模式：字抖 → 缩 → 消，同时炸出纸片 —— */
+.ch.cracking { animation: char-crack 0.55s ease-in forwards; }
+@keyframes char-crack {
+  0%   { transform: none; color: var(--ink); }
+  25%  { transform: scale(1.1) rotate(-1.2deg); color: #e8b478; }
+  60%  { transform: scale(0.96) rotate(0.6deg); color: #b87a4a; }
+  100% { transform: scale(0.68); opacity: 0; color: #7a5236; }
+}
+.ch .shard {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 5px; height: 7px;
+  background: linear-gradient(135deg, #d8c9b4, #a89680);
+  opacity: 0;
+  pointer-events: none;
+}
+.ch.cracking .shard { animation: shard-fly 0.85s ease-out forwards; }
+@keyframes shard-fly {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); }
+  45%  { opacity: 0.9; transform: translate(calc(-50% + var(--dx) * 0.6), calc(-50% + var(--dy))) rotate(var(--rot)); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) * 1.8 + 42px)) rotate(var(--rot)) scale(0.3); }
 }
 
 /* ---------- 屏 4 · 结果 ---------- */
