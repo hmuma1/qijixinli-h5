@@ -70,12 +70,13 @@ var _hmt = _hmt || [];
       <p class="write-prompt" id="write-prompt">今晚你想烧掉什么？</p>
       <textarea class="write-input" id="write-input" maxlength="140"
         placeholder="写下一件具体的事，越具体，火越烧得干净"></textarea>
-      <div class="write-meta"><span id="char-count">0 / 140</span></div>
-      <!-- v1.17：「还能点燃 N 次」常驻按钮右侧同一行（号主：放在偏右侧一点）。
-           限额满时右侧变「今晚的火已满」，按钮禁用 + write-tip 温柔文案不变 -->
+      <!-- v1.17.2：点火行与字数行合并（号主：「点火按钮上边缘和 0/140 数字上边缘
+           在一条线上，两者离留言框下边框距离一样」）。
+           一行三点：点火（左）· 剩余次数（中）· 0/140（右，顶边与按钮顶边齐） -->
       <div class="ignite-row">
         <button class="btn-main" id="btn-ignite" disabled>点 火</button>
         <span class="ignite-left" id="ignite-left">今晚还能点燃 <b>5</b> 次</span>
+        <div class="write-meta"><span id="char-count">0 / 140</span></div>
       </div>
       <p class="write-tip" id="write-tip">写完点「点火」，3、2、1，交给这堆火</p>
       <!-- 实时陪伴（v1.15）：进入火边就显示，人数随时间漂移（20-45s/次，±1~2）。
