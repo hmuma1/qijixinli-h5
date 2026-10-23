@@ -44,7 +44,8 @@ var _hmt = _hmt || [];
       <p class="intro-slogan">写下，点燃，然后放下</p>
       <p class="intro-sub">今晚，这里有一堆火，<br>和一个安静的位置</p>
       <button class="btn-main" id="btn-start">点燃篝火</button>
-      <p class="intro-tip">没有账号，没有围观，火苗只为你点燃</p>
+      <!-- v1.13：「没有围观」与陪伴氛围矛盾，「没有打扰」保全私人感且与共在兼容 -->
+      <p class="intro-tip">没有账号，没有打扰，此刻的篝火一直为你点燃</p>
     </div>
   </section>
 
@@ -82,6 +83,11 @@ var _hmt = _hmt || [];
       <!-- v1.10：火苗代码是纯随机的仪式纪念编号（无输入/找回功能），
            用一行小字诚实说明，消除「这是干嘛的」疑惑 -->
       <p class="fire-code-note">本次火苗的编号 · 只此一次</p>
+      <!-- 陪伴氛围（v1.13）：随机 2-6 人的守护意象。纪律：只报人数与守护，
+           不暗示任何互动——无人名、无对话、无「对方正在看你」。
+           「守护」替代「守夜」（丧礼联想，号主避讳） -->
+      <p class="fire-companion" id="fire-companion"></p>
+      <p class="fire-guard">有人守着火，就像有人守着你</p>
       <p class="quote-text" id="quote-text"></p>
       <p class="visit-count" id="visit-count"></p>
       <div class="result-actions">
