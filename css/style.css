@@ -230,6 +230,27 @@ body {
   margin-top: 20px;
 }
 
+/* 实时陪伴徽标（v1.15）：进入火边就显示，呼吸圆点 + 阿拉伯数字。
+   号主要求「进来就有、随时间变、不要太频繁、数字用小写」 */
+.companion-live {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  margin: 26px 0 0;
+  font-size: 12px; letter-spacing: 0.14em;
+  color: rgba(216, 205, 188, 0.55);
+}
+.companion-live b {
+  font-weight: 500; font-size: 15px; letter-spacing: 0.06em;
+  color: rgba(255, 200, 107, 0.88);
+  font-variant-numeric: tabular-nums;   /* 数字等宽，变动时不跳动 */
+}
+.pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255, 190, 110, 0.9);
+  box-shadow: 0 0 9px rgba(255, 170, 80, 0.75);
+  animation: pulse-dot 2.8s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
 /* ---------- 屏 3 · 点火仪式 ---------- */
 .fire-stage {
   position: relative;
@@ -505,44 +526,96 @@ body {
   transform: translateX(-50%);
   width: 460px; height: 560px;
 }
-/* 海报地平线 + 远处城市灯火 */
+/* 海报夜空星点（v1.15）：主页面星空是 canvas、进不了离屏海报，
+   用 CSS 静态星层补上——海报不该只有文字，夜空要有星星 */
+.poster-stars {
+  position: absolute; left: 0; right: 0; top: 0; height: 55%;
+  background:
+    radial-gradient(4.1px 4.1px at 7% 10%, rgba(255,255,255,0.9), transparent 100%),
+    radial-gradient(3.6px 3.6px at 15% 24%, rgba(255,255,255,0.62), transparent 100%),
+    radial-gradient(4.4px 4.4px at 22% 7%, rgba(255,244,214,0.85), transparent 100%),
+    radial-gradient(3.5px 3.5px at 29% 32%, rgba(255,255,255,0.55), transparent 100%),
+    radial-gradient(3.9px 3.9px at 35% 15%, rgba(255,255,255,0.75), transparent 100%),
+    radial-gradient(3.4px 3.4px at 42% 4%, rgba(255,255,255,0.5), transparent 100%),
+    radial-gradient(4.3px 4.3px at 48% 21%, rgba(255,240,210,0.8), transparent 100%),
+    radial-gradient(3.7px 3.7px at 55% 12%, rgba(255,255,255,0.68), transparent 100%),
+    radial-gradient(4.0px 4.0px at 61% 30%, rgba(255,255,255,0.78), transparent 100%),
+    radial-gradient(3.5px 3.5px at 68% 6%, rgba(255,255,255,0.58), transparent 100%),
+    radial-gradient(4.5px 4.5px at 74% 18%, rgba(255,246,220,0.88), transparent 100%),
+    radial-gradient(3.6px 3.6px at 81% 27%, rgba(255,255,255,0.6), transparent 100%),
+    radial-gradient(3.8px 3.8px at 88% 9%, rgba(255,255,255,0.72), transparent 100%),
+    radial-gradient(3.4px 3.4px at 94% 22%, rgba(255,255,255,0.52), transparent 100%),
+    radial-gradient(3.7px 3.7px at 11% 38%, rgba(255,255,255,0.6), transparent 100%),
+    radial-gradient(3.5px 3.5px at 26% 44%, rgba(255,255,255,0.48), transparent 100%),
+    radial-gradient(3.9px 3.9px at 51% 40%, rgba(255,255,255,0.66), transparent 100%),
+    radial-gradient(3.4px 3.4px at 77% 42%, rgba(255,255,255,0.5), transparent 100%);
+}
+/* 海报地平线 + 远处城市灯火（v1.15 加密：12 → 20 点，亮度略升） */
 .poster-city {
   position: absolute;
   left: 0; right: 0; top: 56%;
   height: 9%;
   background:
-    radial-gradient(2px 2px at 8% 30%, rgba(255,214,160,0.95), transparent 100%),
-    radial-gradient(2.5px 2.5px at 17% 62%, rgba(255,214,160,0.85), transparent 100%),
-    radial-gradient(2px 2px at 26% 22%, rgba(255,214,160,0.8), transparent 100%),
-    radial-gradient(3px 3px at 34% 55%, rgba(255,200,120,0.9), transparent 100%),
-    radial-gradient(2px 2px at 43% 35%, rgba(255,214,160,0.75), transparent 100%),
-    radial-gradient(2.5px 2.5px at 51% 66%, rgba(255,214,160,0.9), transparent 100%),
-    radial-gradient(2px 2px at 59% 28%, rgba(255,214,160,0.8), transparent 100%),
-    radial-gradient(3px 3px at 67% 58%, rgba(255,200,120,0.85), transparent 100%),
-    radial-gradient(2px 2px at 75% 40%, rgba(255,214,160,0.9), transparent 100%),
-    radial-gradient(2.5px 2.5px at 83% 64%, rgba(255,214,160,0.8), transparent 100%),
-    radial-gradient(2px 2px at 91% 30%, rgba(255,214,160,0.85), transparent 100%),
-    radial-gradient(1.5px 1.5px at 96% 52%, rgba(255,214,160,0.7), transparent 100%),
+    radial-gradient(2px 2px at 5% 30%, rgba(255,214,160,0.95), transparent 100%),
+    radial-gradient(2.5px 2.5px at 10% 62%, rgba(255,214,160,0.85), transparent 100%),
+    radial-gradient(2px 2px at 15% 22%, rgba(255,214,160,0.8), transparent 100%),
+    radial-gradient(3px 3px at 20% 55%, rgba(255,200,120,0.9), transparent 100%),
+    radial-gradient(2px 2px at 26% 35%, rgba(255,214,160,0.75), transparent 100%),
+    radial-gradient(2.5px 2.5px at 31% 66%, rgba(255,214,160,0.9), transparent 100%),
+    radial-gradient(2px 2px at 37% 28%, rgba(255,214,160,0.8), transparent 100%),
+    radial-gradient(3px 3px at 43% 58%, rgba(255,200,120,0.85), transparent 100%),
+    radial-gradient(2px 2px at 48% 40%, rgba(255,214,160,0.78), transparent 100%),
+    radial-gradient(2.5px 2.5px at 53% 66%, rgba(255,214,160,0.88), transparent 100%),
+    radial-gradient(2px 2px at 59% 30%, rgba(255,214,160,0.82), transparent 100%),
+    radial-gradient(3px 3px at 64% 60%, rgba(255,200,120,0.86), transparent 100%),
+    radial-gradient(2px 2px at 70% 38%, rgba(255,214,160,0.8), transparent 100%),
+    radial-gradient(2.5px 2.5px at 75% 64%, rgba(255,214,160,0.85), transparent 100%),
+    radial-gradient(2px 2px at 80% 26%, rgba(255,214,160,0.75), transparent 100%),
+    radial-gradient(3px 3px at 85% 56%, rgba(255,200,120,0.82), transparent 100%),
+    radial-gradient(2px 2px at 90% 42%, rgba(255,214,160,0.7), transparent 100%),
+    radial-gradient(2.5px 2.5px at 95% 30%, rgba(255,214,160,0.8), transparent 100%),
+    radial-gradient(2px 2px at 98% 60%, rgba(255,214,160,0.72), transparent 100%),
+    radial-gradient(1.5px 1.5px at 62% 12%, rgba(255,224,180,0.6), transparent 100%),
     linear-gradient(180deg, transparent 0%, rgba(7,4,14,0.55) 55%, rgba(7,4,14,0.96) 100%);
 }
-.poster-brand {
-  font-size: 30px; letter-spacing: 0.3em; text-indent: 0.3em;
-  color: #8d8095;
-  margin-bottom: 210px;
+/* 编号徽章（v1.15）：淡金光晕托住编号，纪念币质感 */
+.poster-code-wrap {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+}
+.code-glow {
+  position: absolute; left: 50%; top: 50%;
+  width: 380px; height: 380px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 178, 88, 0.14) 0%, rgba(255, 150, 60, 0.05) 42%, transparent 65%);
+  pointer-events: none;
 }
 .poster-code {
+  position: relative;
   font-family: "SF Mono", Menlo, Consolas, monospace;
   font-size: 56px; letter-spacing: 0.16em;
   color: #ffc86b;
   text-shadow: 0 0 30px rgba(255, 157, 69, 0.6);
   margin-bottom: 24px;
 }
+.poster-brand {
+  font-size: 30px; letter-spacing: 0.3em; text-indent: 0.3em;
+  color: #8d8095;
+  margin-bottom: 210px;
+}
 /* 今夜印记（v1.12 方案A）：与编号组成一组「纪念卡信息」，
-   与签文之间保持原 70px 呼吸感（24 + 46 = 70，总高不变） */
+   与发丝线之间保持原 70px 呼吸感（22 + 1 + 23 = 46 + hr，总高不变） */
 .poster-date {
   font-size: 26px; letter-spacing: 0.24em; text-indent: 0.24em;
   color: rgba(216, 205, 188, 0.52);
-  margin-bottom: 46px;
+  margin-bottom: 22px;
+}
+/* 发丝线（v1.15）：信息区与签文区的淡金分隔，增加设计感 */
+.poster-hr {
+  width: 56px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 200, 120, 0.55), transparent);
+  margin-bottom: 23px;
 }
 .poster-quote {
   font-size: 44px; line-height: 2;
@@ -554,6 +627,12 @@ body {
   margin-top: auto;
   font-size: 30px; letter-spacing: 0.08em;
   color: #8d8095;
+}
+/* 暗角（v1.15）：四边压暗，视觉聚焦中心——海报的「取景框」 */
+.poster-vignette {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 190px 80px rgba(5, 3, 12, 0.6);
 }
 
 #poster-modal {
