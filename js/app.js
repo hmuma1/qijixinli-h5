@@ -70,6 +70,37 @@
     } catch (e) {}
   }
 
+  /* ---------- 今夜印记（v1.12 方案A）：日期 + 时段，海报成为「这一晚」的纪念卡 ---------- */
+  function tonightStamp() {
+    var d = new Date();
+    var mm = d.getMonth() + 1, dd = d.getDate();
+    var date = d.getFullYear() + '.' + (mm < 10 ? '0' + mm : mm) + '.' + (dd < 10 ? '0' + dd : dd);
+    var h = d.getHours();
+    var part = (h >= 22 || h < 5) ? '深夜' : (h < 11 ? '清晨' : (h < 18 ? '午后' : '夜'));
+    return date + ' · ' + part;
+  }
+
+  /* ---------- 数据统计（v1.12，百度统计）----------
+     铁律：只上报「行为次数」，绝不上报用户输入的任何文字（隐私红线）。
+     site_id 未配置时全部静默，不影响任何功能。
+     埋点含义：
+       burn_complete  烧掉仪式完成（有人真的在用）
+       wish_complete   心愿仪式完成
+       poster_save     海报被打开（验证海报到底有没有人保存）
+       limit_blocked   点火额度用完仍来点（粘性信号）
+       mode_switch_*   切换烧掉/心愿（看大家更常玩哪种） */
+  var BAIDU_SITE_ID = '__BAIDU_SITE_ID__';
+  var Analytics = {
+    ready: function () {
+      return /^[0-9a-f]{32}$/i.test(BAIDU_SITE_ID) &&
+        window._hmt && typeof window._hmt.push === 'function';
+    },
+    track: function (action) {
+      if (!Analytics.ready()) return;
+      try { window._hmt.push(['_trackEvent', 'bonfire', action]); } catch (e) {}
+    }
+  };
+
   /* ============================================================
      音效：Web Audio 现场合成（零音频文件，无加载失败风险）
      - 环境燃烧声：白噪声 + 低通 + 缓慢起伏（火的呼吸感）
@@ -536,10 +567,12 @@
       $('write-prompt').textContent = PROMPTS[mode];
       input.placeholder = PLACEHOLDERS[mode];
       input.focus();
+      Analytics.track('mode_switch_' + mode);
     });
   });
 
   /* 字数与点火按钮（含每日限额态：用完禁用 + 温柔提示，次日自动恢复） */
+  var limitNoticed = false;   /* 同一天内触碰限额只报一次，避免刷量 */
   function refreshIgniteState() {
     var len = input.value.length;
     charCount.textContent = len + ' / 140';
@@ -547,8 +580,10 @@
     if (left <= 0) {
       btnIgnite.disabled = true;
       writeTip.textContent = '今天的火已经添够了，剩下的留给明天';
+      if (!limitNoticed) { limitNoticed = true; Analytics.track('limit_blocked'); }
       return;
     }
+    limitNoticed = false;   /* 跨天恢复后重新武装 */
     btnIgnite.disabled = len < 2;
     writeTip.textContent = left <= 2
       ? '今晚还能点燃 ' + left + ' 次'
@@ -810,9 +845,11 @@
     $('visit-count').textContent = n > 1 ? '这是你第 ' + n + ' 次点燃篝火' : '';
     /* 完成一次仪式才计入每日限额（中途退出不计数，认真写完的才算） */
     incDaily();
+    Analytics.track(mode === 'wish' ? 'wish_complete' : 'burn_complete');
 
     /* 供海报使用 */
     $('poster-code').textContent = '#' + code;
+    $('poster-date').textContent = tonightStamp();
     $('poster-quote').textContent = quote;
 
     show('s-result');
@@ -911,6 +948,7 @@
   })();
 
   $('btn-poster').addEventListener('click', function () {
+    Analytics.track('poster_save');
     /* 等结果文字稳定一帧再拍 */
     setTimeout(renderPoster, 150);
   });
