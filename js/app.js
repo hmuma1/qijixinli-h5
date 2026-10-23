@@ -319,7 +319,7 @@
     this.h = canvas.height = opts.h;
     this.cx = this.w / 2;
     this.base = this.h * (opts.baseRatio || 0.9);
-    this.spread = opts.spread || this.w * 0.16;
+    this.spread = opts.spread || this.w * 0.11;
     this.boost = 1;
     this.parts = [];
     this.sparks = [];
@@ -365,15 +365,15 @@
       this.parts.push({
         x: this.cx + xr,
         y: this.base + rand(-10, 4),
-        vx: rand(-0.22, 0.22),
+        vx: rand(-0.15, 0.15),
         vy: vy,
         wob: rand(0.02, 0.06),       /* 热流摆动频率 */
-        wobA: rand(0.12, 0.45),      /* 摆幅 */
+        wobA: rand(0.08, 0.3),       /* 摆幅（收敛：火体不横向铺满画布） */
         ph: rand(0, Math.PI * 2),    /* 相位 */
         age: 0,
         life: 1,
         decay: rand(0.009, 0.03) / (0.8 + this.boost * 0.2),
-        size: rand(9, 24) * (0.8 + this.boost * 0.3)
+        size: rand(9, 22) * (0.75 + this.boost * 0.22)
       });
     }
 
@@ -434,20 +434,17 @@
   };
   Fire.prototype.setBoost = function (v) { this.boost = v; };
 
-  var fire = new Fire($('fire-canvas'), { w: 175, h: 215, baseRatio: 0.9 });
+  var fire = new Fire($('fire-canvas'), { w: 260, h: 300, baseRatio: 0.88 });
   var fireGlow = $('fire-glow');
 
-  /* 仪式时：火焰适度放大（依然克制，不暴涨），环境光晕同步增强 */
+  /* 仪式时：火焰适度放大（依然克制，不暴涨），环境光晕同步增强。
+     铁律：不改 canvas 的 CSS 宽高——模拟空间必须等于显示空间，
+     一旦拉伸，粒子会被拉成竖椭圆、火体横向顶到遮罩羽化起点显出方框边 */
   function fireGrow() {
-    $('fire-canvas').style.transition = 'width .9s ease, height .9s ease';
-    $('fire-canvas').style.width = '250px';
-    $('fire-canvas').style.height = '310px';
     fire.setBoost(1.5);
     if (fireGlow) fireGlow.style.opacity = '1';
   }
   function fireCalm() {
-    $('fire-canvas').style.width = '';
-    $('fire-canvas').style.height = '';
     fire.setBoost(1);
     if (fireGlow) fireGlow.style.opacity = '';
   }
@@ -535,16 +532,27 @@
   }
 
   /* ============================================================
-     仪式核心：双模式（v1.6 morph 连续性 + 火焰融入环境）
+     仪式核心：双模式（v1.7 纸片慢动作 + 四面去框 + 删星）
      布局铁律：文字在火堆上空燃烧/升飘，不与火苗重叠，内容始终清晰
-     - 烧掉：大字停留 4s → 逐字三段渐变：烘烤（近黑→深灰→暖灰，不好的
-       内容只走黑灰系，暖色只属于火）→ 碎裂（灰→灰白炭化），同时
-       **字本身裂成三块纸片**飞散，另有灰色碎纸屑补氛围
-     - 心愿：大字停留 3.5s → 颜色慢慢变亮（暗→金→白金）→ 慢慢放大
-       上飘化开 → **其中凝聚出一颗小光点**（承接文字体量收缩）→ 飞向
-       夜空深处变成遥远闪烁的星 → 慢慢淡出（心愿不烧；好内容走暖金）
+     - 烧掉：大字停留 4s → 逐字三段：烘烤（近黑→深灰→暖灰）→ 碎裂
+       （灰→灰白炭化），字本体隐去、**字本身裂成的三块纸片 + 10-14 片
+       手撕不规则碎纸**缓慢飘落（3.4s 慢动作），纸片寿命与文字同量级
+     - 心愿：大字停留 3.5s → 颜色慢慢变亮（暗→金→白金）→ 慢慢放大 2.8 倍
+       上飘，一路飘出画面顶部飞向远方天空（不烧；好内容走暖金白）
      全部音效均在「点火」手势链内触发，合规
      ============================================================ */
+  /* 手撕碎纸的不规则轮廓（每片随机，像手撕的毛边） */
+  function randomShardPath() {
+    var n = 5 + Math.floor(Math.random() * 3);
+    var pts = [];
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * Math.PI * 2;
+      var r = 0.6 + Math.random() * 0.4;
+      pts.push((50 + Math.cos(a) * 50 * r).toFixed(1) + '% ' + (50 + Math.sin(a) * 50 * r).toFixed(1) + '%');
+    }
+    return 'polygon(' + pts.join(', ') + ')';
+  }
+
   function ritualText(text, done) {
     burnLine.innerHTML = '';
     burnLine.className = 'burn-line';
@@ -553,7 +561,7 @@
     burnLine.classList.add(len <= 8 ? 'big-xl' : len <= 16 ? 'big-lg' : len <= 40 ? 'big-md' : 'big-sm');
 
     if (mode === 'wish') {
-      /* 心愿不烧：停留 → 渐亮 → 放大上飘 → 化星飞向远方夜空 */
+      /* 心愿不烧：停留 → 渐亮 → 放大上飘，一路飞向远方天空（v1.7 删星） */
       burnLine.textContent = text;
       setTimeout(function () {
         burnLine.classList.add('glow');
@@ -562,30 +570,26 @@
       setTimeout(function () {
         burnLine.classList.add('float-up');
         AudioFX.swooshUp(0.16);
-        /* 小光点与文字同路飞出：文字「化开」，光点飞向夜空深处变成遥远的星 */
-        var star = document.createElement('div');
-        star.className = 'wish-star bloom';
-        burnLine.parentNode.appendChild(star);
-        setTimeout(function () {
-          star.classList.add('blink');
-          AudioFX.twinkle();
-        }, 2200);
-        /* 闪烁停留后慢慢淡出（星已归位远方夜空） */
-        setTimeout(function () { star.classList.add('rise'); }, 3800);
-        setTimeout(function () { if (star.parentNode) star.parentNode.removeChild(star); }, 6600);
       }, 4800);
-      setTimeout(done, 11400);
+      /* 心愿飘到高处：一声远去的铃 */
+      setTimeout(function () { AudioFX.twinkle(); }, 7200);
+      setTimeout(done, 8800);
       return;
     }
 
-    /* 烧掉：逐字三段（烘烤 → 碎裂炭化 → 字本身裂成纸片飞散） */
+    /* 烧掉：逐字三段（烘烤 → 碎裂炭化 → 字本身裂成纸片缓慢飘落） */
     var chars = text.split('');
     var frag = document.createDocumentFragment();
     var spans = [];
     for (var i = 0; i < chars.length; i++) {
       var s = document.createElement('span');
       s.className = 'ch';
-      s.textContent = chars[i];
+      /* 原字包一层 .glyph：碎裂时可单独隐去（裸文本节点无法单独隐藏，
+         而隐藏父级 .ch 会把纸片子树一起透明掉） */
+      var g = document.createElement('span');
+      g.className = 'glyph';
+      g.textContent = chars[i];
+      s.appendChild(g);
       /* 三个切片副本：碎裂时「字本身」裂成纸片（v1.6 morph） */
       ['c1', 'c2', 'c3'].forEach(function (cc) {
         var ck = document.createElement('span');
@@ -602,24 +606,34 @@
     var toast = 900;                           /* 烘烤（炭化渐变）时长 */
     var stagger = chars.length > 20 ? 30 : 70; /* 每字启动间隔，一张一张；长文自动加快 */
     chars.forEach(function (c, i) {
-      /* ① 烘烤：颜色从近黑慢慢焙成橙棕 */
+      /* ① 烘烤：颜色从近黑慢慢焙成暖灰 */
       setTimeout(function () {
         spans[i].classList.add('toasting');
         fire.setBoost(1.9);
       }, hold + i * stagger);
-      /* ② 碎裂：橙棕 → 灰白炭化，炸出大纸屑 */
+      /* ② 碎裂：暖灰 → 亮灰 → 灰白炭化，原字隐去，纸片出场缓慢飘落 */
       setTimeout(function () {
         var s = spans[i];
         s.classList.remove('toasting');
         s.classList.add('cracking');
-        /* 每个字另炸 5-7 片灰色碎纸屑，补碎屑氛围 */
-        var n = 5 + Math.floor(Math.random() * 3);
+        /* 原字当场隐去（切片同位置同色接棒，视觉无缝） */
+        var gl = s.querySelector('.glyph');
+        if (gl) gl.style.opacity = '0';
+        /* 每字炸 12-18 片手撕碎纸：随机尺寸 + 随机撕裂纹 + 出生点散布 + 微延迟 */
+        var n = 12 + Math.floor(Math.random() * 7);
         for (var k = 0; k < n; k++) {
           var sh = document.createElement('span');
           sh.className = 'shard';
-          sh.style.setProperty('--dx', (Math.random() * 220 - 110).toFixed(0) + 'px');
-          sh.style.setProperty('--dy', (Math.random() * 85 + 5).toFixed(0) + 'px');
-          sh.style.setProperty('--rot', (Math.random() * 900 - 450).toFixed(0) + 'deg');
+          sh.style.width = (10 + Math.random() * 10).toFixed(0) + 'px';
+          sh.style.height = (14 + Math.random() * 12).toFixed(0) + 'px';
+          sh.style.left = 'calc(50% + ' + (Math.random() * 28 - 14).toFixed(0) + 'px)';
+          sh.style.top = 'calc(50% + ' + (Math.random() * 20 - 10).toFixed(0) + 'px)';
+          sh.style.clipPath = randomShardPath();
+          sh.style.animationDelay = (Math.random() * 0.26).toFixed(2) + 's';
+          /* v1.7 横向展开轨迹：纸屑飘向火焰两侧夜空，不垂直落进亮焰被淹没 */
+          sh.style.setProperty('--dx', (Math.random() * 340 - 170).toFixed(0) + 'px');
+          sh.style.setProperty('--dy', (Math.random() * 80 + 10).toFixed(0) + 'px');
+          sh.style.setProperty('--rot', (Math.random() * 1080 - 540).toFixed(0) + 'deg');
           s.appendChild(sh);
         }
         AudioFX.crack();
@@ -629,8 +643,8 @@
     /* 末字碎裂瞬间：火星脉冲（火焰短暂窜高，仍克制） */
     var lastAt = hold + chars.length * stagger + toast;
     setTimeout(function () { fire.setBoost(2.4); }, lastAt);
-    /* 纸屑重力飘散 1.9s + 余量后收尾 */
-    setTimeout(done, lastAt + 1900);
+    /* 纸片慢动作飘落 3.4s + 余量后收尾 */
+    setTimeout(done, lastAt + 3600);
   }
 
   btnIgnite.addEventListener('click', function () {
