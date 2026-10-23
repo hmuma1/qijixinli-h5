@@ -6,6 +6,22 @@
 <title>奇li篝火</title>
 <meta name="description" content="写下，点燃，然后放下。">
 <link rel="stylesheet" href="css/style.css">
+
+<!-- 数据统计（v1.12）：百度统计，完全免费。
+     site_id 由号主在 tongji.baidu.com 注册后注入（32 位十六进制）；
+     占位符未替换时正则不匹配 → 脚本不加载，对页面零影响。
+     只统计行为次数，不上报用户输入的任何文字。 -->
+<script>
+var _hmt = _hmt || [];
+(function loadBaiduTongji() {
+  var sid = '__BAIDU_SITE_ID__';
+  if (!/^[0-9a-f]{32}$/i.test(sid)) return;
+  var hm = document.createElement('script');
+  hm.src = 'https://hm.baidu.com/hm.js?' + sid;
+  hm.async = true;
+  (document.getElementsByTagName('head')[0] || document.body).appendChild(hm);
+})();
+</script>
 </head>
 <body>
 
@@ -87,6 +103,9 @@
     <div class="poster-city"></div>
     <p class="poster-brand">来自「奇迹心li」· 奇li篝火</p>
     <p class="poster-code" id="poster-code"></p>
+    <!-- 方案A「今夜纪念卡」：日期 + 时段戳，让海报成为「这一晚」的凭证，
+         回答「用户为什么要保存海报」——保存的是此刻，不是产品广告 -->
+    <p class="poster-date" id="poster-date"></p>
     <p class="poster-quote" id="poster-quote"></p>
     <p class="poster-sub">完整心理测评 · 小程序搜「心li笔记」</p>
   </div>
