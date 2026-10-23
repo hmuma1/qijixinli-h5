@@ -430,6 +430,20 @@ body {
   letter-spacing: 0.08em;
   color: rgba(216, 205, 188, 0.45);
 }
+/* v1.13：陪伴氛围（人数 + 守护句）。人数行略亮、守护句更淡——
+   两级小字，氛围而不抢戏；与编号组同区，先「此刻印记」后「此刻共在」 */
+.fire-companion {
+  margin: 12px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: rgba(216, 205, 188, 0.58);
+}
+.fire-guard {
+  margin: 5px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(216, 205, 188, 0.38);
+}
 
 .quote-text {
   font-size: 19px; line-height: 2.1;
