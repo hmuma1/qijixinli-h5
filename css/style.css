@@ -31,7 +31,12 @@ html, body {
 
 body {
   background:
+    /* 底部火光晕（火堆暖光铺在地面） */
     radial-gradient(120% 60% at 50% 108%, rgba(232, 97, 31, 0.16), transparent 60%),
+    /* 地平线微光（v1.17）：远处城市方向的天空辉光——空气透视的「透亮」来源。
+       此前上下一样黑，所以「没有远景近景的感觉」 */
+    radial-gradient(90% 26% at 50% 63%, rgba(126, 88, 156, 0.15), transparent 72%),
+    /* 顶部夜空冷光 */
     radial-gradient(80% 50% at 50% -10%, rgba(88, 60, 140, 0.28), transparent 70%),
     linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
 }
@@ -41,6 +46,63 @@ body {
   position: fixed; inset: 0;
   width: 100%; height: 100%;
   z-index: 0; pointer-events: none;
+}
+
+/* ---------- 远景：城市灯火 + 远山剪影（v1.17）----------
+   号主原话「看不清山的轮廓，黑漆漆一片」「看不清远处城市的轮廓」
+   「整个背景特别的黑，没有透亮的感觉，没有远景近景的感觉」。
+   真相：主页面从来没有山和城市元素（grep 全文确认）——「看不清」实为「没有」。
+   所以这不是提亮，是新建。层次自远及近：
+   星星 → 城市灯火 → 远山 → 近山 → 火光晕 → 篝火。
+   两条纪律：
+   ① 山与城压在「稍微能看清」的淡度：远景只制造纵深，绝不抢火的主角位；
+   ② 山体遮星是特性不是 bug——真实夜空里山后就是没有星星。
+   位置测算（390×844 逻辑屏）：文字区底部 ≥ 250px（from bottom），
+   山脊顶 165-175px，火画布 50-350px——山脊嵌在火堆中段，
+   火在前景烧、山在城市后，纵深成立且不挡任何文字与交互。 */
+
+/* 远处城市灯火：一条暖光点带 + 城市整体微光雾（空气透视：低处最暖） */
+.skyline-city {
+  position: fixed; left: 0; right: 0; bottom: 12.5%;
+  height: 30px;
+  z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(58% 100% at 50% 45%, rgba(255, 176, 96, 0.055), transparent 72%),
+    radial-gradient(2.5px 2.5px at 3% 38%, rgba(255, 214, 160, 0.92), transparent 100%),
+    radial-gradient(3px 3px at 8% 66%, rgba(255, 200, 120, 0.85), transparent 100%),
+    radial-gradient(2px 2px at 13% 24%, rgba(255, 214, 160, 0.8), transparent 100%),
+    radial-gradient(2.8px 2.8px at 18% 58%, rgba(255, 214, 160, 0.9), transparent 100%),
+    radial-gradient(2.2px 2.2px at 24% 32%, rgba(255, 200, 120, 0.78), transparent 100%),
+    radial-gradient(3px 3px at 29% 70%, rgba(255, 214, 160, 0.86), transparent 100%),
+    radial-gradient(2px 2px at 35% 26%, rgba(255, 214, 160, 0.82), transparent 100%),
+    radial-gradient(2.6px 2.6px at 40% 62%, rgba(255, 200, 120, 0.88), transparent 100%),
+    radial-gradient(2px 2px at 46% 36%, rgba(255, 214, 160, 0.8), transparent 100%),
+    radial-gradient(3px 3px at 51% 68%, rgba(255, 214, 160, 0.9), transparent 100%),
+    radial-gradient(2.2px 2.2px at 57% 28%, rgba(255, 200, 120, 0.76), transparent 100%),
+    radial-gradient(2.8px 2.8px at 62% 60%, rgba(255, 214, 160, 0.88), transparent 100%),
+    radial-gradient(2px 2px at 68% 34%, rgba(255, 214, 160, 0.82), transparent 100%),
+    radial-gradient(2.6px 2.6px at 73% 66%, rgba(255, 200, 120, 0.85), transparent 100%),
+    radial-gradient(2px 2px at 79% 24%, rgba(255, 214, 160, 0.78), transparent 100%),
+    radial-gradient(3px 3px at 84% 58%, rgba(255, 214, 160, 0.9), transparent 100%),
+    radial-gradient(2.2px 2.2px at 89% 40%, rgba(255, 200, 120, 0.8), transparent 100%),
+    radial-gradient(2.6px 2.6px at 94% 68%, rgba(255, 214, 160, 0.86), transparent 100%),
+    radial-gradient(2px 2px at 98% 30%, rgba(255, 214, 160, 0.75), transparent 100%);
+}
+
+/* 远山（淡）：紫灰剪影，平缓山脊——「稍微能看清」的那个度 */
+.far-hills {
+  position: fixed; left: 0; right: 0; bottom: 14%;
+  height: 48px;
+  z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 48' preserveAspectRatio='none'%3E%3Cpath d='M0,32 C25,20 48,28 72,18 C98,7 122,24 150,20 C182,15 210,28 240,21 C272,13 300,26 330,19 C352,14 372,22 390,16 L390,48 L0,48 Z' fill='%236e58966b'/%3E%3C/svg%3E") no-repeat bottom / 100% 100%;
+}
+
+/* 近山（深）：更近更大，山脊盖住远山山脚——近景的「压场」层 */
+.near-hills {
+  position: fixed; left: 0; right: 0; bottom: 12%;
+  height: 76px;
+  z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 76' preserveAspectRatio='none'%3E%3Cpath d='M0,54 C30,42 55,52 85,38 C115,24 140,46 175,38 C205,31 235,48 268,40 C300,32 330,47 360,36 C375,31 384,38 390,34 L390,76 L0,76 Z' fill='%2324193cb8'/%3E%3C/svg%3E") no-repeat bottom / 100% 100%;
 }
 
 /* 火光环境晕：铺在夜空与地面上的暖光，火焰因此融入环境（v1.6） */
@@ -224,17 +286,42 @@ body {
   margin: 8px 4px 26px;
 }
 
+/* 点火按钮 + 剩余次数同一行（v1.17）：号主要「还能点燃几次放偏右侧一点」。
+   次数常驻可看——额度是产品诚实度的一部分，藏起来反而让人点爆按钮才被告知 */
+.ignite-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px;
+  margin-top: 26px;
+}
+.ignite-left {
+  font-size: 12px; letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.ignite-left b {
+  font-weight: 500;
+  color: rgba(255, 200, 107, 0.75);
+  font-variant-numeric: tabular-nums;
+  padding: 0 1px;
+}
+/* 满额时的「满」：比数字亮半分，一眼看见但不刺眼 */
+.ignite-left b.full {
+  color: rgba(255, 157, 69, 0.62);
+}
+
 .write-tip {
   text-align: center;
   font-size: 12px; color: var(--ink-faint);
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 /* 实时陪伴徽标（v1.15）：进入火边就显示，呼吸圆点 + 阿拉伯数字。
-   号主要求「进来就有、随时间变、不要太频繁、数字用小写」 */
+   号主要求「进来就有、随时间变、不要太频繁、数字用小写」。
+   v1.17：上移贴近按钮（26px→14px）——号主「相互之间右边就不显得那么空」，
+   徽标与按钮的剩余次数形成一组信息，右侧留白问题同时解决 */
 .companion-live {
   display: flex; align-items: center; justify-content: center; gap: 9px;
-  margin: 26px 0 0;
+  margin: 14px 0 0;
   font-size: 12px; letter-spacing: 0.14em;
   color: rgba(216, 205, 188, 0.55);
 }
@@ -519,6 +606,24 @@ body {
   padding: 120px 90px;
   position: relative;
   overflow: hidden;
+  /* 卡片圆角（v1.17）：号主要「像一个精致的卡片」。
+     圆角外的透明角由 html2canvas 的 backgroundColor 兜底填深色，
+     视觉上正好是一圈深色卡边，不像纯方角那么愣 */
+  border-radius: 12px;
+}
+/* 双线装裱框（v1.17）：两层淡金细框 = 装裱卡纸的语言。
+   外框 0.28 / 内框 0.12，间距 8px——粗了就是俗气相框，细了才高级 */
+.poster-frame-outer {
+  position: absolute; inset: 26px;
+  border: 1px solid rgba(255, 200, 120, 0.28);
+  border-radius: 6px;
+  pointer-events: none;
+}
+.poster-frame-inner {
+  position: absolute; inset: 34px;
+  border: 1px solid rgba(255, 200, 120, 0.12);
+  border-radius: 3px;
+  pointer-events: none;
 }
 #poster-fire {
   position: absolute;
@@ -617,16 +722,40 @@ body {
   background: linear-gradient(90deg, transparent, rgba(255, 200, 120, 0.55), transparent);
   margin-bottom: 23px;
 }
+/* 签文下线（v1.17）：与上线对称——被双线夹住的文字才像「题字」，
+   单线是分隔，双线才是装裱 */
+.poster-hr-after {
+  margin-bottom: 0;
+  margin-top: 23px;
+}
+/* 签文（v1.17 精致化）：衬线 + 淡金装饰引号 + 上下双线夹持。
+   衬线体是「高级感」最便宜的一笔——海报是给人留存的，值得郑重点 */
 .poster-quote {
+  font-family: "Songti SC", "STSong", "SimSun", "Noto Serif CJK SC", serif;
   font-size: 44px; line-height: 2;
+  letter-spacing: 0.04em;   /* v1.17：0.08em 会让 12 字引文换行剩孤字，0.04em 收进一行 */
   color: #f5ead9;
   text-align: center;
-  margin-bottom: 120px;
+  margin-bottom: 0;
+  max-width: 560px;
 }
+.poster-quote::before,
+.poster-quote::after {
+  color: rgba(255, 200, 120, 0.5);
+  font-weight: 400;
+}
+.poster-quote::before { content: "「"; }
+.poster-quote::after { content: "」"; }
+/* 落款（v1.17 两行式）：主行 + 副行，小点分隔在副行内部由字距承担 */
 .poster-sub {
   margin-top: auto;
-  font-size: 30px; letter-spacing: 0.08em;
+  font-size: 28px; letter-spacing: 0.3em; text-indent: 0.3em;
+  color: rgba(216, 205, 188, 0.62);
+}
+.poster-sub-sub {
+  font-size: 26px; letter-spacing: 0.12em; text-indent: 0.12em;
   color: #8d8095;
+  margin-top: 14px;
 }
 /* 暗角（v1.15，v1.16 修）：第一版 inset 0.6 + 190px 把整张压暗，
    号主反馈「下载到手机也看不清」。改为 radial 只收最外圈、
