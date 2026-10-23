@@ -91,13 +91,13 @@
     var d = randInt(1, 2) * (Math.random() < 0.5 ? -1 : 1);
     liveN = Math.max(COMPANION_MIN, Math.min(COMPANION_MAX, liveN + d));
     paintLive();
-    liveTimer = setTimeout(driftLive, 20000 + Math.random() * 25000);  /* 20-45s 才动一次 */
+    liveTimer = setTimeout(driftLive, 15000 + Math.random() * 15000);  /* v1.17：15-30s 一次 */
   }
   function startLive() {
     stopLive();
     liveN = randInt(COMPANION_MIN, COMPANION_MAX);
     paintLive();
-    liveTimer = setTimeout(driftLive, 25000 + Math.random() * 20000);  /* 进来先稳 25-45s */
+    liveTimer = setTimeout(driftLive, 10000 + Math.random() * 6000);  /* v1.17：进来 10-16s 内必变第一次 */
   }
   function stopLive() {
     if (liveTimer) { clearTimeout(liveTimer); liveTimer = null; }
@@ -182,7 +182,7 @@
       src.buffer = this.noiseBuffer(2); src.loop = true;
       var lp = this.ctx.createBiquadFilter();
       lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
-      var g = this.ctx.createGain(); g.gain.value = 0.16;
+      var g = this.ctx.createGain(); g.gain.value = 0.22;
       /* LFO：音量缓慢起伏 = 火焰呼吸 */
       var lfo = this.ctx.createOscillator();
       lfo.frequency.value = 0.22;
@@ -200,12 +200,12 @@
     },
     ambienceDown: function () {
       if (this.ambGain && this.ctx) {
-        try { this.ambGain.gain.linearRampToValueAtTime(0.08, this.ctx.currentTime + 0.5); } catch (e) {}
+        try { this.ambGain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.5); } catch (e) {}
       }
     },
     ambienceUp: function () {
       if (this.ambGain && this.ctx && this.enabled) {
-        try { this.ambGain.gain.linearRampToValueAtTime(0.16, this.ctx.currentTime + 0.6); } catch (e) {}
+        try { this.ambGain.gain.linearRampToValueAtTime(0.22, this.ctx.currentTime + 0.6); } catch (e) {}
       }
     },
     /* 提交「噗」（v1.15 重做）：替代旧 whoosh 的「嗖」——
@@ -222,7 +222,7 @@
       lp.frequency.exponentialRampToValueAtTime(300, t + 0.45);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.26, t + 0.09);   /* 慢起，去 click */
+      g.gain.exponentialRampToValueAtTime(0.3, t + 0.09);   /* 慢起，去 click */
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55); /* 缓落，不硬切 */
       src.connect(lp); lp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 0.6);
@@ -240,7 +240,7 @@
       bp.frequency.value = 900 + Math.random() * 1000;   /* 900-1900Hz 炭火段 */
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.2 + Math.random() * 0.07, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.24 + Math.random() * 0.08, t + 0.012);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
       src.connect(bp); bp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 0.09);
@@ -251,7 +251,7 @@
       var t = this.ctx.currentTime;
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.15, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.18, t + 0.03);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
       g.connect(this.master);
       [1318.5, 1975.5].forEach(function (f) {
@@ -274,7 +274,7 @@
       lp.frequency.exponentialRampToValueAtTime(1100, t + 0.85);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(v || 0.21, t + 0.2);  /* 慢起 */
+      g.gain.exponentialRampToValueAtTime(v || 0.24, t + 0.2);  /* 慢起 */
       g.gain.exponentialRampToValueAtTime(0.0001, t + 1);
       src.connect(lp); lp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 1.05);
@@ -285,7 +285,7 @@
       var t = this.ctx.currentTime;
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.17, t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.2, t + 0.04);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
       g.connect(this.master);
       [2093, 2637, 3136].forEach(function (f) {
@@ -304,7 +304,7 @@
       var hp = this.ctx.createBiquadFilter();
       hp.type = 'highpass'; hp.frequency.value = 2600;
       var g = this.ctx.createGain();
-      var v = 0.07 + Math.random() * 0.11;
+      var v = 0.09 + Math.random() * 0.13;
       g.gain.setValueAtTime(v, t);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
       src.connect(hp); hp.connect(g); g.connect(this.master);
@@ -319,7 +319,7 @@
       if (this.enabled) {
         b.textContent = '音效 · 开'; b.classList.remove('off');
         if (this.ctx && this.ambGain) {
-          try { this.ambGain.gain.linearRampToValueAtTime(0.16, this.ctx.currentTime + 0.4); } catch (e) {}
+          try { this.ambGain.gain.linearRampToValueAtTime(0.22, this.ctx.currentTime + 0.4); } catch (e) {}
           var self = this; if (!this.crackleTimer) this.crackle();
         }
       } else {
@@ -600,6 +600,7 @@
   var btnIgnite = $('btn-ignite');
   var charCount = $('char-count');
   var writeTip = $('write-tip');
+  var igniteLeft = $('ignite-left');
 
   var PROMPTS = {
     farewell: '今晚你想烧掉什么？',
@@ -625,7 +626,9 @@
     });
   });
 
-  /* 字数与点火按钮（含每日限额态：用完禁用 + 温柔提示，次日自动恢复） */
+  /* 字数与点火按钮（含每日限额态：用完禁用 + 温柔提示，次日自动恢复）。
+     v1.17：「还能点燃 N 次」从 write-tip 拆出，常驻按钮右侧同一行——
+     号主要「放在偏右侧一点」。常驻而非藏匿：额度是产品诚实度的一部分 */
   var limitNoticed = false;   /* 同一天内触碰限额只报一次，避免刷量 */
   function refreshIgniteState() {
     var len = input.value.length;
@@ -634,14 +637,14 @@
     if (left <= 0) {
       btnIgnite.disabled = true;
       writeTip.textContent = '今天的火已经添够了，剩下的留给明天';
+      igniteLeft.innerHTML = '今晚的火已<b class="full">满</b>';
       if (!limitNoticed) { limitNoticed = true; Analytics.track('limit_blocked'); }
       return;
     }
     limitNoticed = false;   /* 跨天恢复后重新武装 */
     btnIgnite.disabled = len < 2;
-    writeTip.textContent = left <= 2
-      ? '今晚还能点燃 ' + left + ' 次'
-      : '写完点「点火」，3、2、1，交给这堆火';
+    igniteLeft.innerHTML = '今晚还能点燃 <b>' + left + '</b> 次';
+    writeTip.textContent = '写完点「点火」，3、2、1，交给这堆火';
   }
   input.addEventListener('input', refreshIgniteState);
 
@@ -653,6 +656,8 @@
       AudioFX.crackle();
     }
     startLive();   /* v1.15：进入火边，实时陪伴人数开始 */
+    refreshIgniteState();   /* v1.17：进入即刷新剩余次数/限额态——此前要等第一次输入才刷新，
+                               限额满的用户会看到还能点的按钮，白欢喜一场 */
     setTimeout(function () { input.focus(); }, 400);
   });
 
@@ -775,7 +780,7 @@
           s.style.setProperty('--drift', (Math.random() * 120 - 60).toFixed(0) + 'px');     /* 横向 ±60：有左有右 */
           s.style.setProperty('--rdur', (2600 + Math.random() * 1600).toFixed(0) + 'ms');   /* 2.6-4.2s：各自节奏 */
           s.style.setProperty('--rrot', (Math.random() * 24 - 12).toFixed(1) + 'deg');
-          if (i === 0) AudioFX.swooshUp(0.18);
+          if (i === 0) AudioFX.swooshUp(0.21);
         }, 4800 + Math.random() * 1300);   /* 0-1.3s 错峰起飞，不排成一行往上冲 */
       });
       /* 心愿飘到高处：一声远去的铃 */
@@ -944,7 +949,9 @@
     html2canvas($('poster-card'), {
       scale: 1,
       useCORS: true,
-      backgroundColor: '#0b0714',
+      /* v1.17：卡片加了 12px 圆角，圆角外透明角由此色兜底——
+         取卡片渐变中段色，圆角处过渡自然，像一圈深色卡边 */
+      backgroundColor: '#171028',
       logging: false
     }).then(function (cv) {
       posterImg.src = cv.toDataURL('image/png');
