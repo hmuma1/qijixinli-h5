@@ -45,10 +45,10 @@ body {
 
 #fire-canvas {
   position: fixed;
-  left: 50%; bottom: 7%;
+  left: 50%; bottom: 6%;
   transform: translateX(-50%);
-  width: 220px; height: 270px;
-  max-width: 60vw;
+  width: 175px; height: 215px;
+  max-width: 55vw;
   z-index: 1; pointer-events: none;
   transition: opacity 0.6s ease;
 }
@@ -67,25 +67,25 @@ body {
 }
 .screen.active { opacity: 1; visibility: visible; transform: none; }
 
-/* ---------- 通用按钮 ---------- */
+/* ---------- 通用按钮（暗调配色：篝火是唯一亮源，按钮不许抢戏） ---------- */
 .btn-main {
-  border: none; cursor: pointer;
+  border: 1px solid rgba(255, 157, 69, 0.42);
+  cursor: pointer;
   font-family: var(--font);
   font-size: 17px; font-weight: 600;
   letter-spacing: 0.12em;
-  color: #2a1503;
+  color: #e8cba4;
   padding: 14px 44px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--fire-2), var(--fire-1) 55%, var(--fire-deep));
+  background: rgba(46, 24, 13, 0.88);
   box-shadow:
-    0 0 24px rgba(255, 157, 69, 0.42),
-    0 4px 18px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    0 2px 12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 200, 107, 0.12);
+  transition: transform 0.15s ease, border-color 0.25s ease, opacity 0.25s ease;
 }
-.btn-main:active { transform: scale(0.96); }
+.btn-main:active { transform: scale(0.96); border-color: rgba(255, 157, 69, 0.7); }
 .btn-main:disabled {
-  opacity: 0.35; cursor: default;
+  opacity: 0.32; cursor: default;
   box-shadow: none;
 }
 
@@ -156,7 +156,8 @@ body {
 
 .mode-btn {
   flex: 1;
-  border: none; background: transparent;
+  border: 1px solid transparent;
+  background: transparent;
   color: var(--ink-dim);
   font-family: var(--font);
   font-size: 15px; letter-spacing: 0.2em;
@@ -166,9 +167,11 @@ body {
   transition: all 0.3s ease;
 }
 .mode-btn.active {
-  color: #2a1503; font-weight: 600;
-  background: linear-gradient(135deg, var(--fire-2), var(--fire-1));
-  box-shadow: 0 0 14px rgba(255, 157, 69, 0.35);
+  color: #ffd9a0;
+  font-weight: 600;
+  background: rgba(232, 97, 31, 0.2);
+  border-color: rgba(255, 157, 69, 0.45);
+  box-shadow: none;
 }
 
 .write-prompt {
