@@ -109,21 +109,70 @@
         try { this.ambGain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.6); } catch (e) {}
       }
     },
+    /* 提交「嗖」：噪声带通频率上扬 + 缓入缓出（信封起飞感，不生硬） */
     whoosh: function () {
       if (!this.ctx || !this.enabled) return;
       var t = this.ctx.currentTime;
       var src = this.ctx.createBufferSource();
-      src.buffer = this.noiseBuffer(1);
-      var lp = this.ctx.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.setValueAtTime(2400, t);
-      lp.frequency.exponentialRampToValueAtTime(180, t + 0.7);
+      src.buffer = this.noiseBuffer(1.2);
+      var bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.Q.value = 1.2;
+      bp.frequency.setValueAtTime(420, t);
+      bp.frequency.exponentialRampToValueAtTime(3600, t + 0.9);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.5, t + 0.06);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
-      src.connect(lp); lp.connect(g); g.connect(this.master);
-      src.start(t); src.stop(t + 0.9);
+      g.gain.exponentialRampToValueAtTime(0.32, t + 0.14);
+      g.gain.setValueAtTime(0.32, t + 0.55);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+      src.connect(bp); bp.connect(g); g.connect(this.master);
+      src.start(t); src.stop(t + 1.15);
+    },
+    /* 纸裂小爆：每字碎裂一声，短促高频 */
+    crack: function () {
+      if (!this.ctx || !this.enabled) return;
+      var t = this.ctx.currentTime;
+      var src = this.ctx.createBufferSource();
+      src.buffer = this.noiseBuffer(0.05);
+      var bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.Q.value = 0.8;
+      bp.frequency.value = 1600 + Math.random() * 2400;
+      var g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.14 + Math.random() * 0.08, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+      src.connect(bp); bp.connect(g); g.connect(this.master);
+      src.start(t); src.stop(t + 0.07);
+    },
+    /* 金光「叮」：双正弦清亮泛音，心愿模式金光起时 */
+    chime: function () {
+      if (!this.ctx || !this.enabled) return;
+      var t = this.ctx.currentTime;
+      var g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.11, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+      g.connect(this.master);
+      [1318.5, 1975.5].forEach(function (f) {
+        var o = this.ctx.createOscillator();
+        o.type = 'sine'; o.frequency.value = f;
+        o.connect(g); o.start(t); o.stop(t + 0.95);
+      }, this);
+    },
+    /* 心愿飘出：轻量上升气声 */
+    swooshUp: function (v) {
+      if (!this.ctx || !this.enabled) return;
+      var t = this.ctx.currentTime;
+      var src = this.ctx.createBufferSource();
+      src.buffer = this.noiseBuffer(1);
+      var bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.Q.value = 1.5;
+      bp.frequency.setValueAtTime(700, t);
+      bp.frequency.exponentialRampToValueAtTime(4200, t + 0.85);
+      var g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v || 0.18, t + 0.18);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1);
+      src.connect(bp); bp.connect(g); g.connect(this.master);
+      src.start(t); src.stop(t + 1.05);
     },
     crackle: function () {
       if (!this.ctx || !this.enabled) return;
@@ -450,8 +499,32 @@
     })();
   }
 
-  function burnText(text, done) {
+  /* ============================================================
+     仪式核心：双模式
+     - 烧掉：停留 → 逐字纸片碎裂（char-crack + 纸屑飞散）+ 纸裂音 + 火星脉冲
+     - 心愿：停留 → 金光（wish-glow + 叮）→ 放大飘出画面（wish-float + 上升嗖）
+     全部音效均在「点火」手势链内触发，合规
+     ============================================================ */
+  function ritualText(text, done) {
     burnLine.innerHTML = '';
+    burnLine.className = 'burn-line';
+
+    if (mode === 'wish') {
+      /* 心愿不烧：整句停留 → 闪着金光 → 放大，像信封一样飘出画面 */
+      burnLine.textContent = text;
+      setTimeout(function () {
+        burnLine.classList.add('glow');
+        AudioFX.chime();
+      }, 1500);
+      setTimeout(function () {
+        burnLine.classList.add('float-up');
+        AudioFX.swooshUp();
+      }, 2400);
+      setTimeout(done, 4300);
+      return;
+    }
+
+    /* 烧掉：逐字碎裂 */
     var chars = text.split('');
     var frag = document.createDocumentFragment();
     var spans = [];
@@ -459,14 +532,36 @@
       var s = document.createElement('span');
       s.className = 'ch';
       s.textContent = chars[i];
-      s.style.animationDelay = (i * 42) + 'ms';
       frag.appendChild(s);
       spans.push(s);
     }
     burnLine.appendChild(frag);
-    /* 全部字烧完（含最后一个字的动画时长） */
-    var total = chars.length * 42 + 1150;
-    setTimeout(done, total);
+
+    var hold = 1500;      /* 文字停留时长 */
+    var stagger = chars.length > 20 ? 26 : 60; /* 每字碎裂间隔，一张一张；长文自动加快不拖沓 */
+    chars.forEach(function (c, i) {
+      setTimeout(function () {
+        var s = spans[i];
+        s.classList.add('cracking');
+        /* 每个字碎出 4-6 片纸屑，方向/旋转随机 */
+        var n = 4 + Math.floor(Math.random() * 3);
+        for (var k = 0; k < n; k++) {
+          var sh = document.createElement('span');
+          sh.className = 'shard';
+          sh.style.setProperty('--dx', (Math.random() * 120 - 60).toFixed(0) + 'px');
+          sh.style.setProperty('--dy', (Math.random() * 70 - 10).toFixed(0) + 'px');
+          sh.style.setProperty('--rot', (Math.random() * 720 - 360).toFixed(0) + 'deg');
+          s.appendChild(sh);
+        }
+        AudioFX.crack();
+      }, hold + i * stagger);
+    });
+
+    /* 末字碎裂瞬间：火星脉冲（火焰短暂窜高，仍克制） */
+    var lastAt = hold + chars.length * stagger;
+    setTimeout(function () { fire.setBoost(2.2); }, lastAt);
+    /* 纸屑飞散 0.85s + 余量后收尾 */
+    setTimeout(done, lastAt + 900);
   }
 
   btnIgnite.addEventListener('click', function () {
@@ -482,7 +577,7 @@
     show('s-fire');
     fireGrow();
     runCountdown(function () {
-      burnText(text, function () {
+      ritualText(text, function () {
         fireCalm();
         busy = false;
         /* 仪式结束：环境声压低但不熄，留在背景 */
