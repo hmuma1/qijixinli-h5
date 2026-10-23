@@ -70,44 +70,46 @@
     } catch (e) {}
   }
 
-  /* ---------- 陪伴氛围（v1.13 起，v1.15 实时化）：篝火旁的「人」 ----------
-     号主定调：进入火边就有数字，且随时间真实漂移（1→2→5→3），
-     变动不频繁（20-45s 一次，±1~2），9 个位置（自己占 1，访客 0-8）。
+  /* ---------- 陪伴氛围（v1.13 起，v1.15 实时化，v1.16 改 1-9 含自己）----------
+     号主定调：计数含自己——「我进来了就有 1 个人，再进 1 个就是 2 个」。
+     「篝火旁」= 总人数 1-9（9 个位置：自己 + 最多 8 个陪伴者）。
+     0 人从来不存在，含自己才诚实；「1 个人」= 独自守火的自然时刻。
+     进入火边就有数字，随时间真实漂移（20-45s/次，±1~2），不频繁。
      实时徽标在 s-write 屏常驻；提交完成时取当前值定格到结果屏。
      纪律（不可越界）：
        ① 只呈现人数与守护意象——无人名、无对话、无「对方正在看你」，
           永不升级为任何形式的「互动」；
        ② 数字是氛围修辞，不是功能承诺——用户不会因它做任何决策。 */
-  var COMPANION_MAX = 8;   /* 9 个位置，自己占 1 个，其余 0-8 */
+  var COMPANION_MIN = 1, COMPANION_MAX = 9;   /* 篝火旁总人数（含自己） */
   function randInt(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
-  var liveN = 0, liveTimer = null;
+  var liveN = 1, liveTimer = null;
   function paintLive() {
     var el = $('companion-live-num');
     if (el) el.textContent = liveN;   /* 阿拉伯数字，号主钦定 */
   }
   function driftLive() {
     var d = randInt(1, 2) * (Math.random() < 0.5 ? -1 : 1);
-    liveN = Math.max(0, Math.min(COMPANION_MAX, liveN + d));
+    liveN = Math.max(COMPANION_MIN, Math.min(COMPANION_MAX, liveN + d));
     paintLive();
     liveTimer = setTimeout(driftLive, 20000 + Math.random() * 25000);  /* 20-45s 才动一次 */
   }
   function startLive() {
     stopLive();
-    liveN = randInt(0, COMPANION_MAX);
+    liveN = randInt(COMPANION_MIN, COMPANION_MAX);
     paintLive();
     liveTimer = setTimeout(driftLive, 25000 + Math.random() * 20000);  /* 进来先稳 25-45s */
   }
   function stopLive() {
     if (liveTimer) { clearTimeout(liveTimer); liveTimer = null; }
   }
-  /* 结果屏定格：提交瞬间的人数。0 人是特殊时刻——不硬说「还有 0 个人」，
-     陪伴感从「人」转到「火」本身；大部分时间有人、偶尔一个人，才像真的 */
+  /* 结果屏定格：提交瞬间的总人数（含自己）。
+     N=1 是特殊时刻：独自守火——陪伴感从「人」转到「火」本身 */
   function renderCompanion() {
-    if (liveN === 0) {
+    if (liveN === 1) {
       $('fire-companion').textContent = '此刻，篝火边只你一个人';
       $('fire-guard').textContent = '火还醒着，陪你';
     } else {
-      $('fire-companion').textContent = '此刻，篝火边还有 ' + liveN + ' 个人';
+      $('fire-companion').textContent = '此刻，篝火边有 ' + liveN + ' 个人';
       $('fire-guard').textContent = '有人守着火，就像有人守着你';
     }
   }
@@ -162,7 +164,7 @@
       try {
         this.ctx = new AC();
         this.master = this.ctx.createGain();
-        this.master.gain.value = 0.9;
+        this.master.gain.value = 1.0;
         this.master.connect(this.ctx.destination);
         return true;
       } catch (e) { return false; }
@@ -180,11 +182,11 @@
       src.buffer = this.noiseBuffer(2); src.loop = true;
       var lp = this.ctx.createBiquadFilter();
       lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
-      var g = this.ctx.createGain(); g.gain.value = 0.1;
+      var g = this.ctx.createGain(); g.gain.value = 0.16;
       /* LFO：音量缓慢起伏 = 火焰呼吸 */
       var lfo = this.ctx.createOscillator();
       lfo.frequency.value = 0.22;
-      var lfoG = this.ctx.createGain(); lfoG.gain.value = 0.045;
+      var lfoG = this.ctx.createGain(); lfoG.gain.value = 0.06;
       lfo.connect(lfoG); lfoG.connect(g.gain);
       src.connect(lp); lp.connect(g); g.connect(this.master);
       src.start(); lfo.start();
@@ -198,12 +200,12 @@
     },
     ambienceDown: function () {
       if (this.ambGain && this.ctx) {
-        try { this.ambGain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 0.5); } catch (e) {}
+        try { this.ambGain.gain.linearRampToValueAtTime(0.08, this.ctx.currentTime + 0.5); } catch (e) {}
       }
     },
     ambienceUp: function () {
       if (this.ambGain && this.ctx && this.enabled) {
-        try { this.ambGain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.6); } catch (e) {}
+        try { this.ambGain.gain.linearRampToValueAtTime(0.16, this.ctx.currentTime + 0.6); } catch (e) {}
       }
     },
     /* 提交「噗」（v1.15 重做）：替代旧 whoosh 的「嗖」——
@@ -220,7 +222,7 @@
       lp.frequency.exponentialRampToValueAtTime(300, t + 0.45);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.2, t + 0.09);   /* 慢起，去 click */
+      g.gain.exponentialRampToValueAtTime(0.26, t + 0.09);   /* 慢起，去 click */
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55); /* 缓落，不硬切 */
       src.connect(lp); lp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 0.6);
@@ -238,7 +240,7 @@
       bp.frequency.value = 900 + Math.random() * 1000;   /* 900-1900Hz 炭火段 */
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.16 + Math.random() * 0.06, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.2 + Math.random() * 0.07, t + 0.012);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
       src.connect(bp); bp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 0.09);
@@ -249,7 +251,7 @@
       var t = this.ctx.currentTime;
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.11, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.15, t + 0.03);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
       g.connect(this.master);
       [1318.5, 1975.5].forEach(function (f) {
@@ -272,7 +274,7 @@
       lp.frequency.exponentialRampToValueAtTime(1100, t + 0.85);
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(v || 0.16, t + 0.2);  /* 慢起 */
+      g.gain.exponentialRampToValueAtTime(v || 0.21, t + 0.2);  /* 慢起 */
       g.gain.exponentialRampToValueAtTime(0.0001, t + 1);
       src.connect(lp); lp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t + 1.05);
@@ -283,7 +285,7 @@
       var t = this.ctx.currentTime;
       var g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.13, t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.17, t + 0.04);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
       g.connect(this.master);
       [2093, 2637, 3136].forEach(function (f) {
@@ -302,7 +304,7 @@
       var hp = this.ctx.createBiquadFilter();
       hp.type = 'highpass'; hp.frequency.value = 2600;
       var g = this.ctx.createGain();
-      var v = 0.04 + Math.random() * 0.1;
+      var v = 0.07 + Math.random() * 0.11;
       g.gain.setValueAtTime(v, t);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
       src.connect(hp); hp.connect(g); g.connect(this.master);
@@ -317,7 +319,7 @@
       if (this.enabled) {
         b.textContent = '音效 · 开'; b.classList.remove('off');
         if (this.ctx && this.ambGain) {
-          try { this.ambGain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.4); } catch (e) {}
+          try { this.ambGain.gain.linearRampToValueAtTime(0.16, this.ctx.currentTime + 0.4); } catch (e) {}
           var self = this; if (!this.crackleTimer) this.crackle();
         }
       } else {
@@ -773,7 +775,7 @@
           s.style.setProperty('--drift', (Math.random() * 120 - 60).toFixed(0) + 'px');     /* 横向 ±60：有左有右 */
           s.style.setProperty('--rdur', (2600 + Math.random() * 1600).toFixed(0) + 'ms');   /* 2.6-4.2s：各自节奏 */
           s.style.setProperty('--rrot', (Math.random() * 24 - 12).toFixed(1) + 'deg');
-          if (i === 0) AudioFX.swooshUp(0.14);
+          if (i === 0) AudioFX.swooshUp(0.18);
         }, 4800 + Math.random() * 1300);   /* 0-1.3s 错峰起飞，不排成一行往上冲 */
       });
       /* 心愿飘到高处：一声远去的铃 */
