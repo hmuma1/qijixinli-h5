@@ -537,20 +537,23 @@ body {
   font-family: "SF Mono", Menlo, Consolas, monospace;
   font-size: 26px; letter-spacing: 0.18em;
   color: var(--fire-2);
-  margin-bottom: 30px;
+  margin-bottom: 10px;   /* v1.17.3：30→10，编号说明贴着编号（它描述的就是编号） */
   text-shadow: 0 0 18px rgba(255, 200, 107, 0.45);
 }
-/* v1.10：火苗编号说明（纯纪念编号，诚实告知、不虚构功能） */
+/* v1.10：火苗编号说明（纯纪念编号，诚实告知、不虚构功能）。
+   v1.17.3：号主要「和上面橙色的字贴得近，和下面共在句隔开空档」——
+   说明属于编号组，与 companion 之间 6px→26px 拉开 */
 .fire-code-note {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: 12px;
   letter-spacing: 0.08em;
   color: rgba(216, 205, 188, 0.45);
 }
 /* v1.13：陪伴氛围（人数 + 守护句）。人数行略亮、守护句更淡——
-   两级小字，氛围而不抢戏；与编号组同区，先「此刻印记」后「此刻共在」 */
+   两级小字，氛围而不抢戏；与编号组同区，先「此刻印记」后「此刻共在」。
+   v1.17.3：与编号组隔开（12→26），两个信息组各自成团 */
 .fire-companion {
-  margin: 12px 0 0;
+  margin: 26px 0 0;
   font-size: 13px;
   letter-spacing: 0.12em;
   color: rgba(216, 205, 188, 0.58);
