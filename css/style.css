@@ -521,7 +521,14 @@ body {
   font-size: 56px; letter-spacing: 0.16em;
   color: #ffc86b;
   text-shadow: 0 0 30px rgba(255, 157, 69, 0.6);
-  margin-bottom: 70px;
+  margin-bottom: 24px;
+}
+/* 今夜印记（v1.12 方案A）：与编号组成一组「纪念卡信息」，
+   与签文之间保持原 70px 呼吸感（24 + 46 = 70，总高不变） */
+.poster-date {
+  font-size: 26px; letter-spacing: 0.24em; text-indent: 0.24em;
+  color: rgba(216, 205, 188, 0.52);
+  margin-bottom: 46px;
 }
 .poster-quote {
   font-size: 44px; line-height: 2;
