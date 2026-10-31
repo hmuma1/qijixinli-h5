@@ -208,10 +208,8 @@ function openCopy(s,drawn){
     const mean=card.querySelector('.mean').textContent;
     txt+='· '+pos+'：'+nm+'（'+cor+'）\n'+mean+'\n';
     const tend=card.querySelector('.tend');
-    if(tend) txt+=tend.textContent+'
-';
-    txt+='
-';
+    if(tend) txt+=tend.textContent+'\n';
+    txt+='\n';
   });
   txt+='—— 来自「奇迹心li」，仅供自我觉察与启发。';
   const ta=document.getElementById('copyText');ta.value=txt;
