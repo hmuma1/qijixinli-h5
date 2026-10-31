@@ -29,21 +29,24 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 .screen{position:relative;z-index:1}
 .spreads{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
 .sp{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);
-  border-radius:16px;padding:16px 14px;cursor:pointer;transition:.2s}
+  border-radius:16px;padding:14px 12px;cursor:pointer;transition:.2s}
 .sp:active{transform:scale(.97)}
-.sp h3{margin:0 0 6px;font-size:16px;color:var(--gold2);font-weight:600}
-.sp p{margin:0;font-size:12px;color:var(--mut);line-height:1.5}
+.sphd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sphd svg{height:24px;width:auto;flex:none}
+.sp h3{margin:0;font-size:15px;color:var(--gold2);font-weight:600;line-height:1.3}
+.sp h3 .cnt{font-size:11.5px;color:var(--mut);font-weight:400}
+.sp p{margin:0;font-size:11.5px;color:var(--mut);line-height:1.5}
 .spreadT{margin:18px 0 0;text-align:center}
 .spreadT h3{margin:0;font-size:17px;color:var(--gold2);font-weight:600}
 .spreadT p{margin:3px 0 0;font-size:12px;color:var(--mut)}
-#deck{margin-top:16px;display:flex;flex-direction:column;gap:10px;align-items:center}
+#deck{--cw:min(110px,calc((100vw - 76px)/3));margin-top:16px;display:flex;flex-direction:column;gap:10px;align-items:center}
 .row{display:grid;gap:10px;justify-content:center;width:100%}
-.r1{grid-template-columns:minmax(0,190px);max-width:190px}
-.rapex{grid-template-columns:minmax(0,104px);max-width:104px}
-.r2{grid-template-columns:repeat(2,minmax(0,150px));max-width:320px}
-.r3{grid-template-columns:repeat(3,minmax(0,1fr));max-width:430px}
-.rbottom{grid-template-columns:minmax(0,128px);max-width:128px}
-.abwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:430px;width:100%}
+.r1{grid-template-columns:var(--cw);max-width:var(--cw)}
+.rapex{grid-template-columns:var(--cw);max-width:var(--cw)}
+.r2{grid-template-columns:repeat(2,var(--cw));max-width:calc(var(--cw)*2 + 10px)}
+.r3{grid-template-columns:repeat(3,var(--cw));max-width:calc(var(--cw)*3 + 20px)}
+.rbottom{grid-template-columns:var(--cw);max-width:var(--cw)}
+.abwrap{display:grid;grid-template-columns:var(--cw) var(--cw);gap:12px;justify-content:center;width:100%}
 .abcol{display:flex;flex-direction:column;gap:10px}
 .ablabel{text-align:center;font-size:12px;letter-spacing:2px;color:var(--gold);border-bottom:1px dashed var(--line);padding-bottom:4px}
 .slot{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%}
@@ -66,9 +69,9 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 .syn h4{margin:0 0 8px;color:var(--gold2);font-size:14px;letter-spacing:1px}
 .syn p{margin:0 0 8px;font-size:12.5px;line-height:1.65;color:var(--ink);opacity:.93}
 .syn p:last-child{margin-bottom:0;color:var(--mut);font-size:11.5px}
-.bar{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+.bar{display:flex;gap:8px;margin-top:16px}
 .btn{background:linear-gradient(160deg,var(--gold),#b8863a);color:#1a1330;border:none;
-  border-radius:24px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer}
+  border-radius:20px;padding:9px 4px;font-size:12.5px;font-weight:600;cursor:pointer;flex:1;min-width:0;text-align:center}
 .btn:active{transform:scale(.97)}
 .btn.ghost{background:transparent;color:var(--gold2);border:1px solid var(--line)}
 .modal{position:fixed;inset:0;background:rgba(8,5,18,.92);display:none;align-items:center;
@@ -76,31 +79,31 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 .modal.show{display:flex}
 .modal .box{background:var(--card);border:1px solid var(--line);border-radius:16px;
   padding:20px;max-width:380px;width:100%;max-height:80vh;overflow:auto}
-.modal textarea{width:100%;height:220px;background:#120d24;color:var(--ink);border:1px solid var(--line);
-  border-radius:10px;padding:10px;font-size:13px;line-height:1.6;resize:none}
+.modal textarea{width:100%;height:150px;background:#120d24;color:var(--ink);border:1px solid var(--line);
+  border-radius:10px;padding:10px;font-size:12.5px;line-height:1.6;resize:none}
 .cmodal{position:fixed;inset:0;background:rgba(8,5,18,.95);display:none;z-index:50;overflow-y:auto;padding:20px 14px 40px}
 .cmodal.show{display:block}
-.cbox{position:relative;max-width:400px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 16px 20px}
-.cclose{position:absolute;top:10px;right:10px;background:none;border:1px solid var(--line);color:var(--mut);border-radius:50%;width:32px;height:32px;font-size:15px;cursor:pointer;z-index:2}
-.cart{width:52%;margin:4px auto 10px}
+.cbox{position:relative;max-width:320px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 14px 16px}
+.cclose{position:absolute;top:8px;right:8px;background:none;border:1px solid var(--line);color:var(--mut);border-radius:50%;width:28px;height:28px;font-size:13px;cursor:pointer;z-index:2}
+.cart{width:38%;margin:2px auto 8px}
 .cart svg{width:100%;height:auto;display:block}
-.chead{text-align:center;margin-bottom:8px}
-.cname{font-size:18px;font-weight:600;color:var(--gold2);display:flex;align-items:center;justify-content:center;gap:7px}
-.el{font-size:11px;font-weight:600;padding:1px 8px;border-radius:10px;border:1px solid currentColor}
+.chead{text-align:center;margin-bottom:7px}
+.cname{font-size:16px;font-weight:600;color:var(--gold2);display:flex;align-items:center;justify-content:center;gap:6px}
+.el{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:10px;border:1px solid currentColor}
 .el-火{color:var(--fire)} .el-水{color:var(--water)} .el-风{color:var(--air)} .el-土{color:var(--earth)}
-.csub{font-size:12px;color:var(--mut);margin-top:3px}
-.ckw{font-size:12.5px;color:var(--gold);margin-bottom:6px}
-.cimg{font-size:12px;color:var(--ink);opacity:.82;line-height:1.55;margin-bottom:6px}
+.csub{font-size:11.5px;color:var(--mut);margin-top:3px}
+.ckw{font-size:12px;color:var(--gold);margin-bottom:5px}
+.cimg{font-size:11.5px;color:var(--ink);opacity:.82;line-height:1.55;margin-bottom:5px}
 .cimg span{color:var(--mut)}
-.cmean{font-size:13px;color:var(--ink);line-height:1.6}
-.tend{margin-top:9px;border-top:1px dashed var(--line);padding-top:7px}
+.cmean{font-size:12.5px;color:var(--ink);line-height:1.6}
+.tend{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
 .tend-title{font-size:11px;color:var(--gold);margin-bottom:3px;letter-spacing:.5px}
-.tend-item{font-size:11.5px;color:var(--ink);opacity:.86;line-height:1.5}
+.tend-item{font-size:11px;color:var(--ink);opacity:.86;line-height:1.5}
 .tend-item span{color:var(--gold2);font-weight:600;margin-right:5px}
-.qr{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:center}
-.qr .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
-.qr .q b{display:block;color:var(--gold2);font-size:13px;margin-bottom:8px}
-.qr-img{width:100%;aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:6px}
+.qr{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center}
+.qr .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+.qr .q b{display:block;color:var(--gold2);font-size:12px;margin-bottom:6px}
+.qr-img{width:118px;max-width:72%;aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:5px;margin:0 auto}
 .qr-img img{width:100%;height:100%;object-fit:contain}
 .foot{text-align:center;color:var(--mut);font-size:11px;margin-top:22px;line-height:1.7}
 </style>
@@ -123,10 +126,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
     <div id="deck"></div>
     <div class="syn" id="syn" style="display:none"></div>
     <div class="bar">
-      <button class="btn" id="flipAll">全部翻开</button>
-      <button class="btn ghost" id="copyBtn">复制解读</button>
       <button class="btn ghost" id="again">重新抽</button>
       <button class="btn ghost" id="back">换牌阵</button>
+      <button class="btn" id="flipAll">全部翻开</button>
+      <button class="btn ghost" id="copyBtn">复制解读</button>
     </div>
   </div>
 
@@ -151,7 +154,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 
 <script>
 const CARDS = [{"n": "0", "name": "愚人", "en": "The Fool", "group": "大阿尔克纳", "el": "风", "img": "白衣少年背着小包袱，无忧无虑地走向山崖边，脚边的小狗提醒他留意脚下。", "kw": "启程 · 纯真 · 未知", "up": "新的起点在召唤，你被邀请放下预设、带着信任迈出第一步。这段未知恰恰藏着属于你的机会，敢走就有机遇。", "rev": "你并非真想出发，只是想逃。逆位常是盲目冒进或临阵退缩的两极——先看清自己逃避的对象，再决定要不要上路。"}, {"n": "1", "name": "魔术师", "en": "The Magician", "group": "大阿尔克纳", "el": "风", "img": "人物一手指天一手指地，面前摆着四元素法器，将天地能量收归己用。", "kw": "创造 · 整合 · 行动", "up": "你手上的资源比想象中齐全，意念与行动在此刻合一。今天适合主动开创，把想法落成具体动作，而非等待。", "rev": "能力在，却被自我怀疑或分心稀释。逆位多表现为聪明用错地方、才华空转——先收拢注意力，别同时抓太多事。"}, {"n": "2", "name": "女祭司", "en": "The High Priestess", "group": "大阿尔克纳", "el": "水", "img": "端坐于两根柱子之间的女神，脚下新月，身后是 veil 半掩的秘境。", "kw": "直觉 · 内隐 · 秘密", "up": "答案不在喧嚣的外界，而在你安静时的直觉里。今天少听旁人，多问自己真正想要什么，潜意识会给你信号。", "rev": "你忽视了内在声音，被信息淹没或过度理性。逆位提醒：暂停一下，让潜意识浮上来，别用脑补代替感受。"}, {"n": "3", "name": "皇后", "en": "The Empress", "group": "大阿尔克纳", "el": "土", "img": "丰腴的女神置身于果实与流水之间，象征大地母亲的丰饶与孕育。", "kw": "丰盛 · 滋养 · 孕育", "up": "丰饶期到了，关系、创作或事业都在生长。懂得接纳与给予，自会结果；你越是松弛，越能吸引好事。", "rev": "你对自己太苛刻，或过度付出却不顾自身。逆位多是以爱之名耗竭自己——先把滋养还给自己，再来谈给予。"}, {"n": "4", "name": "皇帝", "en": "The Emperor", "group": "大阿尔克纳", "el": "火", "img": "戴盔甲的君主手握权杖端坐石座，背后高山象征稳固的秩序与掌控。", "kw": "秩序 · 掌控 · 结构", "up": "用结构和规则稳住局面，今天适合拍板、建框架、把混乱变成可执行的步骤。你的定力就是他人的依靠。", "rev": "控制沦为僵化或控制欲。逆位常是滥用权威、或被规则反噬——适度放权，别让秩序变成对他人的压迫。"}, {"n": "5", "name": "教皇", "en": "The Hierophant", "group": "大阿尔克纳", "el": "土", "img": "手持 triple cross 的宗教导师，向两位信徒传递既有的智慧与传统。", "kw": "传统 · 传承 · 指引", "up": "向有经验的人或已被验证的方法请教，循着既定路径走，比独自摸索更稳。今天适合学习、拜师、遵循规范。", "rev": "你正被僵化的规则或权威束缚。逆位提醒：该质疑的不是你，而是那套不再适用的教条，走出舒适的传统。"}, {"n": "6", "name": "恋人", "en": "The Lovers", "group": "大阿尔克纳", "el": "风", "img": "天使居于男女之间，背后智慧树与生命树，象征一次涉及价值的真实选择。", "kw": "选择 · 结合 · 价值", "up": "一次需要诚实地面对内心的选择来了，答案藏在你的真实偏好里，而非他人期待。关系的结合也在此刻被促成。", "rev": "关系或选择里有拉扯与逃避。逆位不是没有爱，而是用表面和谐掩盖核心分歧——先对齐价值观，再谈结合。"}, {"n": "7", "name": "战车", "en": "The Chariot", "group": "大阿尔克纳", "el": "水", "img": "御者立于黑白斑纹的双狮拉车之前，以意志驾驭相反的力量向前。", "kw": "意志 · 前进 · 胜利", "up": "凭意志与专注往前冲，今天能赢，但前提是两种力量（情绪与理性）同时被你驾驭。方向清晰，胜利可期。", "rev": "方向感乱了，油门和刹车一起踩。逆位多是内部分裂、被情绪带偏——先定一个目标，别被两边拉扯耗尽。"}, {"n": "8", "name": "力量", "en": "Strength", "group": "大阿尔克纳", "el": "火", "img": "温柔的女子合手驯服一头雄狮，以耐心而非武力让猛兽低头。", "kw": "柔韧 · 勇气 · 克制", "up": "真正的力量是温柔地驯服冲动。以耐心对待自己与他人，看似难搞的事会松动，内在的勇气自然回来。", "rev": "你在外强内耗，或用控制代替理解。逆位首要意义是软弱无能、信心消散——先安抚情绪，力量才回得来。"}, {"n": "9", "name": "隐士", "en": "The Hermit", "group": "大阿尔克纳", "el": "土", "img": "提灯的老者独立于雪峰，灯火是他向内寻找的真理之光。", "kw": "独处 · 内省 · 寻道", "up": "是时候退后一步独自厘清了。孤独不是惩罚，而是你找回方向的必要距离；向内的探索会给你答案。", "rev": "你要么过度孤立，要么在人群里依然迷失。逆位提醒：适度回来，别把独处变成封闭，也别用忙碌逃避。"}, {"n": "10", "name": "命运之轮", "en": "Wheel of Fortune", "group": "大阿尔克纳", "el": "火", "img": "转动的巨轮上缘坐于宝座者上升、下缘者下沉，象征运势的轮回。", "kw": "转机 · 周期 · 命运", "up": "局势正在转向，好运或新机到来。顺势而为，别逆着周期硬扛；轮到你上升时，抓住这股势。", "rev": "处于轮子的底部或反复期，像到低谷的滞留。逆位不是厄运，而是提醒你接受起伏是常态，耐心等它再转上来。"}, {"n": "11", "name": "正义", "en": "Justice", "group": "大阿尔克纳", "el": "风", "img": "蒙眼女神一手天平一手宝剑，不偏不倚地称量因果。", "kw": "公平 · 因果 · 平衡", "up": "事情会按你付出的真实分量结算。今天适合做公正的决定，言行要对得起自己，法律或契约事项尤其顺利。", "rev": "你在逃避该承担的后果，或被人占了便宜却不吭声。逆位提醒：把秤摆正，该清算就清算，含糊只会失衡。"}, {"n": "12", "name": "倒吊人", "en": "The Hanged Man", "group": "大阿尔克纳", "el": "水", "img": "男子头下脚上倒挂于活树，神态平静，仿佛主动选择的暂停。", "kw": "暂停 · 换位 · 臣服", "up": "主动停一下，换个角度看，反而会看清。这不是放弃，而是换一种姿态等待，牺牲表象换来更深的领悟。", "rev": "你在被动拖延、假装放下，其实是不肯面对。逆位的吊人多是该转身却拖延——真正的转身需要先落地行动。"}, {"n": "13", "name": "死神", "en": "Death", "group": "大阿尔克纳", "el": "水", "img": "白马上的骷髅手持黑旗，众人俯首，象征不可抗拒的结束与转化。", "kw": "结束 · 蜕变 · 重生", "up": "一段该翻篇了。允许旧的结束，新的空间才会打开；这不恐怖，是更新，是生命更高一层的循环。", "rev": "你紧抓着早已坏死的关系或身份不放。逆位提示：不告别，就接不住后面的礼物，拖延只会让结束更痛。"}, {"n": "14", "name": "节制", "en": "Temperance", "group": "大阿尔克纳", "el": "火", "img": "大天使将一杯之水倒入另一杯，一脚踩水一脚踏岸，调和两种能量。", "kw": "调和 · 中庸 · 耐心", "up": "把对立的元素慢慢搅匀，今天靠的是分寸与融合，而非极端或急躁。不同性质的能量也能交流顺畅。", "rev": "你失衡了，要么过度要么压抑。逆位提醒回到中间，给生活重新配比，别让一头过重拖垮整体。"}, {"n": "15", "name": "恶魔", "en": "The Devil", "group": "大阿尔克纳", "el": "土", "img": "山羊形象的恶魔立于锁链两端的两人之上，锁链其实松到可以挣脱。", "kw": "执念 · 束缚 · 欲望", "up": "看清是什么在绑住你——物质、习惯或一段消耗型关系。链子其实有钥匙，承认被缚是松绑的第一步。", "rev": "你开始松动执念、挣脱旧循环了。逆位是好兆头，但别因一时反复又把自己锁回去，自由已在手边。"}, {"n": "16", "name": "高塔", "en": "The Tower", "group": "大阿尔克纳", "el": "火", "img": "被闪电击中的塔轰然崩塌，火光中有人坠落，王冠跌落。", "kw": "崩塌 · 突变 · 觉醒", "up": "某些根基会被突然掀翻，痛但必要。旧的虚假结构倒下，真相才露出来；摧毁是为了重建在更实的地基上。", "rev": "你提前预感崩塌而焦虑，或事后拒绝接受。逆位提醒先稳住，废墟里才有新地基，抗拒只会延长动荡。"}, {"n": "17", "name": "星星", "en": "The Star", "group": "大阿尔克纳", "el": "风", "img": "裸身的女子跪于水边倒水入池入河，身后大星小星照亮夜空。", "kw": "希望 · 疗愈 · 指引", "up": "风暴过后星光出现，希望回来。允许自己被治愈，前方比你想的明亮；你与潜意识的连结正在修复。", "rev": "你暂时失去信心，在自我怀疑里漂浮。逆位提醒：光一直没灭，只是你低了头——抬头看，希望仍在。"}, {"n": "18", "name": "月亮", "en": "The Moon", "group": "大阿尔克纳", "el": "水", "img": "月光下两条狗狼对月嚎叫，小路通向远处似有出口的迷雾山。", "kw": "迷雾 · 潜意识 · 不安", "up": "眼前有看不清的迷雾，别急着下结论。先分辨哪些是恐惧、哪些是真实，月亮照见的是潜意识而非事实。", "rev": "迷雾在散，混乱的真相开始浮现。逆位表示你比自己以为的更接近答案，看清假象后不安会退去。"}, {"n": "19", "name": "太阳", "en": "The Sun", "group": "大阿尔克纳", "el": "火", "img": "金黄的太阳之下，裸身孩童骑马上，红旗下飘，万物明朗欢欣。", "kw": "喜悦 · 明朗 · 成功", "up": "明朗、温暖、被看见的一天。事情朝向顺利，也适合表达、连接与庆祝，内在的快乐会外显。", "rev": "你因一点阴影怀疑整体的光。逆位并非结果不好，只是你忘了抬头感受暖意——整体仍是向阳的。"}, {"n": "20", "name": "审判", "en": "Judgement", "group": "大阿尔克纳", "el": "火", "img": "天使吹响号角，墓中之人苏醒起身，象征清算与召唤。", "kw": "清算 · 觉醒 · 召唤", "up": "到了对自己诚实清算的时刻，过去的努力会被看见。响应内心的召唤，带着经验重新出发。", "rev": "你在回避那个早该做的决定，或困在旧评价里。逆位提醒：听见召唤就别再装睡，拖延清算只会滞留。"}, {"n": "21", "name": "世界", "en": "The World", "group": "大阿尔克纳", "el": "土", "img": "花环中的舞者四角各有生灵，象征一个循环的圆满与整合。", "kw": "圆满 · 完成 · 整合", "up": "一个循环圆满收尾，你做到了。庆祝完成，也带着经验进入下一程；身心灵在此刻合一。", "rev": "结尾差一口气，或你不愿真正放手。逆位提醒把未了的收完，圆满才会来，别让悬而未决拖住新局。"}, {"n": "W1", "name": "权杖王牌", "en": "Ace of Wands", "group": "权杖", "img": "一只云中之手高举萌发绿叶的权杖，八片叶脱离飞舞，象征创意的火花迸发。", "kw": "火花 · 灵感 · 启动", "up": "一团创造的火被点燃，灵感或冲动来了。抓住它，先动起来再说，行动本身会引出下一步。", "rev": "火花被浇灭或卡在空想。逆位不是没热情，而是被自我怀疑压住——先落下第一笔，火就会续上。", "el": "火"}, {"n": "W2", "name": "权杖二", "en": "Two of Wands", "group": "权杖", "img": "领主立于城墙远眺海洋，一手扶权杖一手握地球，筹划下一步的扩张。", "kw": "规划 · 远望 · 抉择", "up": "站在已得成果上向外看，下一步该扩张了。做计划，也敢想得更大，你已具备出海的条件。", "rev": "你犹豫着不敢跨出舒适区，守着已知却心有不甘。逆位提醒权衡够了，该选了，拖延只会消耗势能。", "el": "火"}, {"n": "W3", "name": "权杖三", "en": "Three of Wands", "group": "权杖", "img": "人物立于岸边数艘远航的船，目光追随更辽阔的海平线。", "kw": "等待 · 拓展 · 远航", "up": "前期铺垫已就位，接下来是迎接更大的局。目光放远，机会正在从远方驶来，耐心守候。", "rev": "你等得焦虑或方向判断失误。逆位提醒别只盯脚下，重新校准你要航向哪片海，盲目等待会错失。", "el": "火"}, {"n": "W4", "name": "权杖四", "en": "Four of Wands", "group": "权杖", "img": "四根巨杖耸立，花环高悬，两女子举花相庆，象征安稳与欢庆。", "kw": "安定 · 庆祝 · 归属", "up": "一段努力有了安稳的落点，值得庆祝与停留。关系或环境给你归属感，是停下来享用的时刻。", "rev": "表面热闹下并不安稳，或你不愿安定。逆位提醒先弄清是环境问题还是心没定，别用庆典掩盖空虚。", "el": "火"}, {"n": "W5", "name": "权杖五", "en": "Five of Wands", "group": "权杖", "img": "五人各执权杖相互较量，场面嘈杂却未见伤者，象征良性的竞争。", "kw": "竞争 · 混乱 · 角力", "up": "多方意见或竞争挤在一起，有点乱。别被噪音带偏，守住你的主线，乱中也有你的机会。", "rev": "你要么在无效内耗，要么回避了该有的较量。逆位提醒分清哪些仗值得打，别把精力耗在口舌。", "el": "火"}, {"n": "W6", "name": "权杖六", "en": "Six of Wands", "group": "权杖", "img": "骑马者头戴桂冠被众人簇拥前行，象征胜利与认可。", "kw": "认可 · 胜利 · 声望", "up": "你的付出被看见，迎来认可与小小的胜利。大方接受，趁势再进，这是你应得的掌声。", "rev": "你渴求认可却得不到，或胜得心虚。逆位提醒外部掌声不如先与自己和解，虚名撑不起底气。", "el": "火"}, {"n": "W7", "name": "权杖七", "en": "Seven of Wands", "group": "权杖", "img": "一人立于高处以一杖抵御下方攻来的六杖，守住既得阵地。", "kw": "防守 · 坚持 · 压力", "up": "你在守住成果，压力不小但立场要对。站稳，别轻易退让，你的坚持正挡住来犯。", "rev": "你守得疲惫，开始怀疑是否值得。逆位提醒该守的守、该放的早点放，硬撑会拖垮自己。", "el": "火"}, {"n": "W8", "name": "权杖八", "en": "Eight of Wands", "group": "权杖", "img": "八根权杖凌空飞驰，速度感十足，象征消息与进展的快速流动。", "kw": "加速 · 消息 · 流动", "up": "事情突然提速，消息或进展接连到来。顺势推进别拖，这是把积压事项一口气清掉的好时机。", "rev": "节奏乱了，信息拥堵或计划被打断。逆位提醒先理清主次，再让事情流动起来，别被乱流带跑。", "el": "火"}, {"n": "W9", "name": "权杖九", "en": "Nine of Wands", "group": "权杖", "img": "缠着绷带者倚杖守望，身后九杖林立，是尾声前的戒备。", "kw": "戒备 · 韧性 · 尾声", "up": "你已撑了很久，只剩最后一段。带着伤也别松劲，终点近了，韧性会送你到门口。", "rev": "你过度防御，把所有人都当威胁。逆位提醒放下不必要的戒备，给自己喘息，否则会垮在最后一程。", "el": "火"}, {"n": "W10", "name": "权杖十", "en": "Ten of Wands", "group": "权杖", "img": "男子奋力扛着十根沉重权杖朝远方房屋前行，负荷已到极限。", "kw": "重担 · 责任 · 超载", "up": "你扛得太多，负荷已到临界。承认超载，把不该你背的分出去，否则会倒在终点前。", "rev": "你终于学着放下或委托，重担在减轻。逆位提醒别又习惯性全揽回来，卸下才是真的解脱。", "el": "火"}, {"n": "W11", "name": "权杖侍从", "en": "Page of Wands", "group": "权杖", "img": "活泼的少年高举权杖眺望，眼中是跃跃欲试的火苗。", "kw": "好奇 · 尝试 · 热忱", "up": "带着孩子般的好奇去试探新可能，不怕露怯。热情比完美更重要，先动起来就有收获。", "rev": "三分钟热度或空喊口号不落地。逆位提醒把那点好奇变成一次真实的小行动，别停在嘴上。", "el": "火"}, {"n": "W12", "name": "权杖骑士", "en": "Knight of Wands", "group": "权杖", "img": "骏马腾跃的骑士高举权杖冲锋，火势随行，行动力爆棚。", "kw": "冲动 · 热情 · 行动", "up": "行动力爆棚，适合冲一波、搞事情。只是别只顾快忘了看路，热情能带你走很远。", "rev": "你莽撞或方向换来换去。逆位提醒热度还在，但需要一点克制来保住成果，别因急躁翻车。", "el": "火"}, {"n": "W13", "name": "权杖王后", "en": "Queen of Wands", "group": "权杖", "img": "端坐的皇后抚弄黑猫，自信明亮，如火焰般有感染力。", "kw": "自信 · 魅力 · 明亮", "up": "你今天自带光，自信而有感染力。用它去连接、去领导，会很顺，你的热情能点燃旁人。", "rev": "你要么过度表现求关注，要么把光收起来了。逆位提醒找回那股自在的笃定，不必讨好也不必躲。", "el": "火"}, {"n": "W14", "name": "权杖国王", "en": "King of Wands", "group": "权杖", "img": "沉稳的国王持杖端坐，目光深远，是既能想又能落的领袖。", "kw": "领袖 · 远见 · 驾驭", "up": "以远见和魄力带领局面，你既能想也能落。今天适合定方向、带团队，用视野服人。", "rev": "你失控地专断或画大饼不兑现。逆位提醒真正的王靠让人信服而非压人，空谈会蚀掉威信。", "el": "火"}, {"n": "C1", "name": "圣杯王牌", "en": "Ace of Cups", "group": "圣杯", "img": "云手托起溢水的圣杯，白鸽衔十字落下，情感的新泉涌出。", "kw": "爱 · 感动 · 开端", "up": "情感的新源头打开，爱、善意或灵感涌来。允许自己被温柔打动，这是关系与感受的起点。", "rev": "情感在封闭或溢错地方。逆位提醒先照顾好内心，再谈向外给与，别让情绪干涸或泛滥。", "el": "水"}, {"n": "C2", "name": "圣杯二", "en": "Two of Cups", "group": "圣杯", "img": "两人各执圣杯相敬，上方灵蛇与狮子纹章，象征对等的结合。", "kw": "联结 · 相悦 · 对等", "up": "一段对等的情感联结在发生，互相看见、彼此呼应。珍惜这份同频，它是关系的好开端。", "rev": "关系失衡或貌合神离。逆位提醒别单方面付出，先还原成两个平等的人，再谈亲密。", "el": "水"}, {"n": "C3", "name": "圣杯三", "en": "Three of Cups", "group": "圣杯", "img": "三女举杯同庆，丰收的果实环绕，是欢聚与友谊。", "kw": "欢聚 · 友谊 · 庆祝", "up": "值得小聚与庆祝，朋友和轻松的关系给你补给。今天适合联结而非独撑，快乐会互相感染。", "rev": "社交变应酬或圈子里有攀比。逆位提醒挑真正舒服的人相处，别凑热闹，虚假热闹更累。", "el": "水"}, {"n": "C4", "name": "圣杯四", "en": "Four of Cups", "group": "圣杯", "img": "坐于树下的青年对面前三杯无动于衷，第四杯从云中递来他却未觉。", "kw": "冷淡 · 错过 · 内省", "up": "你有些倦怠、对眼前提不起劲。先接纳这份冷，再看看是不是错过了什么被递来的机会。", "rev": "你从封闭里抬头，开始重新接住递来的机会。逆位提醒别再错过眼前的好，打开手才能接到。", "el": "水"}, {"n": "C5", "name": "圣杯五", "en": "Five of Cups", "group": "圣杯", "img": "黑袍人垂首面对打翻的三杯，身后仍有两杯未倒，桥通远方。", "kw": "失落 · 遗憾 · 回头", "up": "你盯着打翻的那杯，却忘了身后还有没倒的。允许遗憾，也转身看看余下的，希望没走远。", "rev": "你正从失落里走出来，学会放下。逆位提醒伤口还在，但已能往前看，别反复揭开它。", "el": "水"}, {"n": "C6", "name": "圣杯六", "en": "Six of Cups", "group": "圣杯", "img": "孩童将杯中花递给另一孩童，背景是熟悉的旧时光。", "kw": "回忆 · 纯真 · 馈赠", "up": "旧人、旧时光或被遗忘的温柔回来找你。怀旧里有治愈，也有提醒——过去的养分仍在。", "rev": "你困在回忆里不愿出来，或重蹈旧模式。逆位提醒回忆是养分不是退路，别用过去绑架现在。", "el": "水"}, {"n": "C7", "name": "圣杯七", "en": "Seven of Cups", "group": "圣杯", "img": "云雾中七只圣杯各盛异象：城堡、珠宝、蛇、怪物等，眼花缭乱。", "kw": "幻想 · 分心 · 抉择", "up": "眼前太多眼花缭乱的选项，多是幻象。别被想象绑架，挑一个真实能要的，而非全部想要。", "rev": "你从朦胧幻想落地，开始分清想要和能要。逆位提醒先把脚踩实，空头愿望换不来结果。", "el": "水"}, {"n": "C8", "name": "圣杯八", "en": "Eight of Cups", "group": "圣杯", "img": "人背对八只排列的圣杯转身离去，走向远山，是主动的舍弃。", "kw": "离开 · 追寻 · 出走", "up": "你意识到眼前不再满足你，选择转身去寻找更真的东西。离开需要勇气，却通向更深处。", "rev": "你犹豫着要不要走，或走了一半又回头。逆位提醒想清楚要什么，再决定去留，半吊子最耗人。", "el": "水"}, {"n": "C9", "name": "圣杯九", "en": "Nine of Cups", "group": "圣杯", "img": "满意的人环抱九杯于身后，是心愿得偿的满足。", "kw": "满足 · 心愿 · 自我", "up": "情感上的小圆满，愿望被满足，你对自己和世界都更满意。享受它，这是你挣来的安稳。", "rev": "表面满足内里空，或太在意别人眼中的幸福。逆位提醒问问自己真想要什么，别活给他人看。", "el": "水"}, {"n": "C10", "name": "圣杯十", "en": "Ten of Cups", "group": "圣杯", "img": "彩虹之下一家相拥，十杯垒成弧，是长久的和睦与归属。", "kw": "和睦 · 归属 · 圆满", "up": "关系与情感的长期安稳到来，家和与归属感让你安心。这是值得珍惜的福分，好好守住。", "rev": "表面和睦下有未说出口的不满。逆位提醒别为维持和谐压抑真实的自己，假圆满不如真沟通。", "el": "水"}, {"n": "C11", "name": "圣杯侍从", "en": "Page of Cups", "group": "圣杯", "img": "少年捧杯，杯中探出鱼，是天真又灵动的情感讯息。", "kw": "柔情 · 直觉 · 讯息", "up": "一个温柔的讯号或小小的心动到来。用柔软和好奇去接，别急着分析，感受先于逻辑。", "rev": "情绪化或把幻想当真。逆位提醒先安顿心情，再判断那讯号是否可靠，别被一时情绪带跑。", "el": "水"}, {"n": "C12", "name": "圣杯骑士", "en": "Knight of Cups", "group": "圣杯", "img": "骑士执杯策马而来，浪漫如潮水，是带着心去行动的人。", "kw": "浪漫 · 邀请 · 追随", "up": "带着心去行动，一次浪漫的邀约或创作冲动。跟随感受，但别丢掉理智，让理想有现实承接。", "rev": "你被情绪牵着走或画饼不落地。逆位提醒浪漫很好，记得它也需现实承接，否则只是空中楼阁。", "el": "水"}, {"n": "C13", "name": "圣杯王后", "en": "Queen of Cups", "group": "圣杯", "img": "王后端坐浪边，杯稳于膝，与情绪共舞而不被吞没。", "kw": "共情 · 温柔 · 内在", "up": "你今天直觉与共情很强，能温柔接住自己和他人。先感受再判断，你的包容就是力量。", "rev": "你情绪泛滥或被他人情绪淹没。逆位提醒划清边界，别把别人的水喝下去，照顾好自己。", "el": "水"}, {"n": "C14", "name": "圣杯国王", "en": "King of Cups", "group": "圣杯", "img": "国王稳坐潮中，杯立面前，是情绪里的定海神针。", "kw": "稳情 · 包容 · 掌控", "up": "在情绪里依然稳得住，既有深度又能掌控。适合做情感上的定海神针，他人会因你而安心。", "rev": "你压抑情绪装冷静，或情绪反扑失控。逆位提醒真正的稳是能容纳，不是封锁，别憋出内伤。", "el": "水"}, {"n": "S1", "name": "宝剑王牌", "en": "Ace of Swords", "group": "宝剑", "img": "一只手高举直立的宝剑，桂冠与月桂缠绕剑身，是清明破局。", "kw": "清晰 · 洞见 · 破局", "up": "一道清明劈开迷雾，真相或关键思路出现。抓住这股锐利，直说直做，言语此时最有力量。", "rev": "思路卡住或言多必失。逆位提醒先想清楚再开口，别让锋利伤了自己人，混沌时宜静不宜动。", "el": "风"}, {"n": "S2", "name": "宝剑二", "en": "Two of Swords", "group": "宝剑", "img": "蒙眼女子双手各持一剑交叉胸前，背后海面平静却暗藏两难。", "kw": "僵局 · 盲视 · 权衡", "up": "你在两难里闭眼不肯选，暂时平衡却没解。摘下眼罩，信息其实够用了，只是你不敢看。", "rev": "你被迫面对早该做的决定，或已有些松动。逆位提醒别再用看不清当借口，回避解决不了问题。", "el": "风"}, {"n": "S3", "name": "宝剑三", "en": "Three of Swords", "group": "宝剑", "img": "三剑穿透一颗心，雨中飘落，是切切实实的痛。", "kw": "心碎 · 刺痛 · 疗愈", "up": "痛是真实的，允许自己被刺穿、去哀悼。裂开的地方光才进得去，疗愈从承认痛开始。", "rev": "伤口开始结痂，你学着与痛共处。逆位提醒别反复撕开，给自己愈合的时间，痛会慢慢退。", "el": "风"}, {"n": "S4", "name": "宝剑四", "en": "Four of Swords", "group": "宝剑", "img": "人卧于剑下石棺安眠，是暂时的休整与静养。", "kw": "休整 · 静养 · 暂停", "up": "你累了，需要真正的休息与复盘，不是硬撑。安静下来，能量会回流，想通了再起。", "rev": "你休息太久陷入停滞，或逃避该面对的。逆位提醒歇够了就慢慢起身，久卧也会钝了锋。", "el": "风"}, {"n": "S5", "name": "宝剑五", "en": "Five of Swords", "group": "宝剑", "img": "一人持三剑、另两人沮丧离去，是惨胜的代价。", "kw": "得失 · 冲突 · 代价", "up": "角力里你或许赢了表面，却失了关系。问问这胜利值不值那个代价，有时退一步更划算。", "rev": "你从争斗中抽身，或成了被算计的一方。逆位提醒放下输赢，保住更重要的，别为争口气失大局。", "el": "风"}, {"n": "S6", "name": "宝剑六", "en": "Six of Swords", "group": "宝剑", "img": "船载人驶离风浪岸边，驶向较平静的水域，是带着伤的过渡。", "kw": "转移 · 过渡 · 离开", "up": "带着伤驶向更平静的水域，是一次必要的过渡。别留恋身后的风浪，前方会更稳。", "rev": "你困在旧痛的渡口不愿启程，或过渡比预期慢。逆位提醒允许自己慢慢漂远，别停在原地打转。", "el": "风"}, {"n": "S7", "name": "宝剑七", "en": "Seven of Swords", "group": "宝剑", "img": "人抱五剑悄然离去，地上留两剑，是迂回与取巧。", "kw": "取巧 · 隐瞒 · 策略", "up": "你在用迂回的方式达成目的，小心别越过诚实的线。捷径也有代价，走得巧也要走得正。", "rev": "你的小算盘被看穿，或你正被人耍。逆位提醒把事情摆到明面，别再绕， transparency 才是解。", "el": "风"}, {"n": "S8", "name": "宝剑八", "en": "Eight of Swords", "group": "宝剑", "img": "蒙眼女子被八剑围困却未绑实，出口就在身后。", "kw": "受限 · 自困 · 盲区", "up": "你觉得自己被绑住，其实绳索是自己系的。抬头看，出口一直在，限制多来自内心而非外界。", "rev": "你开始看清束缚是假象，尝试挣脱。逆位提醒别因习惯又把自己绕回去，自由靠你松手。", "el": "风"}, {"n": "S9", "name": "宝剑九", "en": "Nine of Swords", "group": "宝剑", "img": "深夜坐起抱头的人，背后九剑悬墙，是焦虑的放大。", "kw": "焦虑 · 深夜 · 恐惧", "up": "多半是夜里的焦虑在放大恐惧，天亮看往往没那么糟。先睡，再想，别让脑子独自跑通宵。", "rev": "你从过度担忧里清醒些了，学会安抚自己。逆位提醒别让恐惧独占深夜，给自己一个停下的开关。", "el": "风"}, {"n": "S10", "name": "宝剑十", "en": "Ten of Swords", "group": "宝剑", "img": "人俯卧地上，十剑插背，是最坏一刻的落地。", "kw": "终结 · 谷底 · 重生", "up": "最坏的一刻已落地，再也跌不动了。谷底也是转身的地方，该翻篇了，结束即新的开始。", "rev": "你从最低处慢慢爬起，最痛的已在身后。逆位提醒别回头看那把插下的剑，前方才是路。", "el": "风"}, {"n": "S11", "name": "宝剑侍从", "en": "Page of Swords", "group": "宝剑", "img": "少年持剑远眺，目光锐利，是警觉又好奇的求知者。", "kw": "警觉 · 求知 · 敏锐", "up": "你眼尖、爱追问，适合搜集信息与戳破谜团。只是别把机灵变成多疑，敏锐要用对地方。", "rev": "你要么冲动说破，要么在刺探中迷失。逆位提醒先把事实核对清楚再行动，别凭猜测下结论。", "el": "风"}, {"n": "S12", "name": "宝剑骑士", "en": "Knight of Swords", "group": "宝剑", "img": "骑士持剑冲锋，风驰电掣，是破局的速度。", "kw": "疾进 · 锐利 · 冲动", "up": "你冲得又快又直接，适合破局和抢时间。只是别撞了人还不停，速度要配上方向。", "rev": "你横冲直撞惹了麻烦，或方向跑偏。逆位提醒刹一脚，重新校准再冲，蛮力换不来精准。", "el": "风"}, {"n": "S13", "name": "宝剑王后", "en": "Queen of Swords", "group": "宝剑", "img": "王后执剑端坐，目光清明，是清醒而独立的判断者。", "kw": "清醒 · 独立 · 直言", "up": "你今天头脑清明、边界分明，能冷静说该说的话。独立但不必冷，犀利可配上温度。", "rev": "你用刀锋伤人，或把清醒变成刻薄。逆位提醒犀利可以，尖酸没必要，别让真话变刺。", "el": "风"}, {"n": "S14", "name": "宝剑国王", "en": "King of Swords", "group": "宝剑", "img": "国王高举一剑，以逻辑与公正统御局面。", "kw": "理性 · 公正 · 决断", "up": "以逻辑与公正做决定，不被情绪带偏。今天适合难题拍板与评判，你的清醒就是答案。", "rev": "你滥用理性操控，或冷漠到失真。逆位提醒真正的王用清醒而非无情，理性要有温度。", "el": "风"}, {"n": "P1", "name": "星币王牌", "en": "Ace of Pentacles", "group": "星币", "img": "云手托起一枚刻着五芒的星币，藤蔓与新芽从币中萌发。", "kw": "机会 · 落地 · 种子", "up": "一个务实的新机会落地，可能是钱、工作或身体的转机。接住它，种下去，它会长大。", "rev": "机会在眼前却没接稳，或只停在想象。逆位提醒先做实一小步，别空转，务实才能生根。", "el": "土"}, {"n": "P2", "name": "星币二", "en": "Two of Pentacles", "group": "星币", "img": "少年脚踏浪头玩转两枚星币，在变动中保持灵活。", "kw": "周转 · 平衡 · 灵活", "up": "你在同时应付几件实务，靠灵活周转。只要别顾此失彼，动态平衡就能稳住局面。", "rev": "你忙乱失衡，两头都悬着。逆位提醒先排优先级，别假装都能 hold 住，取舍才是真平衡。", "el": "土"}, {"n": "P3", "name": "星币三", "en": "Three of Pentacles", "group": "星币", "img": "工匠、修士与学徒于教堂穹顶下协作，是扎实的配合。", "kw": "协作 · 打磨 · 奠基", "up": "靠团队与扎实配合把事做起来。今天适合分工、请教、把基础打牢，三人方能成事。", "rev": "配合出问题或你单打独斗硬扛。逆位提醒放下 ego，找对的人一起把活做漂亮，独木难支。", "el": "土"}, {"n": "P4", "name": "星币四", "en": "Four of Pentacles", "group": "星币", "img": "人紧抱一枚星币、脚踩三枚，是守住已有的姿态。", "kw": "固守 · 安稳 · 吝啬", "up": "你守住已有的成果与资源，这是必要的安稳。只是别守到不敢动，稳妥不等于冻结。", "rev": "你要么过度紧握怕失去，要么突然松手失控。逆位提醒张弛之间找平衡点，过紧过松都伤。", "el": "土"}, {"n": "P5", "name": "星币五", "en": "Five of Pentacles", "group": "星币", "img": "风雪中两乞丐行经亮着灯的教堂窗，是匮乏中的一线光。", "kw": "匮乏 · 艰难 · 求助", "up": "你正经历物质或安全感的缺口，冷但没绝路。别硬撑，敢于伸手，援助比你想的更近。", "rev": "最难的已在缓解，你开始接到援手。逆位提醒别再把自己困在'我不配'里，接受帮助也是力量。", "el": "土"}, {"n": "P6", "name": "星币六", "en": "Six of Pentacles", "group": "星币", "img": "端坐者向乞者施与星币，天平在握，是流动的互惠。", "kw": "给予 · 流动 · 互惠", "up": "资源在流动，你或在给、或在收。健康的互换让人际与实务都更顺，施受之间见格局。", "rev": "关系里的给予失衡，或在施舍与控制间摇摆。逆位提醒互惠才是长久之道，单方面的给与会变味。", "el": "土"}, {"n": "P7", "name": "星币七", "en": "Seven of Pentacles", "group": "星币", "img": "农人倚锄望向枝头，等待作物成熟，是耐心的复盘。", "kw": "等待 · 耕耘 · 复盘", "up": "你已播下并浇灌，现在是耐心等收成。趁机复盘投入是否值得，慢一点自有它的道理。", "rev": "你急着要结果，或怀疑耕耘有意义。逆位提醒成果需要时间，别半路拔苗，等待也是功课。", "el": "土"}, {"n": "P8", "name": "星币八", "en": "Eight of Pentacles", "group": "星币", "img": "工匠伏案专心雕琢八枚星币，是沉下心打磨手艺。", "kw": "精进 · 专注 · 手艺", "up": "沉下心把一件事做精，今天适合打磨细节、积累实力。慢工出细活，专注即竞争力。", "rev": "你敷衍了事或在低水平重复。逆位提醒要么提标准，要么问自己为何不愿投入，糊弄骗的是自己。", "el": "土"}, {"n": "P9", "name": "星币九", "en": "Nine of Pentacles", "group": "星币", "img": "贵妇独立于满园果实与徘徊的猎鹰之间，是自给的丰裕。", "kw": "丰裕 · 自立 · 享受", "up": "你凭自己挣来了从容与丰盛，独处也安心。好好享用这份自立的成果，这是你应得的。", "rev": "外在富足内心空虚，或不敢独享成果。逆位提醒丰盛本就该属于努力的你，别用谦虚否定自己。", "el": "土"}, {"n": "P10", "name": "星币十", "en": "Ten of Pentacles", "group": "星币", "img": "一家老小于家徽下团聚，十币垒成拱，是长久的安稳与传承。", "kw": "长久 · 传承 · 安稳", "up": "物质与家庭的长期安稳成形，是可延续的福分。适合规划传承与根基，把好的留下去。", "rev": "财富或关系表面稳固内里松动。逆位提醒别只堆外在，忽略人的联结，空壳的安稳撑不久。", "el": "土"}, {"n": "P11", "name": "星币侍从", "en": "Page of Pentacles", "group": "星币", "img": "少年凝视手中星币，是踏实而好奇的学习者。", "kw": "学习 · 务实 · 起步", "up": "对一个务实的新方向充满学习欲，先踏实起步，别急着要结果，根基比速度重要。", "rev": "你三心二意或只规划不行动。逆位提醒把好奇心落成一个具体的小计划，动起来才有进度。", "el": "土"}, {"n": "P12", "name": "星币骑士", "en": "Knight of Pentacles", "group": "星币", "img": "骑士骑稳重之牛缓行田间，一步一个脚印。", "kw": "稳健 · 可靠 · 慢行", "up": "你一步一个脚印、可靠推进，慢但稳。今天适合把承诺落到实处，稳本身就是一种速度。", "rev": "你慢到卡住，或固执不肯变通。逆位提醒稳不等于停滞，该提速时就别磨蹭，灵活才持久。", "el": "土"}, {"n": "P13", "name": "星币王后", "en": "Queen of Pentacles", "group": "星币", "img": "王后于花园中抚弄星币，身旁家宅安稳，是务实又滋养。", "kw": "务实 · 滋养 · 丰盛", "up": "你把现实打理得妥帖，又懂滋养生活。物质与温柔你都给得起，是落地的安全感。", "rev": "你顾着打理外界却忽略自己，或把安全感全押在钱上。逆位提醒先照顾好身子，人比账本重要。", "el": "土"}, {"n": "P14", "name": "星币国王", "en": "King of Pentacles", "group": "星币", "img": "国王端坐藤蔓王座握星币，是稳健运作财富的长者。", "kw": "富足 · 掌控 · 稳健", "up": "以稳健与远见掌管实务，财富与资源被你妥当运作。适合做长期布局，慢赢是真正的赢。", "rev": "你为钱失控、吝啬或冒进。逆位提醒真正的富足来自分寸，不是占有更多，失衡会反噬。", "el": "土"}];
-const SPREADS = [{"id": 1, "name": "每日一卡", "desc": "一张牌，给今天一句指引", "pos": ["今日指引"]}, {"id": 2, "name": "二张 · 现状/建议", "desc": "看清现状，拿到行动建议", "pos": ["现状", "建议"]}, {"id": 3, "name": "三张 · 时间流", "desc": "过去—现在—未来", "pos": ["过去", "现在", "未来"]}, {"id": 4, "name": "四张 · 金字塔", "desc": "三张筑基，塔尖指路", "pos": ["塔尖 · 未来指引", "塔基左 · 过去根源", "塔基中 · 基础现状", "塔基右 · 挑战"]}, {"id": 5, "name": "五张 · 二选一", "desc": "A 与 B 两个方案的走向", "pos": ["A 方案 · 现状", "A 方案 · 走向", "B 方案 · 现状", "B 方案 · 走向", "综合建议"]}, {"id": 6, "name": "六张 · 灵感对应", "desc": "你—对方—现状—阻碍—未来—结果", "pos": ["你", "对方 / 另一端", "关系现状", "隐藏的阻碍", "未来走向", "可能的结果"]}];
+const SPREADS = [{"id": 1, "name": "每日一卡", "cnt": "一张", "desc": "一张牌，给今天一句指引", "pos": ["今日指引"]}, {"id": 2, "name": "现状/建议", "cnt": "两张", "desc": "看清现状，拿到行动建议", "pos": ["现状", "建议"]}, {"id": 3, "name": "时间流", "cnt": "三张", "desc": "过去—现在—未来", "pos": ["过去", "现在", "未来"]}, {"id": 4, "name": "金字塔", "cnt": "四张", "desc": "三张筑基，塔尖指路", "pos": ["塔尖 · 未来指引", "塔基左 · 过去根源", "塔基中 · 基础现状", "塔基右 · 挑战"]}, {"id": 5, "name": "二选一", "cnt": "五张", "desc": "A 与 B 两个方案的走向", "pos": ["A 方案 · 现状", "A 方案 · 走向", "B 方案 · 现状", "B 方案 · 走向", "综合建议"]}, {"id": 6, "name": "灵感对应", "cnt": "六张", "desc": "你—对方—现状—阻碍—未来—结果", "pos": ["你", "对方 / 另一端", "关系现状", "隐藏的阻碍", "未来走向", "可能的结果"]}];
 const REV_RATE = 0.32;
 const EL_ENERGY = {"火":"行动能量 · 意志与创造","水":"情感能量 · 爱与直觉","风":"心智能量 · 思考与沟通","土":"现实能量 · 物质与身体","原":"原型能量"};
 
@@ -301,13 +304,28 @@ function genSynthesis(s,st){
 
 /* ================= 牌阵渲染 ================= */
 let ST=null;
+/* ================= 首页阵型小图标（背面小卡牌） ================= */
+function miniIcon(id){
+  function mc(x,y){return '<rect x="'+x+'" y="'+y+'" width="14" height="22" rx="2.5" fill="#2a1f4d" stroke="#d9b25f" stroke-width="0.9"/>'+
+    '<path d="M'+(x+7)+' '+(y+7)+' l1.2 2.4 2.6 .3 -1.9 1.8 .5 2.6 -2.4 -1.3 -2.4 1.3 .5 -2.6 -1.9 -1.8 2.6 -.3 Z" fill="#d9b25f" opacity=".85"/>';}
+  const P={
+    1:[[17,12]],
+    2:[[8.5,12],[25.5,12]],
+    3:[[0,12],[17,12],[34,12]],
+    4:[[17,0],[0,25],[17,25],[34,25]],
+    5:[[8.5,0],[25.5,0],[0,25],[17,25],[34,25]],
+    6:[[0,0],[17,0],[34,0],[0,25],[17,25],[34,25]]
+  }[id];
+  return '<svg viewBox="0 0 48 47" xmlns="http://www.w3.org/2000/svg">'+P.map(p=>mc(p[0],p[1])).join('')+'</svg>';
+}
+function dispName(s){return s.name+'<span class="cnt">（'+s.cnt+'）</span>';}
 function showHome(){
   document.getElementById('home').style.display='block';
   document.getElementById('read').style.display='none';
   const box=document.getElementById('spreads');box.innerHTML='';
   SPREADS.forEach(s=>{
     const d=document.createElement('div');d.className='sp';
-    d.innerHTML='<h3>'+s.name+'</h3><p>'+s.desc+'</p>';
+    d.innerHTML='<div class="sphd">'+miniIcon(s.id)+'<h3>'+dispName(s)+'</h3></div><p>'+s.desc+'</p>';
     d.onclick=()=>startRead(s);
     box.appendChild(d);
   });
@@ -330,7 +348,7 @@ function rowOf(cls,slots){const r=document.createElement('div');r.className='row
 function startRead(s){
   document.getElementById('home').style.display='none';
   document.getElementById('read').style.display='block';
-  document.getElementById('spreadTitle').innerHTML='<h3>'+s.name+'</h3><p>'+s.desc+'</p>';
+  document.getElementById('spreadTitle').innerHTML='<h3>'+s.name+'（'+s.cnt+'）</h3><p>'+s.desc+'</p>';
   const deck=document.getElementById('deck');deck.innerHTML='';
   const drawn=pick(s.pos.length);
   ST={s:s,cards:drawn.map((c,i)=>({c:c,rev:Math.random()<REV_RATE,pos:s.pos[i]}))};
