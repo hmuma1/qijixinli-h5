@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
-<title>塔罗星划过</title>
+<title>塔罗问迹</title>
 <meta content="抽一张牌，听听此刻想对你说的话。" name="description">
 <style>
 :root{
@@ -113,7 +113,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 <div class="wrap">
   <div class="head">
     <div class="brand">奇迹心li</div>
-    <div class="title">塔罗星划过</div>
+    <div class="title">塔罗问迹</div>
     <p class="sub">抽一张牌，听听此刻想对你说的话</p>
   </div>
 
@@ -428,7 +428,7 @@ cmEl.addEventListener('click',e=>{if(e.target===cmEl||e.target.closest('.cclose'
 
 function openCopy(){
   const strip=t=>t.replace(/<[^>]+>/g,'');
-  let txt='【塔罗星划过 · '+ST.s.name+'】\n\n';
+  let txt='【塔罗问迹 · '+ST.s.name+'】\n\n';
   ST.cards.forEach(o=>{
     txt+='· '+o.pos+'：'+o.c.name+'（'+(o.rev?'逆位':'正位')+'，'+o.c.el+'）\n';
     txt+='解读：'+(o.rev?o.c.rev:o.c.up)+'\n';
