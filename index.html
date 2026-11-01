@@ -179,8 +179,8 @@ function shuffled(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j
 function pick(n){return shuffled(CARDS).slice(0,n);}
 
 /* ================= 卡面图案引擎（原创极简线描风） ================= */
-const SUITS={"权杖":"#ff8a5c","圣杯":"#5cc8ff","宝剑":"#7fe0c0","星币":"#d9b25f"};
-const GK="#f0d79a",GI="#ece6f5",GM="#9b8fb8",GB="#241b40",GD="#d9b25f";
+const SUITS={"权杖":"#c0532f","圣杯":"#2f6fb0","宝剑":"#466b86","星币":"#8a6a1e"};
+const GK="#a8842c",GI="#4a3826",GM="#8a6d4a",GB="#3a2c1c",GD="#a8842c";
 
 function gWand(x,y,s,c){return '<g stroke="'+c+'" stroke-width="'+(2.2*s)+'" stroke-linecap="round" fill="none">'+
  '<line x1="'+x+'" y1="'+(y-16*s)+'" x2="'+x+'" y2="'+(y+16*s)+'"/>'+
@@ -209,83 +209,100 @@ function pipPts(n){const M={1:[[50,80]],2:[[50,46],[50,114]],3:[[50,36],[50,80],
  8:[[28,34],[72,34],[50,56],[28,80],[72,80],[50,104],[28,124],[72,124]],
  9:[[28,30],[72,30],[28,62],[72,62],[50,80],[28,98],[72,98],[28,130],[72,130]],
  10:[[28,30],[72,30],[50,46],[28,62],[72,62],[28,98],[72,98],[50,114],[28,130],[72,130]]};return M[n]||M[1];}
+function ct_head(hx,hy,r){return '<g><circle cx="'+hx+'" cy="'+hy+'" r="'+r+'" fill="#3a2c1c" stroke="'+GI+'" stroke-width="1.3"/>'+
+  '<circle cx="'+(hx-2.3)+'" cy="'+(hy-0.4)+'" r="0.8" fill="'+GI+'" stroke="none"/>'+
+  '<circle cx="'+(hx+2.3)+'" cy="'+(hy-0.4)+'" r="0.8" fill="'+GI+'" stroke="none"/>'+
+  '<path d="M'+(hx-2)+' '+(hy+2.6)+' q2 1.5 4 0" stroke="'+GI+'" stroke-width="1" fill="none"/></g>';}
+function ct_crown(cx,cy,w){return '<path d="M'+(cx-w)+' '+cy+' l'+(w*0.34)+' '+(-9)+' l'+(w*0.16)+' '+(5)+' l'+(w*0.34)+' '+(-12)+' l'+(w*0.16)+' '+(5)+' l'+(w*0.34)+' '+(-9)+' Z" fill="'+GD+'" stroke="'+GI+'" stroke-width="1" stroke-linejoin="round"/>';}
+function ct_sprout(px,py,col){return '<path d="M'+px+' '+py+' q-5 -3 -7 -10 q7 0 7 10 Z" fill="'+col+'" stroke="none"/><path d="M'+px+' '+py+' q5 -3 7 -10 q-7 0 -7 10 Z" fill="'+col+'" stroke="none"/>';}
+function ct_throne(x,top,bot,w){return '<rect x="'+(x-w)+'" y="'+top+'" width="'+(w*2)+'" height="'+(bot-top)+'" rx="4" fill="#2e2316" stroke="'+GD+'" stroke-width="1.3"/>'+
+  '<circle cx="'+(x-w+7)+'" cy="'+(top+20)+'" r="3" fill="none" stroke="'+GD+'" stroke-width="1.2"/>'+
+  '<circle cx="'+(x+w-7)+'" cy="'+(top+20)+'" r="3" fill="none" stroke="'+GD+'" stroke-width="1.2"/>';}
+function ct_robe(x,topY,botY,hw,col){return '<path d="M'+x+' '+topY+' L'+(x-hw)+' '+botY+' L'+(x+hw)+' '+botY+' Z" fill="'+col+'" stroke="'+GI+'" stroke-width="1.3" stroke-linejoin="round"/>';}
+function ct_horse(cx,col){return '<g stroke="'+GI+'" stroke-width="1.4" fill="#3a2c1c" stroke-linejoin="round" stroke-linecap="round">'+
+  '<ellipse cx="'+cx+'" cy="108" rx="26" ry="13"/>'+
+  '<path d="M'+(cx-24)+' 104 q-12 -2 -16 -16 q8 4 14 6 q-2 -8 4 -12 q4 8 10 10 Z"/>'+
+  '<path d="M'+(cx+20)+' 116 q12 0 16 -8 q-9 1 -16 2 Z"/>'+
+  '<line x1="'+(cx-14)+'" y1="118" x2="'+(cx-14)+'" y2="134"/>'+
+  '<line x1="'+(cx-2)+'" y1="120" x2="'+(cx-2)+'" y2="136"/>'+
+  '<line x1="'+(cx+10)+'" y1="120" x2="'+(cx+10)+'" y2="136"/>'+
+  '<line x1="'+(cx+20)+'" y1="118" x2="'+(cx+20)+'" y2="134"/></g>';}
+function ct_flower(cx,cy,col){let p='';for(let i=0;i<8;i++){const a=i*Math.PI/4;p+='<circle cx="'+(cx+7*Math.cos(a)).toFixed(1)+'" cy="'+(cy+7*Math.sin(a)).toFixed(1)+'" r="3.2" fill="'+col+'" stroke="'+GI+'" stroke-width="0.8"/>';}return p+'<circle cx="'+cx+'" cy="'+cy+'" r="3" fill="'+GD+'" stroke="'+GI+'" stroke-width="0.8"/>';}
+function ct_cat(cx,cy){return '<g fill="#2e2316" stroke="'+GI+'" stroke-width="1"><path d="M'+(cx-7)+' '+cy+' q0 -10 7 -10 q7 0 7 10 Z"/><path d="M'+(cx-7)+' '+(cy-7)+' l-2 -4 l4 2 Z"/><path d="M'+(cx+7)+' '+(cy-7)+' l2 -4 l-4 2 Z"/><path d="M'+cx+' '+(cy+2)+' q5 4 9 0 l-1 -6 Z"/></g>';}
 function courtArt(rank,suit){
-  const c=SUITS[suit],x=50;let s='';
-  const G='stroke="'+GI+'" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"';
-  if(rank===11){ /* 侍从：少年小身、头顶举牌徽、身侧小星 */
-    s+='<g '+G+'><circle cx="'+x+'" cy="52" r="7"/>'+
-       '<path d="M'+(x-13)+' 128 Q'+x+' 46 '+(x+13)+' 128 Z"/></g>';
-    s+='<path d="M'+(x-6)+' 66 Q'+x+' 58 '+(x+6)+' 66" stroke="'+GI+'" stroke-width="1.6" fill="none"/>';
-    s+=gSuit(suit,x,40,0.8);
-    s+='<path d="M'+(x+7)+' 80 l11 -9" stroke="'+c+'" stroke-width="2"/>';
-    s+=gSuit(suit,x+20,72,0.7);
-    s+='<path d="M'+(x-9)+' 40 l1.6 3 3.4 .4 -2.5 2.4 .6 3.4 -2.5 -1.4 -2.5 1.4 .6 -3.4 -2.5 -2.4 3.4 -.4 Z" fill="'+GK+'"/>';
+  const c=SUITS[suit],x=50,INK="#3a2c1c";
+  let s='';
+  if(rank===14){ /* 国王：坐王座·高冠·右手持本花色徽记（一眼=国王） */
+    s+=ct_throne(50,58,140,24);
+    s+='<rect x="24" y="138" width="52" height="10" rx="3" fill="#2e2316" stroke="'+GD+'" stroke-width="1.2"/>';
+    s+=ct_robe(50,80,140,16,INK);
+    s+=ct_head(50,70,9);
+    s+='<path d="M37 62 l3 -15 5 10 5 -16 5 16 5 -10 3 15 Z" fill="'+GD+'"/>';
+    s+=gSuit(suit,73,108,1.2);
   }
-  else if(rank===12){ /* 骑士：前倾、横持长枪顶牌徽、盔线、动势弧 */
-    s+='<g '+G+'><circle cx="'+x+'" cy="46" r="8"/>'+
-       '<path d="M'+(x-15)+' 130 Q'+(x-4)+' 52 '+(x+15)+' 120 Z"/></g>';
-    s+='<line x1="'+(x-11)+'" y1="44" x2="'+(x+11)+'" y2="44" stroke="'+GI+'" stroke-width="1.6"/>';
-    s+='<path d="M'+(x-22)+' 70 q-6 8 2 16 M'+(x-24)+' 84 q-7 6 -1 14" stroke="'+GM+'" stroke-width="1.4" fill="none"/>';
-    s+='<line x1="'+(x+4)+'" y1="96" x2="'+(x+34)+'" y2="40" stroke="'+GD+'" stroke-width="2"/>';
-    s+=gSuit(suit,x+34,40,0.85);
-    s+=gSuit(suit,x-16,92,0.7);
+  else if(rank===13){ /* 王后：坐王座·扶手圆环·右手持本花色徽记（一眼=王后） */
+    s+=ct_throne(50,60,138,22);
+    s+='<rect x="26" y="138" width="48" height="8" rx="3" fill="#2e2316"/>';
+    s+=ct_robe(50,82,140,14,INK);
+    s+=ct_head(50,72,8.5);
+    s+='<path d="M40 64 q10 -11 20 0 l-2 -7 -4 5 -4 -8 -4 8 -4 -5 Z" fill="'+GD+'"/>';
+    s+='<circle cx="28" cy="104" r="6" fill="none" stroke="'+GD+'" stroke-width="1.6"/>';
+    s+='<circle cx="72" cy="104" r="6" fill="none" stroke="'+GD+'" stroke-width="1.6"/>';
+    s+=gSuit(suit,73,106,1.15);
   }
-  else if(rank===13){ /* 王后：细后冠+宝球、双手持牌徽 */
-    s+='<g '+G+'><circle cx="'+x+'" cy="44" r="8.5"/>'+
-       '<path d="M'+(x-18)+' 132 Q'+x+' 50 '+(x+18)+' 132 Z"/></g>';
-    s+='<path d="M'+(x-9)+' 36 l3 -7 3 6 3 -7 3 7 Z" fill="'+GK+'" stroke="'+GK+'" stroke-width=".8"/>';
-    s+='<line x1="'+(x-10)+'" y1="36" x2="'+(x+10)+'" y2="36" stroke="'+GK+'" stroke-width="2"/>';
-    s+='<circle cx="'+(x+17)+'" cy="84" r="6" fill="none" stroke="'+GK+'" stroke-width="1.6"/>';
-    s+=gSuit(suit,x+17,84,0.9);
-    s+=gSuit(suit,x-17,80,0.7);
+  else if(rank===12){ /* 骑士：骑马·左前手高举本花色徽记（一眼=骑士，马是招牌） */
+    s+=ct_horse(52,INK);
+    s+=ct_robe(52,86,116,8,INK);
+    s+=ct_head(52,78,7);
+    s+='<path d="M52 71 q3 -10 11 -12 q-2 10 -11 12 Z" fill="'+c+'"/>';
+    s+=gSuit(suit,40,72,1.0);
   }
-  else { /* 国王：高冠+宝球权杖、权威 */
-    s+='<g '+G+'><circle cx="'+x+'" cy="42" r="9"/>'+
-       '<path d="M'+(x-20)+' 134 Q'+x+' 48 '+(x+20)+' 134 Z"/></g>';
-    s+='<path d="M'+(x-11)+' 33 l3 -12 4 9 4 -13 4 13 3 -9 3 12 Z" fill="'+GK+'" stroke="'+GK+'" stroke-width=".8"/>';
-    s+='<line x1="'+(x+21)+'" y1="92" x2="'+(x+21)+'" y2="38" stroke="'+GD+'" stroke-width="2"/>';
-    s+=gSuit(suit,x+21,38,0.85);
-    s+='<circle cx="'+(x+21)+'" cy="92" r="4" fill="none" stroke="'+GK+'" stroke-width="1.6"/>';
-    s+=gSuit(suit,x-18,82,0.7);
+  else { /* 侍从：站立少年·宽檐帽·右手直立持本花色徽记（一眼=侍从，最小最稚） */
+    s+=ct_robe(50,62,146,10,INK);
+    s+=ct_head(50,54,8);
+    s+='<path d="M38 50 q12 -15 24 0 Z" fill="'+INK+'"/>';
+    s+=gSuit(suit,68,104,1.1);
   }
   return s;
 }
 const MAJOR_ART={
-"0":'<circle cx="74" cy="24" r="9" fill="'+GK+'"/><path d="M4 152 L50 126 L96 152 Z" fill="'+GB+'"/><g stroke="'+GI+'" stroke-width="2.4" fill="none" stroke-linecap="round"><circle cx="40" cy="72" r="8"/><path d="M40 80 L36 106 L48 106 Z" fill="'+GB+'"/><path d="M37 106 L30 128"/><path d="M46 106 L52 128"/><path d="M43 88 L60 96"/></g><path d="M60 96 L76 86 L76 56" stroke="'+GD+'" stroke-width="2.2" fill="none"/><circle cx="78" cy="52" r="6" fill="'+GD+'"/>',
-"1":'<circle cx="41" cy="26" r="7" fill="none" stroke="'+GK+'" stroke-width="2"/><circle cx="55" cy="26" r="7" fill="none" stroke="'+GK+'" stroke-width="2"/><g stroke="'+GI+'" stroke-width="2.4" fill="none" stroke-linecap="round"><circle cx="48" cy="58" r="8"/><path d="M48 66 L48 100"/><path d="M48 74 L30 58"/><path d="M48 74 L66 92"/><path d="M48 100 L38 130"/><path d="M48 100 L58 130"/></g><rect x="24" y="106" width="52" height="9" rx="2" fill="'+GB+'" stroke="'+GD+'" stroke-width="1.4"/><path d="M32 104 h9 q0 6 -4.5 7 q-4.5 -1 -4.5 -7" stroke="#5cc8ff" stroke-width="1.6" fill="none"/><line x1="50" y1="103" x2="50" y2="97" stroke="#7fe0c0" stroke-width="1.6"/><circle cx="67" cy="104" r="4" fill="none" stroke="'+GD+'" stroke-width="1.6"/>',
-"2":'<line x1="22" y1="32" x2="22" y2="142" stroke="'+GM+'" stroke-width="6"/><line x1="78" y1="32" x2="78" y2="142" stroke="'+GM+'" stroke-width="6"/><circle cx="22" cy="27" r="6" fill="'+GB+'" stroke="'+GM+'" stroke-width="1.5"/><circle cx="78" cy="27" r="6" fill="'+GB+'" stroke="'+GM+'" stroke-width="1.5"/><path d="M40 66 q10 -12 20 0 q-10 58 -10 72 q0 -14 -10 -72" fill="'+GB+'" stroke="'+GI+'" stroke-width="2"/><circle cx="50" cy="128" r="9" fill="none" stroke="'+GK+'" stroke-width="2"/><circle cx="55" cy="125" r="8" fill="#171031"/><circle cx="50" cy="38" r="5" fill="none" stroke="'+GK+'" stroke-width="1.6"/><line x1="50" y1="31" x2="50" y2="45" stroke="'+GK+'" stroke-width="1.6"/>',
-"3":'<circle cx="50" cy="52" r="9" stroke="'+GI+'" stroke-width="2.2" fill="none"/><path d="M40 44 l4 -8 6 5 6 -5 4 8" stroke="'+GK+'" stroke-width="2" fill="none"/><path d="M50 61 L50 100 M50 70 Q30 78 26 100 M50 70 Q70 78 74 100" stroke="'+GI+'" stroke-width="2.2" fill="none"/><path d="M34 132 q16 8 32 0" stroke="'+GD+'" stroke-width="2" fill="none"/><path d="M50 118 v-13 M44 112 q6 -10 12 0 q-6 10 -12 0" stroke="'+GD+'" stroke-width="1.8" fill="none"/>',
-"4":'<rect x="30" y="58" width="40" height="62" rx="4" fill="'+GB+'" stroke="'+GM+'" stroke-width="2"/><path d="M38 58 v-12 l6 6 6 -9 6 9 6 -6 v12" stroke="'+GK+'" stroke-width="2" fill="none"/><circle cx="50" cy="76" r="8" stroke="'+GI+'" stroke-width="2.2" fill="none"/><path d="M42 98 h16 M50 86 v24" stroke="'+GK+'" stroke-width="2"/><path d="M26 134 q24 10 48 0" stroke="'+GM+'" stroke-width="2" fill="none"/>',
-"5":'<line x1="50" y1="24" x2="50" y2="58" stroke="'+GK+'" stroke-width="3"/><line x1="42" y1="34" x2="58" y2="34" stroke="'+GK+'" stroke-width="3"/><line x1="44" y1="44" x2="56" y2="44" stroke="'+GK+'" stroke-width="3"/><g stroke="'+GI+'" stroke-width="2.2" fill="none" stroke-linecap="round"><circle cx="30" cy="92" r="6"/><path d="M30 98 L30 122 M30 104 L22 116 M30 104 L38 116"/><circle cx="70" cy="92" r="6"/><path d="M70 98 L70 122 M70 104 L62 116 M70 104 L78 116"/></g><path d="M34 134 h32" stroke="'+GM+'" stroke-width="2"/>',
-"6":'<g stroke="'+GI+'" stroke-width="2.2" fill="none" stroke-linecap="round"><circle cx="38" cy="76" r="7"/><path d="M38 83 L38 118 M38 92 L28 106 M38 92 L48 106"/><circle cx="62" cy="76" r="7"/><path d="M62 83 L62 118 M62 92 L52 106 M62 92 L72 106"/></g><path d="M50 30 q8 -10 14 -2 q6 8 -14 20 q-20 -12 -14 -20 q6 -8 14 2" fill="none" stroke="#e08a8a" stroke-width="2"/><path d="M20 142 h60" stroke="'+GM+'" stroke-width="1.6"/>',
-"7":'<path d="M28 38 l4 8 8 2 -6 6 2 9 -8 -5 -8 5 2 -9 -6 -6 8 -2 Z" fill="'+GK+'"/><rect x="26" y="72" width="48" height="34" rx="4" fill="'+GB+'" stroke="'+GD+'" stroke-width="2"/><circle cx="50" cy="60" r="7" stroke="'+GI+'" stroke-width="2.2" fill="none"/><circle cx="36" cy="120" r="9" fill="none" stroke="'+GM+'" stroke-width="2.4"/><circle cx="64" cy="120" r="9" fill="none" stroke="'+GM+'" stroke-width="2.4"/><path d="M26 72 h48" stroke="'+GD+'" stroke-width="2"/>',
-"8":'<circle cx="42" cy="24" r="7" fill="none" stroke="'+GK+'" stroke-width="2"/><circle cx="56" cy="24" r="7" fill="none" stroke="'+GK+'" stroke-width="2"/><circle cx="49" cy="92" r="16" fill="none" stroke="'+GD+'" stroke-width="2.4"/><g stroke="#ff8a5c" stroke-width="2" stroke-linecap="round"><line x1="69" y1="92" x2="62" y2="92"/><line x1="63" y1="106" x2="58" y2="101"/><line x1="49" y1="112" x2="49" y2="105"/><line x1="35" y1="106" x2="40" y2="101"/><line x1="29" y1="92" x2="36" y2="92"/><line x1="35" y1="78" x2="40" y2="83"/><line x1="49" y1="72" x2="49" y2="79"/><line x1="63" y1="78" x2="58" y2="83"/></g><circle cx="43" cy="89" r="2" fill="#171031"/><circle cx="55" cy="89" r="2" fill="#171031"/><path d="M46 97 q3 3 6 0" stroke="#171031" stroke-width="1.6" fill="none"/>',
-"9":'<g stroke="'+GI+'" stroke-width="2.4" fill="none" stroke-linecap="round"><circle cx="46" cy="52" r="8"/><path d="M46 60 Q34 80 38 106 L54 106 Q58 80 46 60" fill="'+GB+'"/><path d="M42 106 L42 134 M50 106 L50 134"/></g><line x1="66" y1="60" x2="66" y2="134" stroke="'+GM+'" stroke-width="2.4"/><rect x="59" y="42" width="14" height="16" rx="2" fill="none" stroke="'+GK+'" stroke-width="2"/><path d="M66 46 l1.8 3.6 4 .5 -3 2.8 .8 4 -3.6 -2 -3.6 2 .8 -4 -3 -2.8 4 -.5 Z" fill="'+GK+'"/>',
-"10":'<circle cx="50" cy="84" r="30" fill="none" stroke="'+GK+'" stroke-width="3"/><circle cx="50" cy="84" r="12" fill="none" stroke="'+GK+'" stroke-width="2"/><g stroke="'+GK+'" stroke-width="1.8"><line x1="50" y1="54" x2="50" y2="114"/><line x1="20" y1="84" x2="80" y2="84"/><line x1="29" y1="63" x2="71" y2="105"/><line x1="71" y1="63" x2="29" y2="105"/></g><path d="M50 42 v-14 M50 126 v14 M16 84 H2 M84 84 h14" stroke="'+GM+'" stroke-width="1.6"/>',
-"11":'<line x1="50" y1="30" x2="50" y2="60" stroke="'+GK+'" stroke-width="2.4"/><line x1="26" y1="60" x2="74" y2="60" stroke="'+GK+'" stroke-width="2.4"/><path d="M26 60 l-8 18 h16 Z" fill="none" stroke="'+GK+'" stroke-width="2"/><path d="M74 60 l-8 18 h16 Z" fill="none" stroke="'+GK+'" stroke-width="2"/><line x1="50" y1="60" x2="50" y2="106" stroke="'+GI+'" stroke-width="2.4"/><path d="M44 106 h12 l-6 10 Z" fill="'+GI+'"/><path d="M30 134 h40" stroke="'+GM+'" stroke-width="1.6"/>',
-"12":'<line x1="24" y1="34" x2="76" y2="34" stroke="'+GM+'" stroke-width="3"/><line x1="50" y1="34" x2="50" y2="52" stroke="'+GM+'" stroke-width="2"/><g stroke="'+GI+'" stroke-width="2.4" fill="none" stroke-linecap="round"><circle cx="50" cy="62" r="8"/><path d="M50 70 L50 104"/><path d="M50 78 L38 90 M50 78 L62 90"/><path d="M50 104 L42 92 M50 104 L58 92"/></g><path d="M28 130 q22 12 44 0" stroke="'+GM+'" stroke-width="1.8" fill="none"/>',
-"13":'<path d="M30 40 L74 96" stroke="'+GI+'" stroke-width="3" stroke-linecap="round"/><path d="M74 96 q16 10 7 26 q-2 -13 -15 -17 Z" fill="'+GI+'"/><g stroke="#e08a8a" stroke-width="2" fill="none"><circle cx="40" cy="122" r="6"/><path d="M40 116 q6 -9 12 -5 M40 116 q-6 -9 -12 -5"/></g><circle cx="40" cy="122" r="2.5" fill="#e08a8a"/>',
-"14":'<path d="M30 42 h22 q0 15 -11 17 q-11 -2 -11 -17 Z" fill="none" stroke="#5cc8ff" stroke-width="2.2"/><path d="M66 72 h22 q0 15 -11 17 q-11 -2 -11 -17 Z" fill="none" stroke="#5cc8ff" stroke-width="2.2"/><path d="M52 54 q13 4 13 21" stroke="#5cc8ff" stroke-width="2" fill="none" stroke-dasharray="4 4"/><path d="M28 132 h44 M34 126 l-6 6 M66 126 l6 6" stroke="'+GM+'" stroke-width="1.8"/><path d="M50 20 l6 12 h-12 Z" fill="'+GK+'"/>',
-"15":'<path d="M34 44 q-9 -14 1 -23 M66 44 q9 -14 -1 -23" stroke="'+GM+'" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M50 34 l4.5 9 10 .8 -7.6 6.8 2.3 9.9 -9.2 -5.4 -9.2 5.4 2.3 -9.9 -7.6 -6.8 10 -.8 Z" fill="none" stroke="'+GD+'" stroke-width="1.8" transform="rotate(180 50 44)"/><circle cx="42" cy="54" r="2.5" fill="#e08a8a"/><circle cx="58" cy="54" r="2.5" fill="#e08a8a"/><path d="M38 98 h24 M43 98 v14 M57 98 v14" stroke="'+GM+'" stroke-width="2.4"/><circle cx="43" cy="98" r="3.5" fill="none" stroke="'+GM+'" stroke-width="1.8"/><circle cx="57" cy="98" r="3.5" fill="none" stroke="'+GM+'" stroke-width="1.8"/>',
-"16":'<path d="M38 142 V66 h24 V142 Z" fill="'+GB+'" stroke="'+GM+'" stroke-width="2.2"/><path d="M34 66 h32 M42 58 l-4 8 M50 56 v10 M58 58 l4 8" stroke="'+GM+'" stroke-width="2"/><path d="M64 20 L50 44 l10 2 -14 24" stroke="'+GK+'" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M28 96 l-8 10 h12 l-6 12" stroke="#ff8a5c" stroke-width="2" fill="none"/><path d="M20 142 h60" stroke="'+GM+'" stroke-width="1.6"/>',
-"17":'<path d="M50 16 l4.5 11 11.5 1 -8.7 7.6 2.6 11.4 -9.9 -6 -9.9 6 2.6 -11.4 -8.7 -7.6 11.5 -1 Z" fill="'+GK+'"/><g fill="'+GK+'"><circle cx="26" cy="32" r="2"/><circle cx="74" cy="32" r="2"/><circle cx="18" cy="46" r="1.6"/><circle cx="82" cy="46" r="1.6"/><circle cx="34" cy="22" r="1.6"/><circle cx="66" cy="22" r="1.6"/><circle cx="50" cy="10" r="1.6"/></g><path d="M36 96 q-6 10 0 16 q6 6 0 14" stroke="#5cc8ff" stroke-width="2.2" fill="none"/><path d="M64 96 q6 10 0 16 q-6 6 0 14" stroke="#5cc8ff" stroke-width="2.2" fill="none"/><path d="M20 142 h60" stroke="#5cc8ff" stroke-width="1.8"/>',
-"18":'<path d="M60 34 a17 17 0 1 1 -13 -28 a14 14 0 1 0 13 28" fill="'+GK+'" opacity="0.9"/><g stroke="'+GM+'" stroke-width="2" fill="none"><line x1="20" y1="122" x2="20" y2="90"/><line x1="80" y1="122" x2="80" y2="90"/><path d="M16 90 h8 M76 90 h8"/></g><path d="M30 142 q20 -14 40 0" stroke="'+GM+'" stroke-width="1.8" fill="none" stroke-dasharray="3 4"/><path d="M36 100 l4 -8 4 8 -4 8 Z" fill="#ff8a5c" opacity="0.6"/>',
-"19":'<circle cx="50" cy="50" r="20" fill="none" stroke="'+GK+'" stroke-width="3"/><g stroke="'+GK+'" stroke-width="2.4" stroke-linecap="round"><line x1="50" y1="18" x2="50" y2="26"/><line x1="50" y1="74" x2="50" y2="82"/><line x1="18" y1="50" x2="26" y2="50"/><line x1="74" y1="50" x2="82" y2="50"/><line x1="27" y1="27" x2="33" y2="33"/><line x1="67" y1="67" x2="73" y2="73"/><line x1="73" y1="27" x2="67" y2="33"/><line x1="33" y1="67" x2="27" y2="73"/></g><circle cx="44" cy="46" r="2" fill="#171031"/><circle cx="56" cy="46" r="2" fill="#171031"/><path d="M44 56 q6 5 12 0" stroke="#171031" stroke-width="1.8" fill="none"/><path d="M50 108 q-10 -6 -8 -16 M50 108 q10 -6 8 -16" stroke="#ff8a5c" stroke-width="2" fill="none"/><circle cx="50" cy="112" r="5" fill="#ff8a5c" opacity="0.7"/>',
-"20":'<path d="M28 46 q22 -24 44 0 l-8 7 q-14 -16 -28 0 Z" fill="'+GK+'"/><line x1="70" y1="46" x2="84" y2="34" stroke="'+GK+'" stroke-width="2.4"/><path d="M84 30 l5 9 -9 2 Z" fill="'+GK+'"/><g stroke="'+GI+'" stroke-width="2.2" fill="none"><path d="M30 122 q4 -24 20 -24 q16 0 20 24"/><circle cx="50" cy="88" r="7"/></g><path d="M24 140 h52" stroke="'+GM+'" stroke-width="1.8"/>',
-"21":'<ellipse cx="50" cy="82" rx="26" ry="40" fill="none" stroke="'+GK+'" stroke-width="2.6"/><g stroke="'+GI+'" stroke-width="2.2" fill="none" stroke-linecap="round"><circle cx="50" cy="56" r="7"/><path d="M50 63 Q42 80 46 100 L54 100 Q58 80 50 63"/><path d="M46 100 L40 118 M54 100 L60 118"/><path d="M48 72 L36 84 M52 72 L64 84"/></g><circle cx="20" cy="30" r="3" fill="'+GK+'"/><circle cx="80" cy="30" r="3" fill="'+GK+'"/><circle cx="20" cy="134" r="3" fill="'+GK+'"/><circle cx="80" cy="134" r="3" fill="'+GK+'"/>'
+"0":'<rect x="0" y="138" width="100" height="22" fill="#cdbf9a"/><path d="M0 150 L70 120 L100 150 Z" fill="'+GM+'" opacity=".5"/><circle cx="44" cy="74" r="9" fill="'+GB+'"/><path d="M44 83 L36 128 L52 128 Z" fill="'+GB+'"/><line x1="58" y1="70" x2="70" y2="42" stroke="'+GD+'" stroke-width="3"/><circle cx="72" cy="40" r="5" fill="none" stroke="'+GD+'" stroke-width="2"/><path d="M60 132 q-3 -12 9 -12 q9 0 9 12 Z" fill="'+GB+'"/>',
+"1":'<path d="M44 46 a6 6 0 1 1 6 0 a6 6 0 1 0 6 0" stroke="'+GD+'" stroke-width="2.5" fill="none"/><line x1="48" y1="52" x2="62" y2="30" stroke="#c0532f" stroke-width="3"/><circle cx="44" cy="66" r="9" fill="'+GB+'"/><path d="M44 75 L36 120 L52 120 Z" fill="'+GB+'"/><rect x="26" y="122" width="48" height="9" rx="2" fill="#2e2316"/><circle cx="32" cy="120" r="2.6" fill="#c0532f"/><circle cx="44" cy="120" r="2.6" fill="#2f6fb0"/><circle cx="56" cy="120" r="2.6" fill="#466b86"/><circle cx="68" cy="120" r="2.6" fill="#8a6a1e"/>',
+"2":'<rect x="22" y="44" width="10" height="100" fill="'+GM+'"/><rect x="68" y="44" width="10" height="100" fill="'+GM+'"/><circle cx="22" cy="40" r="6" fill="#2e2316"/><circle cx="78" cy="40" r="6" fill="#2e2316"/><path d="M50 56 q-9 0 -9 32 v44 q9 -10 18 0 v-44 q0 -32 -9 -32 Z" fill="'+GB+'"/><circle cx="50" cy="50" r="8" fill="'+GB+'"/><path d="M44 140 a7 7 0 1 0 12 0 a5 5 0 1 1 -12 0" fill="'+GD+'"/>',
+"3":'<circle cx="50" cy="56" r="9" fill="'+GB+'"/><path d="M50 65 L36 134 L64 134 Z" fill="'+GB+'"/><path d="M40 48 l4 -10 6 7 6 -7 4 10 Z" fill="'+GD+'"/><circle cx="50" cy="98" r="8" fill="none" stroke="#c0532f" stroke-width="2.6"/><line x1="50" y1="106" x2="50" y2="120" stroke="#c0532f" stroke-width="2.6"/><line x1="43" y1="113" x2="57" y2="113" stroke="#c0532f" stroke-width="2.6"/><path d="M30 134 q6 -16 10 0 M70 134 q-6 -16 -10 0" stroke="#8a6a1e" stroke-width="2" fill="none"/>',
+"4":'<path d="M10 144 L30 112 L46 144 Z" fill="'+GM+'" opacity=".5"/><path d="M54 144 L70 112 L90 144 Z" fill="'+GM+'" opacity=".5"/><rect x="30" y="58" width="40" height="86" rx="5" fill="#2e2316" stroke="'+GD+'" stroke-width="1"/><path d="M50 78 L34 138 L66 138 Z" fill="'+GB+'"/><circle cx="50" cy="68" r="9" fill="'+GB+'"/><path d="M44 74 q6 12 12 0 Z" fill="'+GB+'"/><path d="M40 60 l3 -11 5 8 5 -8 3 11 Z" fill="'+GD+'"/><line x1="72" y1="82" x2="72" y2="136" stroke="#c0532f" stroke-width="3"/>',
+"5":'<line x1="50" y1="34" x2="50" y2="72" stroke="'+GD+'" stroke-width="4"/><line x1="42" y1="40" x2="58" y2="40" stroke="'+GD+'" stroke-width="4"/><line x1="44" y1="52" x2="56" y2="52" stroke="'+GD+'" stroke-width="3"/><circle cx="50" cy="62" r="9" fill="'+GB+'"/><path d="M50 71 L40 118 L60 118 Z" fill="'+GB+'"/><circle cx="30" cy="96" r="6" fill="'+GB+'"/><path d="M30 102 L24 124 L36 124 Z" fill="'+GB+'"/><circle cx="70" cy="96" r="6" fill="'+GB+'"/><path d="M70 102 L64 124 L76 124 Z" fill="'+GB+'"/>',
+"6":'<circle cx="50" cy="40" r="11" fill="'+GD+'"/><g stroke="'+GD+'" stroke-width="2"><line x1="50" y1="22" x2="50" y2="28"/><line x1="32" y1="40" x2="38" y2="40"/><line x1="62" y1="40" x2="68" y2="40"/><line x1="37" y1="27" x2="41" y2="31"/><line x1="63" y1="27" x2="59" y2="31"/></g><circle cx="38" cy="92" r="8" fill="'+GB+'"/><path d="M38 100 L30 134 L46 134 Z" fill="'+GB+'"/><circle cx="62" cy="92" r="8" fill="'+GB+'"/><path d="M62 100 L54 134 L70 134 Z" fill="'+GB+'"/><path d="M50 60 v40" stroke="'+GM+'" stroke-width="2" stroke-dasharray="3 3"/>',
+"7":'<circle cx="34" cy="126" r="11" fill="none" stroke="'+GM+'" stroke-width="3"/><circle cx="66" cy="126" r="11" fill="none" stroke="'+GM+'" stroke-width="3"/><rect x="26" y="92" width="48" height="32" rx="4" fill="#2e2316"/><path d="M50 62 l4 9 9 1 -7 6 2 9 -8 -5 -8 5 2 -9 -7 -6 9 -1 Z" fill="'+GD+'"/><circle cx="50" cy="82" r="7" fill="'+GB+'"/><path d="M50 89 L44 92 L56 92 Z" fill="'+GB+'"/>',
+"8":'<path d="M50 46 a5 5 0 1 1 5 0 a5 5 0 1 0 5 0" stroke="'+GD+'" stroke-width="2" fill="none"/><circle cx="50" cy="58" r="8" fill="'+GB+'"/><path d="M50 66 L44 92 L56 92 Z" fill="'+GB+'"/><circle cx="50" cy="116" r="20" fill="#c0792f"/><path d="M32 110 l-5 -8 6 5 -3 -9 7 9 Z" fill="#9c5a1e"/><path d="M68 110 l5 -8 -6 5 3 -9 -7 9 Z" fill="#9c5a1e"/><path d="M50 96 l-5 -9 5 4 5 -4 Z" fill="#9c5a1e"/><circle cx="43" cy="112" r="2.4" fill="'+GB+'"/><circle cx="57" cy="112" r="2.4" fill="'+GB+'"/><path d="M46 122 q4 4 8 0" stroke="'+GB+'" stroke-width="1.6" fill="none"/>',
+"9":'<line x1="66" y1="40" x2="66" y2="132" stroke="'+GM+'" stroke-width="3"/><rect x="58" y="56" width="16" height="24" rx="3" fill="'+GD+'" stroke="'+GB+'" stroke-width="1.5"/><path d="M66 62 l3 5 5 .7 -3.6 3.4 1 5 -5.4 -3 -5.4 3 1 -5 -3.6 -3.4 5 -.7 Z" fill="'+GB+'"/><circle cx="42" cy="66" r="8" fill="'+GB+'"/><path d="M42 74 L34 122 L50 122 Z" fill="'+GB+'"/>',
+"10":'<circle cx="50" cy="90" r="30" fill="none" stroke="'+GD+'" stroke-width="4"/><circle cx="50" cy="90" r="12" fill="none" stroke="'+GD+'" stroke-width="3"/><g stroke="'+GD+'" stroke-width="2"><line x1="50" y1="60" x2="50" y2="120"/><line x1="20" y1="90" x2="80" y2="90"/><line x1="29" y1="69" x2="71" y2="111"/><line x1="71" y1="69" x2="29" y2="111"/></g><circle cx="50" cy="30" r="3" fill="'+GD+'"/><circle cx="50" cy="150" r="3" fill="'+GD+'"/><circle cx="14" cy="90" r="3" fill="'+GD+'"/><circle cx="86" cy="90" r="3" fill="'+GD+'"/>',
+"11":'<path d="M50 34 l5 24 h-10 Z" fill="#466b86"/><rect x="43" y="58" width="14" height="3.5" fill="#466b86"/><rect x="48" y="61" width="4" height="22" fill="#466b86"/><line x1="50" y1="64" x2="50" y2="94" stroke="'+GD+'" stroke-width="2"/><line x1="26" y1="76" x2="74" y2="76" stroke="'+GD+'" stroke-width="2"/><path d="M26 76 l-7 13 h14 Z" fill="none" stroke="'+GD+'" stroke-width="2"/><path d="M74 76 l-7 13 h14 Z" fill="none" stroke="'+GD+'" stroke-width="2"/><circle cx="50" cy="110" r="9" fill="'+GB+'"/><path d="M50 119 L42 140 L58 140 Z" fill="'+GB+'"/>',
+"12":'<line x1="22" y1="44" x2="78" y2="44" stroke="'+GM+'" stroke-width="4"/><line x1="50" y1="44" x2="50" y2="58" stroke="'+GM+'" stroke-width="4"/><circle cx="50" cy="66" r="8" fill="'+GB+'"/><path d="M50 58 L42 40 L58 40 Z" fill="'+GB+'"/><path d="M44 64 L34 74 M56 64 L66 74" stroke="'+GB+'" stroke-width="3"/><circle cx="50" cy="66" r="13" fill="none" stroke="'+GD+'" stroke-width="1.5" opacity=".6"/>',
+"13":'<circle cx="42" cy="94" r="17" fill="#f5efe0" stroke="'+GB+'" stroke-width="1.5"/><rect x="33" y="106" width="18" height="12" rx="4" fill="#f5efe0" stroke="'+GB+'" stroke-width="1.5"/><circle cx="36" cy="92" r="4.5" fill="'+GB+'"/><circle cx="48" cy="92" r="4.5" fill="'+GB+'"/><path d="M42 100 l-4 7 h8 Z" fill="'+GB+'"/><line x1="36" y1="112" x2="36" y2="116" stroke="'+GB+'" stroke-width="1"/><line x1="42" y1="112" x2="42" y2="116" stroke="'+GB+'" stroke-width="1"/><line x1="48" y1="112" x2="48" y2="116" stroke="'+GB+'" stroke-width="1"/><path d="M72 48 q22 12 8 44" stroke="'+GM+'" stroke-width="4" fill="none"/><path d="M76 48 q14 -7 17 9 q-13 -2 -17 -9 Z" fill="#cfd2d6"/>',
+"14":'<circle cx="50" cy="58" r="9" fill="'+GB+'"/><path d="M50 67 L40 116 L60 116 Z" fill="'+GB+'"/><path d="M28 86 h13 q0 11 -6.5 13 q-6.5 -2 -6.5 -13 Z" fill="#2f6fb0"/><rect x="33" y="99" width="2.5" height="7" fill="#2f6fb0"/><path d="M59 86 h13 q0 11 -6.5 13 q-6.5 -2 -6.5 -13 Z" fill="#2f6fb0"/><rect x="64" y="99" width="2.5" height="7" fill="#2f6fb0"/><path d="M34 99 q16 14 32 0" stroke="#2f6fb0" stroke-width="2.5" fill="none"/>',
+"15":'<path d="M50 26 l-6 13 15 1 -11 10 4 14 -12 -7 -12 7 4 -14 -11 -10 15 -1 Z" fill="none" stroke="'+GD+'" stroke-width="2"/><circle cx="50" cy="72" r="12" fill="'+GB+'"/><path d="M38 62 q-7 -11 -14 -9 M62 62 q7 -11 14 -9" stroke="'+GB+'" stroke-width="4" fill="none"/><circle cx="45" cy="72" r="2.2" fill="#e06a6a"/><circle cx="55" cy="72" r="2.2" fill="#e06a6a"/><circle cx="34" cy="124" r="6" fill="none" stroke="'+GD+'" stroke-width="2"/><circle cx="66" cy="124" r="6" fill="none" stroke="'+GD+'" stroke-width="2"/>',
+"16":'<rect x="40" y="58" width="20" height="84" fill="#2e2316"/><path d="M38 58 h24 l-4 -12 h-16 Z" fill="#2e2316"/><path d="M62 28 L46 66 l10 4 -16 32" stroke="'+GD+'" stroke-width="3.5" fill="none"/><path d="M30 142 q-4 -12 4 -16 M70 142 q4 -12 -4 -16" stroke="#c0532f" stroke-width="2.5" fill="none"/><circle cx="36" cy="120" r="4" fill="'+GB+'"/><circle cx="64" cy="120" r="4" fill="'+GB+'"/>',
+"17":'<path d="M50 28 l5 13 14 1 -10 9 3 14 -12 -7 -12 7 3 -14 -10 -9 14 -1 Z" fill="'+GD+'"/><circle cx="26" cy="40" r="2" fill="'+GD+'"/><circle cx="74" cy="40" r="2" fill="'+GD+'"/><circle cx="18" cy="58" r="1.6" fill="'+GD+'"/><circle cx="82" cy="58" r="1.6" fill="'+GD+'"/><circle cx="50" cy="94" r="9" fill="'+GB+'"/><path d="M50 103 L40 142 L60 142 Z" fill="'+GB+'"/><path d="M26 148 q8 -7 16 0 t16 0 t16 0" stroke="#2f6fb0" stroke-width="2.5" fill="none"/>',
+"18":'<path d="M66 38 a18 18 0 1 1 -14 -30 a14 14 0 1 0 14 30" fill="'+GD+'"/><rect x="20" y="98" width="13" height="44" fill="'+GM+'"/><rect x="67" y="98" width="13" height="44" fill="'+GM+'"/><path d="M30 140 q-2 -12 9 -12 q9 0 9 12 Z" fill="'+GB+'"/><path d="M62 140 q-3 -15 13 -15 q11 0 11 15 Z" fill="'+GB+'"/><path d="M50 144 v-22" stroke="'+GM+'" stroke-width="2" stroke-dasharray="3 3"/>',
+"19":'<g stroke="'+GD+'" stroke-width="2.5"><line x1="50" y1="40" x2="50" y2="30"/><line x1="50" y1="64" x2="50" y2="74"/><line x1="24" y1="52" x2="14" y2="52"/><line x1="76" y1="52" x2="86" y2="52"/><line x1="32" y1="34" x2="25" y2="27"/><line x1="68" y1="34" x2="75" y2="27"/><line x1="32" y1="70" x2="25" y2="77"/><line x1="68" y1="70" x2="75" y2="77"/></g><circle cx="50" cy="52" r="20" fill="'+GD+'"/><circle cx="44" cy="50" r="2" fill="'+GB+'"/><circle cx="56" cy="50" r="2" fill="'+GB+'"/><path d="M44 58 q6 5 12 0" stroke="'+GB+'" stroke-width="1.8" fill="none"/><circle cx="38" cy="122" r="6" fill="'+GB+'"/><circle cx="62" cy="122" r="6" fill="'+GB+'"/>',
+"20":'<path d="M26 52 q24 -22 48 0 Z" fill="'+GM+'" opacity=".4"/><path d="M40 52 l22 -16 l8 12 -16 12 Z" fill="'+GD+'"/><rect x="34" y="48" width="9" height="5" fill="'+GD+'"/><path d="M70 34 q7 7 0 15" stroke="'+GD+'" stroke-width="2" fill="none"/><rect x="30" y="122" width="12" height="22" rx="3" fill="none" stroke="'+GB+'" stroke-width="2"/><circle cx="36" cy="118" r="4" fill="'+GB+'"/><rect x="44" y="118" width="12" height="26" rx="3" fill="none" stroke="'+GB+'" stroke-width="2"/><circle cx="50" cy="114" r="4" fill="'+GB+'"/><rect x="58" y="122" width="12" height="22" rx="3" fill="none" stroke="'+GB+'" stroke-width="2"/><circle cx="64" cy="118" r="4" fill="'+GB+'"/>',
+"21":'<ellipse cx="50" cy="86" rx="28" ry="42" fill="none" stroke="'+GD+'" stroke-width="4"/><circle cx="50" cy="62" r="8" fill="'+GB+'"/><path d="M50 70 Q42 92 46 112 L54 112 Q58 92 50 70 Z" fill="'+GB+'"/><path d="M46 82 L34 94 M54 82 L66 94 M48 112 L42 128 M52 112 L58 128" stroke="'+GB+'" stroke-width="3"/><circle cx="20" cy="40" r="3" fill="'+GD+'"/><circle cx="80" cy="40" r="3" fill="'+GD+'"/><circle cx="20" cy="132" r="3" fill="'+GD+'"/><circle cx="80" cy="132" r="3" fill="'+GD+'"/>'
 };
 function cardArt(c){
   let body='';
   if(c.group==='大阿尔克纳'){ body=MAJOR_ART[c.n]||''; }
   else{
     const rank=parseInt(c.n.slice(1),10);
-    if(rank<=10){ body=pipPts(rank).map(p=>gSuit(c.group,p[0],p[1],rank===1?2.1:1.15)).join(''); }
+    if(rank<=10){ const wm='<g opacity="0.08">'+gSuit(c.group,50,84,3.0)+'</g>'; body=wm+pipPts(rank).map(p=>gSuit(c.group,p[0],p[1],rank===1?2.0:1.15)).join(''); }
     else { body=courtArt(rank,c.group); }
   }
   return '<svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">'+
-    '<rect x="1" y="1" width="98" height="158" rx="8" fill="#171031" stroke="'+GD+'" stroke-width="1.2"/>'+
-    '<rect x="6" y="6" width="88" height="148" rx="5" fill="none" stroke="'+GD+'" stroke-width="0.6" opacity="0.5"/>'+
-    body+'</svg>';
+    '<rect x="1" y="1" width="98" height="158" rx="8" fill="#f0e3c4" stroke="'+GD+'" stroke-width="1.4"/>'+
+    '<rect x="5" y="5" width="90" height="150" rx="5" fill="none" stroke="'+GD+'" stroke-width="0.7" opacity="0.7"/>'+
+    '<rect x="5" y="4" width="90" height="20" rx="4" fill="#efe2c2" stroke="'+GD+'" stroke-width="0.6"/>'+
+    '<text x="50" y="16.5" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#3a2c1c" font-family="sans-serif">'+c.name+'</text>'+
+    '<g transform="translate(0,6)">'+body+'</g></svg>';
 }
 
 /* ================= 综合解读引擎（按牌阵连读） ================= */
