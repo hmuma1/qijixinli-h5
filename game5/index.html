@@ -146,7 +146,7 @@ function move(e){
 }
 cv.addEventListener('pointerdown',down);cv.addEventListener('pointermove',move);
 cv.addEventListener('pointerup',function(){last=null;});
-window.__onfit=function(){SH=[];for(var i=0;i<7;i++){var s=newShape();s.y=Math.random()*H;s.vy=-Math.abs(s.vy);SH.push(s);}badge();};
+window.__onfit=function(){SH=[];for(var i=0;i<9;i++){var s=newShape();s.y=120+Math.random()*Math.max(120,H-300);s.vy=-Math.abs(s.vy);SH.push(s);}badge();};
 function loop(now){
   bg(now);
   for(var i=0;i<SH.length;i++){var s=SH[i];
