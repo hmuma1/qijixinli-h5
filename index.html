@@ -166,17 +166,13 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
   </div>
 
   <div class="entry">
-    <a class="ebtn" id="gzhBtn" href="javascript:void(0)">
+    <a class="ebtn" id="gzhBtn" href="javascript:void(0)" style="grid-column:1/-1">
       <span class="eico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.2 7.7L3 21l1.8-5.8A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg></span>
-      <b>关注公众号</b><small>每日一签 · 心理解读</small><span class="earrow">点击进入 ›</span>
-    </a>
-    <a class="ebtn" id="msgBtn" href="javascript:void(0)">
-      <span class="eico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.2 7.7L3 21l1.8-5.8A8.5 8.5 0 1 1 21 11.5z"/><path d="M8 10.5h8M8 14h5"/></svg></span>
-      <b>去公众号留言</b><small>报分数 · 上成绩榜</small><span class="earrow">点击进入 ›</span>
+      <b>关注公众号「奇迹心li」</b><small>每天一点轻松 · 更多解压小游戏</small><span class="earrow">点击进入 ›</span>
     </a>
     <a class="gbar" id="gamesBtn" href="games.html">
       <span class="gico"><svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5-4.7-4.6 6.6-.9z"/></svg></span>
-      <span class="gtxt"><b>游戏中心 · 捕星 30 秒</b><small>多款小游戏一个入口 · 点开即玩，不用扫码</small></span>
+      <span class="gtxt"><b>游戏中心 · 6 款解压小游戏</b><small>一个入口 · 点开即玩，不用关注也能玩</small></span>
       <span class="garrow">›</span>
     </a>
   </div>
@@ -184,10 +180,9 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
   <div class="emodal" id="gzhModal">
     <div class="ebox">
       <h3>关注公众号「奇迹心li」</h3>
-      <p>微信<b>不提供对外可点的公众号主页链接</b>（拼主页地址会撞验证页）。能稳定到达你公众号的是这两条：</p>
-      <p>① <b>在微信里打开我的文章</b>：点标题下方蓝色「奇迹心li」即可进主页关注。电脑浏览器里只能看文章，关注请在微信里操作。</p>
+      <p>一步就好，<b>关注完继续玩就行</b>。选一个方便的方式：</p>
+      <p>① <b>在微信里打开文章</b>：点标题下方蓝色「奇迹心li」即可进主页关注。</p>
       <p>② <b>复制名称去微信搜索</b>：点下面按钮复制「奇迹心li」，粘到微信搜索框就能找到你的号。</p>
-      <p>③ <b>报分数上成绩榜</b>：玩「捕星 30 秒」结算后点「去留言」，在文章底部留言报分，每周挑高分上墙。</p>
       <a class="btn" id="goArticle" href="https://mp.weixin.qq.com/s/ZEUDP3mg3K0vE88K5bFf4g">打开公众号文章 ›</a>
       <button class="btn" id="copyGzh">复制公众号名称「奇迹心li」</button>
       <button class="btn ghost sm" id="gzhClose">关闭</button>
@@ -548,17 +543,15 @@ const LINKS = {
 const GZH_NAME = '奇迹心li';
 (function(){
   const gzhBtn=document.getElementById('gzhBtn'), gzhModal=document.getElementById('gzhModal');
-  const msgBtn=document.getElementById('msgBtn');
   const open=m=>m&&m.classList.add('on'), close=m=>m&&m.classList.remove('on');
   const inWeChat=/MicroMessenger/i.test(navigator.userAgent);
-  /* 两枚按钮都只给公众号导流：微信内直达文章，外部浏览器给说明与复制入口 */
+  /* 关注按钮：微信内直达文章，外部浏览器给说明与复制入口 */
   const goGzh=function(e){
     if(e) e.preventDefault();
     if(LINKS.gzhArticle && inWeChat){ location.href=LINKS.gzhArticle; return; }
     open(gzhModal);
   };
   if(gzhBtn) gzhBtn.addEventListener('click',goGzh);
-  if(msgBtn) msgBtn.addEventListener('click',goGzh);
   const gz=document.getElementById('gzhClose');
   if(gz) gz.addEventListener('click',()=>close(gzhModal));
   [gzhModal].forEach(m=>m&&m.addEventListener('click',e=>{ if(e.target===m) close(m); }));
