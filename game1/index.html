@@ -165,8 +165,6 @@ h1{margin:0;font-size:46px;line-height:1.06;letter-spacing:2px;
 .ctaHot{display:none;background:linear-gradient(135deg,rgba(217,178,95,.14),rgba(240,215,154,.03));
   border:1px solid rgba(217,178,95,.42);border-radius:14px;padding:15px 16px}
 .gzhCta.hot .ctaHot{display:block}
-.ctaMini{display:none;font-size:11.5px;color:#9b8fb8;text-decoration:none;letter-spacing:.5px}
-.gzhCta:not(.hot) .ctaMini{display:inline-block}
 .ctaTag{display:inline-block;font-size:10.5px;letter-spacing:2px;color:#f0d79a;
   border:1px solid rgba(217,178,95,.5);border-radius:10px;padding:2px 10px;margin-bottom:9px}
 .ctaHot p{font-size:12.5px;color:#ece6f5;line-height:1.8;margin:0 0 12px}
@@ -233,12 +231,11 @@ h1{margin:0;font-size:46px;line-height:1.06;letter-spacing:2px;
     </div>
     <div class="gzhCta" id="gzhCta" style="display:none">
       <div class="ctaHot">
-        <div class="ctaTag">成绩上榜</div>
-        <p>这局 <b id="ctaScore">0</b> 分，去公众号「奇迹心li」<b>留言报个数</b>，看看有没有人比你高。</p>
-        <a class="ctaBtn" id="ctaBtn" href="https://mp.weixin.qq.com/s/ZEUDP3mg3K0vE88K5bFf4g">去留言 · 顺便关注 ›</a>
-        <small>微信里打开可直接留言；电脑上只能看文章，留言请在微信里操作</small>
+        <div class="ctaTag">留一点轻松给自己</div>
+        <p>喜欢玩的话，去关注公众号 <b>「奇迹心li」</b>，更多解压小游戏都在这儿。</p>
+        <a class="ctaBtn" id="ctaBtn" href="https://mp.weixin.qq.com/s/ZEUDP3mg3K0vE88K5bFf4g">关注「奇迹心li」›</a>
+        <small>微信里打开文章，点标题下蓝字即可关注 · 不关注也能继续玩</small>
       </div>
-      <a class="ctaMini" id="ctaMini" href="https://mp.weixin.qq.com/s/ZEUDP3mg3K0vE88K5bFf4g">去「奇迹心li」看成绩榜 ›</a>
     </div>
     <div class="rbtns">
       <button class="btn" id="btnAgain">再来一局</button>
@@ -302,9 +299,9 @@ const GAME = {
 /* ---------------- 公众号导流（软钩子，绝不设墙） ----------------
    触发规则：
      第 1 局结算  → 完全不出现，先让人玩爽
-     第 2 局结算  → 强卡片（玩了两次 = 兴趣已验证，且刚有成绩可晒）
-     破纪录 / S 级 → 提前给强卡片（情绪峰值，转化最好）
-     第 3 局起    → 只留一行小字；每 3 局再强调一次，避免反复打扰
+     第 1 局结算  → 完全不出现（先让人玩爽）
+     第 2 局起    → 显示一张温和的关注卡，不遮罩、不拦截
+   只求一个「关注」，没有第二步动作，整个互动一步结束。
    底线：「再来一局」永远可点，不会因为没关注而拦人。 */
 const GZH = {
   name: '奇迹心li',
@@ -313,15 +310,13 @@ const GZH = {
 const CTA_KEY='game1_star_play_count';  /* 独立命名空间，不与其他游戏冲突 */
 function playCount(){ try{ return parseInt(localStorage.getItem(CTA_KEY)||'0',10)||0; }catch(e){ return 0; } }
 function bumpPlayCount(){ const n=playCount()+1; try{ localStorage.setItem(CTA_KEY,String(n)); }catch(e){} return n; }
-function showCta(score,rank,isRec,n){
+function showCta(n){
   const box=$('#gzhCta'); if(!box) return;
-  /* 第 1 局完全不出现（首次玩排行榜为空，必然算破纪录，不能让它提前打扰） */
+  /* 第 1 局完全不出现，先让人玩爽；之后每次结算给一张温和关注卡 */
   if(n<2){ box.style.display='none'; TRACK('gzh_cta_skip',{play:n}); return; }
-  const hot = n===2 || isRec || rank==='S' || (n>=5 && n%3===2);
-  box.classList.toggle('hot',hot);
+  box.classList.add('hot');
   box.style.display='block';
-  const el=$('#ctaScore'); if(el) el.textContent=score;
-  TRACK('gzh_cta_show',{play:n,score:score,hot:hot?1:0});
+  TRACK('gzh_cta_show',{play:n});
 }
 function TRACK(event, payload){
   /* 百度统计事件上报；脚本未加载时静默跳过 */
@@ -476,7 +471,7 @@ function finish(){
   const before=getBoard(); const isRec=!before.length||snap.score>before[0].s;
   $('#rRec').classList.toggle('on',isRec);
   addBoard(snap.score); renderBoard();
-  showCta(snap.score,rk,isRec,bumpPlayCount());
+  showCta(bumpPlayCount());
   LAST={score:snap.score,rank:rk,title,combo:snap.maxCombo,hit:rate};
   beep(760,.18,'triangle',.1); setTimeout(()=>beep(980,.22,'triangle',.09),140);
   TRACK('game_finish',{score:snap.score,rank:rk,combo:snap.maxCombo,hit:rate});
@@ -546,7 +541,7 @@ $('#btnHow').onclick=()=>$('#sheetHow').classList.add('on');
 $('#btnBoard').onclick=()=>{ renderBoard(); $('#sheetBoard').classList.add('on'); };
 $('#btnBoard2').onclick=()=>{ renderBoard(); $('#sheetBoard').classList.add('on'); };
 $('#btnPoster').onclick=()=>{ if(!LAST) return; drawPoster(); $('#sheetPoster').classList.add('on'); TRACK('poster_generate',{score:LAST.score}); };
-['ctaBtn','ctaMini'].forEach(id=>{ const el=document.getElementById(id);
+['ctaBtn'].forEach(id=>{ const el=document.getElementById(id);
   if(el) el.addEventListener('click',()=>TRACK('gzh_cta_click',{play:playCount(),from:id})); });
 $('#btnDl').onclick=()=>{ const a=document.createElement('a');
   a.download='捕星战绩.png'; a.href=$('#poster').toDataURL('image/png'); a.click(); TRACK('poster_download',{}); };
