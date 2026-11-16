@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>小游戏索引 · 塔罗问迹</title>
+<!--
+  ============================================================
+  新增小游戏的约定（防止互相干扰 / 便于长期扩展）
+  ------------------------------------------------------------
+  1. 每个小游戏独占一个目录，前缀递增：game1/、game2/、game3/ …
+     入口固定为该目录下的 index.html，例如：
+       https://hmuma1.github.io/qijixinli-h5/game2/
+  2. 每个游戏的 localStorage / sessionStorage / cookie 的 key，
+     必须以自己的前缀开头（如 game2_xxx），不得共用、不得省略前缀。
+     原因：同一域名下所有页面共享存储，key 撞名会互相覆盖。
+  3. 每个游戏自带「‹ 返回塔罗问迹」链接指向 ../index.html，
+     并在本页表格登记一行。样式、变量、全局函数一律写在自己文件内，
+     不跨页面引用其它游戏的 JS/CSS。
+  4. 单文件自包含、零外链，离线可跑；不改动主站 index.html 的抽牌逻辑。
+  ============================================================
+-->
+<style>
+:root{--bg:#0e0b1a;--card:#1c1633;--card2:#241b40;--gold:#d9b25f;--gold2:#f0d79a;
+--ink:#ece6f5;--mut:#9b8fb8;--line:rgba(217,178,95,.28)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(120% 80% at 50% 0%,#241b40,#0e0b1a 70%);
+color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+padding:38px 16px 46px;user-select:none}
+.wrap{max-width:520px;margin:0 auto}
+.logo{text-align:center;font-size:12px;letter-spacing:.4em;color:var(--gold);margin-bottom:12px}
+h1{text-align:center;font-size:29px;margin:0 0 6px;color:var(--gold2);letter-spacing:2px}
+.sub{text-align:center;font-size:12.5px;color:var(--mut);margin-bottom:26px;line-height:1.7}
+.item{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+border-radius:14px;padding:16px 15px;margin-bottom:12px;text-decoration:none;color:var(--ink)}
+.item:hover{background:var(--card2);border-color:var(--gold)}
+.badge{flex:none;width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(135deg,rgba(217,178,95,.22),rgba(240,215,154,.05));
+border:1px solid var(--line);font-size:13px;font-weight:800;color:var(--gold2);letter-spacing:.5px}
+.txt b{display:block;font-size:15px;color:var(--gold2);margin-bottom:4px}
+.txt small{display:block;font-size:11.5px;color:var(--mut);line-height:1.6}
+.arrow{margin-left:auto;color:var(--gold);font-size:19px;opacity:.7}
+.rule{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:14px;
+padding:16px 18px;margin-top:24px;font-size:12px;color:var(--mut);line-height:2}
+.rule b{color:var(--gold2)}
+.back{display:block;text-align:center;margin-top:26px;color:var(--mut);font-size:12.5px;
+text-decoration:none;letter-spacing:1px}
+.foot{text-align:center;margin-top:30px;font-size:11px;color:var(--mut);opacity:.75;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">TAROT WENJI</div>
+  <h1>小游戏索引</h1>
+  <p class="sub">每个游戏有独立前缀，互不干扰 · 点开即玩</p>
+
+  <a class="item" href="game1/">
+    <div class="badge">G1</div>
+    <div class="txt"><b>捕星 30 秒</b><small>30 秒连击挑战 · 抓流星躲黑洞<br>前缀 game1/ · 独立存储 game1_*</small></div>
+    <div class="arrow">›</div>
+  </a>
+
+  <!-- 新增游戏时复制上面这一段，把 game1 → game2、G1 → G2，并登记存储前缀 -->
+
+  <div class="rule">
+    <b>新增约定</b><br>
+    ① 每游戏独占目录，前缀递增：<b>game1/ · game2/ · game3/ …</b><br>
+    ② 存储 key 必须带自己前缀（<b>game2_xxx</b>），同域名下才不会互相覆盖<br>
+    ③ 样式与脚本写在自己文件内，不跨游戏引用<br>
+    ④ 自带「返回塔罗问迹」链接，并在此页登记一行
+  </div>
+
+  <a class="back" href="index.html">‹ 返回塔罗问迹</a>
+  <div class="foot">本页为入口索引，仅供自我觉察与娱乐<br>来自「奇迹心li」</div>
+</div>
+</body>
+</html>
