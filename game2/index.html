@@ -3,147 +3,227 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>一池星涟 · 塔罗问迹</title>
+<title>白鸥礁 · 奇历小岛</title>
 <script>
 var _hmt=_hmt||[];
 (function(){var hm=document.createElement('script');
 hm.src='https://hm.baidu.com/hm.js?e8ffc5809fb30e7ae87e03bc0fce1bfc';
 var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm,s);})();
-function TRACK(e,p){try{if(window._hmt)window._hmt.push(['_trackEvent','game2_ripple',e,JSON.stringify(p||{})]);}catch(x){}}
+function TRACK(e,p){try{if(window._hmt)window._hmt.push(['_trackEvent','island_gull',e,JSON.stringify(p||{})]);}catch(x){}}
+var GZH_BIZ='Mzg4NjQ3MjM3NQ==',GZH_NAME='奇迹心li';
+var GZH_HOME='https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz='+GZH_BIZ+'&scene=124#wechat_redirect';
+var inWeChat=/MicroMessenger/i.test(navigator.userAgent);
 </script>
 <style>
-:root{--bg:#0c0a1c;--gold:#d9b25f;--gold2:#f0d79a;--ink:#ece6f5;--mut:#9b8fb8;--line:rgba(217,178,95,.28)}
+:root{--sea:#2d6b63;--sea2:#3f847a;--cream:#f7f4ec;--ink:#2b4a47;--mut:#7a9993;--line:rgba(45,107,99,.18)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--cream);color:var(--ink);
 font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;user-select:none;touch-action:none}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block}
 .top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
-padding:14px 16px;pointer-events:none}
-.top a{pointer-events:auto;text-decoration:none;color:var(--mut);font-size:12.5px;letter-spacing:1px;
-background:rgba(12,10,28,.5);border:1px solid var(--line);border-radius:20px;padding:7px 13px}
-.top .name{color:var(--gold2);font-size:13px;letter-spacing:2px;text-shadow:0 0 12px rgba(240,215,154,.5)}
-.hint{position:fixed;left:0;right:0;bottom:80px;z-index:5;text-align:center;color:var(--mut);
-font-size:12px;letter-spacing:1px;pointer-events:none;line-height:1.8;text-shadow:0 1px 6px #000}
-.hint b{color:var(--gold2);font-weight:500}
-.gzh{position:fixed;left:14px;right:14px;bottom:14px;z-index:6;text-decoration:none;
-display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,rgba(217,178,95,.16),rgba(240,215,154,.04));
-border:1px solid var(--line);border-radius:14px;padding:11px 14px;color:var(--ink)}
-.gzh .ic{flex:none;width:30px;height:30px;border-radius:9px;background:rgba(217,178,95,.18);
-display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--gold2)}
+padding:12px 14px;pointer-events:none}
+.top a,.top button{pointer-events:auto;text-decoration:none;color:var(--sea);font-size:12px;letter-spacing:1px;
+background:rgba(247,244,236,.8);border:1px solid var(--line);border-radius:20px;padding:7px 13px;cursor:pointer}
+.top .name{color:var(--sea);font-size:13.5px;letter-spacing:2px;font-weight:600;background:transparent;border:none}
+.hint{position:fixed;left:0;right:0;top:62px;z-index:5;text-align:center;color:var(--sea);
+font-size:13px;letter-spacing:1px;pointer-events:none;line-height:1.7;font-weight:500}
+.hint small{color:var(--mut);font-size:11px;font-weight:400;display:block}
+.act{position:fixed;left:0;right:0;bottom:98px;z-index:6;text-align:center}
+.act button{background:var(--sea);color:#fff;border:none;border-radius:26px;padding:13px 42px;
+font-size:14px;letter-spacing:2px;cursor:pointer;box-shadow:0 6px 18px rgba(45,107,99,.28)}
+.act button:active{transform:scale(.97)}
+.prog{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:6;font-size:11px;color:var(--mut);letter-spacing:1px}
+.tabs{position:fixed;left:0;right:0;bottom:58px;z-index:6;display:flex;justify-content:center;gap:8px}
+.tabs a,.tabs span{font-size:11px;letter-spacing:1px;color:var(--mut);text-decoration:none;
+background:rgba(247,244,236,.7);border:1px solid var(--line);border-radius:16px;padding:6px 12px}
+.tabs .cur{color:#fff;background:var(--sea2);border-color:var(--sea2)}
+.gzh{position:fixed;left:14px;right:14px;bottom:10px;z-index:6;text-decoration:none;
+display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.82);
+border:1px solid var(--line);border-radius:14px;padding:9px 13px;color:var(--ink)}
+.gzh .ic{flex:none;width:28px;height:28px;border-radius:9px;background:rgba(45,107,99,.12);
+display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--sea)}
 .gzh .tx{flex:1;min-width:0}
-.gzh b{display:block;font-size:12.5px;color:var(--gold2);font-weight:500}
-.gzh small{display:block;font-size:10.5px;color:var(--mut);margin-top:1px}
-.gzh .ar{color:var(--gold);opacity:.7;font-size:16px}
-.tools{position:fixed;right:14px;top:60px;z-index:6;display:flex;flex-direction:column;gap:8px}
-.tools button{background:rgba(12,10,28,.55);border:1px solid var(--line);color:var(--gold2);
-font-size:11.5px;letter-spacing:1px;border-radius:18px;padding:8px 13px;cursor:pointer}
-.tools button:active{background:rgba(217,178,95,.22)}
-.badge{position:fixed;left:14px;top:60px;z-index:6;font-size:12px;color:var(--gold2);
-background:rgba(12,10,28,.5);border:1px solid var(--line);border-radius:16px;padding:7px 12px;letter-spacing:1px}
-.badge b{font-weight:600}
+.gzh b{display:block;font-size:12px;color:var(--sea);font-weight:600}
+.gzh small{display:block;font-size:10px;color:var(--mut);margin-top:1px}
+.gzh .ar{color:var(--sea2);font-size:16px}
+.setting{position:fixed;right:14px;top:56px;z-index:7;background:rgba(255,255,255,.96);
+border:1px solid var(--line);border-radius:16px;padding:18px;width:252px;box-shadow:0 8px 30px rgba(45,74,71,.18);display:none}
+.setting.show{display:block}
+.setting h3{margin:0 0 14px;font-size:15px;color:var(--sea);text-align:center;letter-spacing:2px}
+.setting .row{display:flex;align-items:center;justify-content:space-between;padding:10px 2px;font-size:12.5px;color:var(--ink)}
+.setting .row small{display:block;color:var(--mut);font-size:10px;margin-top:2px}
+.setting .sw{width:44px;height:25px;border-radius:14px;background:#cdd8d3;position:relative;cursor:pointer;transition:background .2s;flex:none}
+.setting .sw.on{background:var(--sea2)}
+.setting .sw i{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.setting .sw.on i{left:22px}
+.setting .rec{margin-top:12px;background:rgba(45,107,99,.06);border-radius:10px;padding:11px 12px;font-size:11px;color:var(--mut);line-height:1.8}
+.setting .rec b{color:var(--sea2)}
+.setting .close{display:block;width:100%;margin-top:14px;background:var(--sea);color:#fff;border:none;border-radius:20px;padding:9px;font-size:12.5px;letter-spacing:2px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:152px;transform:translateX(-50%) translateY(14px);
+background:rgba(43,74,71,.92);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:20px;
+opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 <canvas id="cv"></canvas>
 <div class="top">
-  <a href="../games.html">‹ 游戏中心</a>
-  <span class="name">一池星涟</span>
-  <a href="../index.html">塔罗问迹</a>
+  <a href="../index.html">‹ 小岛</a>
+  <button class="name">白鸥礁</button>
+  <button id="setBtn">设置</button>
 </div>
-
-<div class="hint">随意点一下 · 什么都不用做<br>听一声，看一圈光慢慢散开</div>
-
-<a class="gzh" id="gzhBtn" href="https://mp.weixin.qq.com/s/ZEUDP3mg3K0vE88K5bFf4g">
+<div class="hint" id="hint">撒一把谷，看海鸥落下来<small id="hintSub">点哪里，谷就撒在哪里</small></div>
+<div class="prog" id="prog">0 / 24</div>
+<div class="act"><button id="actBtn">再 撒 一 把</button></div>
+<div class="tabs">
+  <a href="../game1/index.html">龟背湾</a><span class="cur">白鸥礁</span><a href="../game3/index.html">星火滩</a>
+</div>
+<a class="gzh" href="javascript:void(0)" id="gzhBtn">
   <span class="ic">✦</span>
   <span class="tx"><b>关注「奇迹心li」</b><small>倾诉陪伴 · 分享思路</small></span>
   <span class="ar">›</span>
 </a>
+<div class="setting" id="setting">
+  <h3>设 置</h3>
+  <div class="row"><span>声音<small>海浪与海鸥的合唱</small></span><div class="sw on" id="swSound"><i></i></div></div>
+  <div class="row"><span>轻震动<small>谷粒落下的轻微反馈</small></span><div class="sw on" id="swVibe"><i></i></div></div>
+  <div class="rec">今天喂过 <b id="recToday">0</b> 把谷 · 共 <b id="recTotal">0</b> 把<br>数据只保存在本机，不含货币、商城与社交功能</div>
+  <button class="close" id="setClose">关闭</button>
+</div>
+<div class="toast" id="toast"></div>
+
 <script>
-/* 通用：WebAudio 合成音（无音频文件、无外部依赖） */
-var AC=null;
-function ACX(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return AC;}
-function TONE(freq,dur,type,vol){
-  var ac=ACX();if(!ac)return;
-  if(ac.state==='suspended')ac.resume();
-  var o=ac.createOscillator(),g=ac.createGain();
-  o.type=type||'sine';o.frequency.value=freq;
-  g.gain.setValueAtTime(0,ac.currentTime);
-  g.gain.linearRampToValueAtTime(vol||0.05,ac.currentTime+0.012);
-  g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+(dur||0.3));
-  o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+(dur||0.3)+0.02);
-}
-function NOISE(dur,vol){
-  var ac=ACX();if(!ac)return;
-  var n=Math.floor(ac.sampleRate*(dur||0.08)),buf=ac.createBuffer(1,n,ac.sampleRate),d=buf.getChannelData(0);
-  for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
-  var s=ac.createBufferSource(),g=ac.createGain(),f=ac.createBiquadFilter();
-  s.buffer=buf;f.type='highpass';f.frequency.value=900;g.gain.value=vol||0.045;
-  s.connect(f);f.connect(g);g.connect(ac.destination);s.start();
-}
-/* 通用：画布 / 自适应 / 星点背景 */
-var cv=document.getElementById('cv'),ctx=cv.getContext('2d'),W=0,H=0,DPR=1,__lw=0,__lh=0;
-function fit(){
-  DPR=Math.min(2,window.devicePixelRatio||1);W=window.innerWidth;H=window.innerHeight;
-  cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
-  var changed=Math.abs(W-__lw)>60||Math.abs(H-__lh)>120;__lw=W;__lh=H;
-  if(changed){initStars();if(window.__onfit)window.__onfit();}
-}
-window.addEventListener('resize',fit);
-var STARS=[];
-function initStars(){
-  STARS=[];var n=Math.min(90,Math.floor(W*H/9000));
-  for(var i=0;i<n;i++)STARS.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,a:Math.random()*.5+.15,ph:Math.random()*6.28});
-}
-function drawStars(t){
-  for(var i=0;i<STARS.length;i++){var s=STARS[i];
-    ctx.globalAlpha=s.a*(.6+.4*Math.sin(t/1400+s.ph));ctx.fillStyle='#fff';
-    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.283);ctx.fill();}
-  ctx.globalAlpha=1;
-}
-function bg(t){
-  var g=ctx.createRadialGradient(W*.5,H*.32,10,W*.5,H*.5,Math.max(W,H)*.9);
-  g.addColorStop(0,'#221a44');g.addColorStop(.55,'#130f2c');g.addColorStop(1,'#0a0818');
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);drawStars(t);
-}
-function pt(e){var t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY};}
-function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
-function load(k,d){try{return localStorage.getItem(k)||d;}catch(e){return d;}}
-document.getElementById('gzhBtn').addEventListener('click',function(){TRACK('gzh_click',{});});
+(function(){
+  var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2);
+  function resize(){W=window.innerWidth;H=window.innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);}
+  window.addEventListener('resize',resize);
 
-var R=[],lastAuto=0,si=0;
-var SCALE=[261.63,293.66,329.63,392.00,440.00,523.25,587.33];
-function spawn(x,y,strong){
-  R.push({x:x,y:y,r:0,a:1,hue:190+Math.random()*90});
-  if(R.length>60)R.shift();
-  TONE(SCALE[si%SCALE.length],0.55,'sine',0.045);si++;
-}
-function down(e){e.preventDefault();ACX();var p=pt(e);spawn(p.x,p.y,true);TRACK('ripple',{});}
-function move(e){if(e.buttons||e.pressure>0||e.pointerType==='touch'){var p=pt(e);if(Math.random()<.45)spawn(p.x,p.y,false);}}
-cv.addEventListener('pointerdown',down);cv.addEventListener('pointermove',move);
-window.__onfit=function(){R=[];};
-function loop(now){
-  bg(now);
-  if(now-lastAuto>2600){lastAuto=now;spawn(W*(.2+Math.random()*.6),H*(.2+Math.random()*.5),false);}
-  for(var i=R.length-1;i>=0;i--){var r=R[i];
-    r.r+=1.8;r.a-=.0058;
-    if(r.a<=0){R.splice(i,1);continue;}
-    for(var k=0;k<3;k++){
-      var rr=r.r-k*17;if(rr<=0)continue;
-      ctx.globalAlpha=r.a*(1-k*.28);
-      ctx.strokeStyle='hsla('+(r.hue+k*14)+',82%,78%,1)';
-      ctx.lineWidth=k===0?1.7:1;
-      ctx.beginPath();ctx.arc(r.x,r.y,rr,0,6.283);ctx.stroke();
-    }
-    ctx.globalAlpha=r.a*.85;
-    var g=ctx.createRadialGradient(r.x,r.y,0,r.x,r.y,28);
-    g.addColorStop(0,'rgba(255,255,255,.7)');g.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(r.x,r.y,28,0,6.283);ctx.fill();
+  var KEY='game2_gull_v1',save={total:0,date:'',today:0};
+  try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)save=s;}catch(e){}
+  var today=new Date().toISOString().slice(0,10);if(save.date!==today){save.date=today;save.today=0;}
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}}
+
+  var AC=null,ambient=null,soundOn=true,vibeOn=true,gullTimer=0;
+  function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC;}
+  function noiseBuf(a,sec){var len=Math.floor(a.sampleRate*sec),b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0),last=0;
+    for(var i=0;i<len;i++){var w=Math.random()*2-1;last=(last+0.02*w)/1.02;d[i]=last*3.5;}return b;}
+  function startAmbient(){var a=ac();if(!a||ambient)return;
+    var src=a.createBufferSource();src.buffer=noiseBuf(a,4);src.loop=true;
+    var lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=480;
+    var g=a.createGain();g.gain.value=0;src.connect(lp);lp.connect(g);g.connect(a.destination);src.start();
+    g.gain.linearRampToValueAtTime(soundOn?0.14:0,a.currentTime+4);ambient={gain:g};}
+  function chirp(){if(!soundOn)return;var a=ac();if(!a)return;
+    var o=a.createOscillator(),g=a.createGain();o.type='sawtooth';
+    var f=900+Math.random()*500;o.frequency.setValueAtTime(f,a.currentTime);
+    o.frequency.linearRampToValueAtTime(f*1.35,a.currentTime+0.08);
+    o.frequency.linearRampToValueAtTime(f*0.8,a.currentTime+0.22);
+    var lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2200;
+    g.gain.setValueAtTime(0.0001,a.currentTime);g.gain.exponentialRampToValueAtTime(0.045,a.currentTime+0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001,a.currentTime+0.28);
+    o.connect(lp);lp.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+0.3);}
+  function vibe(){if(vibeOn&&navigator.vibrate)try{navigator.vibrate(12);}catch(e){}}
+
+  var grains=[],birds=[],eaten=0,NEED=24;
+  var rocks=[{x:.2,y:.58,r:.10},{x:.4,y:.63,r:.11},{x:.6,y:.60,r:.10},{x:.8,y:.64,r:.11},{x:.5,y:.55,r:.09}];
+  var hint=document.getElementById('hint'),prog=document.getElementById('prog'),toast=document.getElementById('toast');
+  function toastShow(m){toast.textContent=m;toast.classList.add('show');clearTimeout(toastShow._t);toastShow._t=setTimeout(function(){toast.classList.remove('show');},1600);}
+  function px(rx){return rx*W;}function py(ry){return ry*H;}
+  function spawnBird(){var side=Math.random()<.5?-1:1;
+    birds.push({x:side<0?-40:W+40,y:H*0.28+Math.random()*H*0.12,tx:px(rocks[Math.floor(Math.random()*rocks.length)].x),ty:py(0.5),v:0,landed:false,flap:0,peck:0,dir:side});}
+
+  var t=0;
+  function drawSky(){
+    var g=ctx.createLinearGradient(0,0,0,H*0.5);g.addColorStop(0,'#eef6ee');g.addColorStop(1,'#dcead9');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H*0.5);
+    ctx.fillStyle='rgba(246,235,196,.7)';ctx.beginPath();ctx.arc(W*0.78,H*0.13,24,0,7);ctx.fill();
   }
-  ctx.globalAlpha=1;requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);TRACK('game_open',{});
-
-fit();
+  function drawSea(){
+    var y=H*0.42,g=ctx.createLinearGradient(0,y,0,H*0.62);
+    g.addColorStop(0,'#a9cfc6');g.addColorStop(1,'#88b9ae');ctx.fillStyle=g;
+    ctx.beginPath();ctx.moveTo(0,y);for(var x=0;x<=W;x+=12)ctx.lineTo(x,y+Math.sin(x*0.02+t)*3);
+    ctx.lineTo(W,H*0.66);ctx.lineTo(0,H*0.66);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1.4;
+    for(var k=0;k<2;k++){ctx.beginPath();var yy=y+16+k*18;
+      for(var x2=0;x2<=W;x2+=14){var p=yy+Math.sin(x2*0.03+t*1.1+k)*2;x2?ctx.lineTo(x2,p):ctx.moveTo(x2,p);}ctx.stroke();}
+  }
+  function drawRocks(){
+    var y=H*0.64,g=ctx.createLinearGradient(0,y,0,H);g.addColorStop(0,'#efe1c0');g.addColorStop(1,'#dfcba2');
+    ctx.fillStyle=g;ctx.fillRect(0,y,W,H-y);
+    rocks.forEach(function(rk){
+      var x=px(rk.x),y2=py(rk.y),rr=rk.r*Math.min(W,H);
+      ctx.fillStyle='#b7b6a6';ctx.beginPath();ctx.ellipse(x,y2,rr,rr*0.34,0,0,7);ctx.fill();
+      ctx.fillStyle='#c9c8b8';ctx.beginPath();ctx.ellipse(x,y2-rr*0.12,rr*0.92,rr*0.28,0,0,7);ctx.fill();
+    });
+  }
+  function drawGrains(){
+    grains.forEach(function(g){
+      ctx.fillStyle='rgba(214,180,110,.9)';ctx.beginPath();ctx.ellipse(g.x,g.y,2.2,1.4,0,0,7);ctx.fill();});
+  }
+  function drawBird(b){
+    var y=b.y+(b.landed?Math.sin(t*3+b.x)*0.6:b.flap*6);
+    ctx.save();
+    // 身体
+    ctx.fillStyle='#f4f6f0';ctx.strokeStyle='#9fb6ac';ctx.lineWidth=1;
+    ctx.beginPath();ctx.ellipse(b.x,y,12,7,0,0,7);ctx.fill();ctx.stroke();
+    // 头
+    ctx.beginPath();ctx.arc(b.x+9,y-5,5,0,7);ctx.fill();ctx.stroke();
+    // 喙
+    ctx.fillStyle='#d9b26b';ctx.beginPath();ctx.moveTo(b.x+13,y-5);ctx.lineTo(b.x+20,y-4);ctx.lineTo(b.x+13,y-2);ctx.closePath();ctx.fill();
+    // 眼
+    ctx.fillStyle='#4a655c';ctx.beginPath();ctx.arc(b.x+10,y-6,1.1,0,7);ctx.fill();
+    // 翅膀
+    ctx.strokeStyle='#9fb6ac';ctx.lineWidth=1.4;ctx.beginPath();
+    var flap=b.landed?0:Math.sin(t*12)*6;
+    ctx.moveTo(b.x,y);ctx.quadraticCurveTo(b.x-4,y-6-flap,b.x-12,y-2-flap*0.4);ctx.stroke();
+    ctx.restore();
+  }
+  function loop(){t+=0.016;ctx.clearRect(0,0,W,H);drawSky();drawSea();drawRocks();drawGrains();
+    // 鸟更新
+    birds.forEach(function(b){
+      if(!b.landed){
+        b.x+=(b.tx-b.x)*0.03;b.y+=(b.ty-b.y)*0.03;b.flap=1;
+        if(Math.hypot(b.x-b.tx,b.y-b.ty)<6){b.landed=true;b.flap=0;}
+      }else{
+        b.flap=0;
+        // 啄食
+        if(grains.length){
+          b.peck+=0.05;
+          if(Math.sin(b.peck)>0.95){
+            for(var i=0;i<grains.length;i++){var g=grains[i];
+              if(Math.hypot(g.x-b.x,g.y-b.y)<26){grains.splice(i,1);eaten++;prog.textContent=eaten+' / '+NEED;
+                TRACK('grain_eat',{eaten:eaten});if(Math.random()<0.5)chirp();
+                if(eaten>=NEED){toastShow('海鸥们吃饱了，真热闹');save.total++;save.today++;persist();eaten=0;prog.textContent='0 / '+NEED;updateRec();}
+                break;}}
+          }
+        }
+      }
+      drawBird(b);
+    });
+    // 定期加鸟
+    gullTimer+=0.016;if(gullTimer>2.4&&birds.length<5){gullTimer=0;spawnBird();}
+    requestAnimationFrame(loop);
+  }
+  function scatter(x,y){
+    for(var i=0;i<10;i++)grains.push({x:x+(Math.random()-.5)*44,y:y+(Math.random()-.5)*16});
+    TRACK('scatter',{});vibe();
+  }
+  cv.addEventListener('pointerdown',function(e){startAmbient();scatter(e.clientX,e.clientY);
+    hint.innerHTML='撒一把谷，看海鸥落下来<small>它们会慢慢飞过来</small>';});
+  document.getElementById('actBtn').addEventListener('click',function(){scatter(W*0.5,H*0.6);});
+  var setting=document.getElementById('setting');
+  document.getElementById('setBtn').addEventListener('click',function(){setting.classList.toggle('show');updateRec();});
+  document.getElementById('setClose').addEventListener('click',function(){setting.classList.remove('show');});
+  function sw(id,cb){var el=document.getElementById(id);el.addEventListener('click',function(){el.classList.toggle('on');cb(el.classList.contains('on'));});}
+  sw('swSound',function(v){soundOn=v;if(ambient&&AC)ambient.gain.gain.setTargetAtTime(v?0.14:0,AC.currentTime,0.1);});
+  sw('swVibe',function(v){vibeOn=v;});
+  function updateRec(){document.getElementById('recToday').textContent=save.today;document.getElementById('recTotal').textContent=save.total;}
+  document.getElementById('gzhBtn').addEventListener('click',function(){
+    TRACK('gzh_click',{});if(inWeChat){location.href=GZH_HOME;return;}
+    try{var ta=document.createElement('textarea');ta.value=GZH_NAME;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toastShow('已复制「'+GZH_NAME+'」，去微信搜索关注');}catch(e){toastShow('请在微信搜索「'+GZH_NAME+'」');}
+  });
+  resize();spawnBird();updateRec();loop();
+})();
 </script>
 </body>
 </html>
