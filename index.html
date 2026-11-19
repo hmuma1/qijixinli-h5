@@ -3,249 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>奇li小岛 · 休闲 · 治愈 · 海岛</title>
+<title>奇li小岛 · 平行宇宙漂流瓶</title>
 <script>
-/* 百度统计：全站同一站点 ID */
 var _hmt=_hmt||[];
 (function(){var hm=document.createElement('script');
 hm.src='https://hm.baidu.com/hm.js?e8ffc5809fb30e7ae87e03bc0fce1bfc';
 var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm,s);})();
-/* 微信内直达公众号主页；外部浏览器给复制名称兜底 */
-var GZH_BIZ='Mzg4NjQ3MjM3NQ==';
-var GZH_NAME='奇迹心li';
+function TRACK(e,p){try{if(window._hmt)window._hmt.push(['_trackEvent','island_parallel',e,JSON.stringify(p||{})]);}catch(x){}}
+var GZH_BIZ='Mzg4NjQ3MjM3NQ==',GZH_NAME='奇迹心li';
 var GZH_HOME='https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz='+GZH_BIZ+'&scene=124#wechat_redirect';
 var inWeChat=/MicroMessenger/i.test(navigator.userAgent);
-function openGzh(){
-  try{if(window._hmt)window._hmt.push(['_trackEvent','island_gzh','click',{ua:inWeChat?'wx':'other'}]);}catch(e){}
-  if(inWeChat){ location.href=GZH_HOME; return; }
-  copyName();
-}
-function copyName(){
-  try{
-    var t=document.createElement('textarea');t.value=GZH_NAME;
-    t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);
-    t.select();document.execCommand('copy');document.body.removeChild(t);
-    showToast('已复制「'+GZH_NAME+'」，去微信搜索关注');
-  }catch(e){ showToast('请在微信搜索关注「'+GZH_NAME+'」'); }
-}
-function showToast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(showToast._t);showToast._t=setTimeout(function(){el.classList.remove('show');},2600);
-}
+function openGzh(){TRACK('gzh',{ua:inWeChat?'wx':'other'});if(inWeChat){location.href=GZH_HOME;return;}copyName();}
+function copyName(){try{var t=document.createElement('textarea');t.value=GZH_NAME;
+t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+document.execCommand('copy');document.body.removeChild(t);toast('已复制「'+GZH_NAME+'」，去微信搜索关注');
+}catch(e){toast('请在微信搜索关注「'+GZH_NAME+'」');}}
+function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');
+clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove('show');},1800);}
 </script>
 <style>
-:root{
-  --sea:#2d6b63;--sea2:#3f847a;--sand:#e8d9b8;--cream:#f7f4ec;
-  --ink:#2b4a47;--mut:#7a9993;--line:rgba(45,107,99,.18);
-  --warm:#e8c88a;
-}
+:root{--sea:#2d6b63;--sea2:#3f847a;--cream:#f7f4ec;--ink:#2b4a47;--mut:#7a9993;--line:rgba(45,107,99,.18)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:var(--cream);color:var(--ink);
+html,body{margin:0;width:100%;min-height:100%;background:#0e1d2b;color:var(--ink);
 font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;user-select:none}
-body{
-  background:
-    radial-gradient(120% 60% at 50% 0%,#eef5f1 0%,var(--cream) 62%),
-    linear-gradient(180deg,#eaf2ee,#f7f4ec);
-  padding-bottom:34px;
-}
-.wrap{max-width:520px;margin:0 auto;padding:0 18px}
-
-.head{text-align:center;padding:26px 0 8px}
-.head .logo{display:inline-flex;align-items:center;gap:8px}
-.head .logo svg{width:30px;height:30px;stroke:var(--sea);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.head h1{font-size:30px;letter-spacing:5px;margin:6px 0 2px;color:var(--sea);font-weight:600}
-.head .slogan{font-size:12px;letter-spacing:3px;color:var(--mut)}
-
-.island{position:relative;height:172px;margin:10px -6px 4px;overflow:hidden}
-.island svg{width:100%;height:100%;display:block}
-
-.secTitle{display:flex;align-items:center;gap:10px;margin:16px 2px 14px}
-.secTitle b{font-size:14px;letter-spacing:2px;color:var(--sea);font-weight:600}
-.secTitle .ln{flex:1;height:1px;background:var(--line)}
-.secTitle small{font-size:10.5px;color:var(--mut);letter-spacing:1px}
-
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);
-background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:18px;
-padding:14px 13px 13px;transition:transform .12s,border-color .2s,box-shadow .2s;
-box-shadow:0 4px 16px rgba(45,107,99,.05)}
-.card:hover{border-color:var(--sea2);box-shadow:0 6px 20px rgba(45,107,99,.12)}
-.card:active{transform:scale(.97)}
-.card .thumb{height:74px;border-radius:13px;margin-bottom:11px;position:relative;overflow:hidden;
-display:flex;align-items:center;justify-content:center}
-.card .thumb svg{width:46px;height:46px;stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.card .no{position:absolute;left:9px;top:8px;font-size:10px;letter-spacing:1px;
-color:rgba(255,255,255,.85);background:rgba(45,107,99,.35);border-radius:8px;padding:1px 7px}
-.card b{display:block;font-size:14.5px;letter-spacing:1px;margin-bottom:3px;color:var(--sea)}
-.card small{display:block;font-size:10.5px;color:var(--mut);line-height:1.6;min-height:32px}
-.card .go{margin-top:8px;font-size:10.5px;letter-spacing:1.5px;color:var(--sea2)}
-
-.gzhbar{display:flex;align-items:center;gap:12px;margin-top:20px;text-decoration:none;
-background:linear-gradient(135deg,#2d6b63,#3f847a);border-radius:16px;padding:14px 16px;color:#fff;
-box-shadow:0 6px 20px rgba(45,107,99,.22)}
-.gzhbar:active{opacity:.92}
-.gbico{flex:none;width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.16);
-display:flex;align-items:center;justify-content:center}
-.gbico svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.6;stroke-linejoin:round}
-.gbtx{flex:1;min-width:0}
-.gbtx b{display:block;font-size:13.5px;letter-spacing:1px}
-.gbtx small{display:block;font-size:10.5px;opacity:.82;margin-top:2px;letter-spacing:.5px}
-.gbarw{font-size:18px;opacity:.85}
-
-.decl{text-align:center;margin-top:18px;font-size:10.5px;color:var(--mut);line-height:1.9}
-.decl b{color:var(--sea2);font-weight:500}
-.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);
-background:rgba(43,74,71,.94);color:#fff;font-size:12.5px;padding:10px 18px;border-radius:22px;
-opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:99;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(max-width:340px){.grid{gap:9px}.card b{font-size:13px}.head h1{font-size:26px}}
+#cv{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+.wrap{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:0 16px 24px;min-height:100vh}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
+padding:12px 0 10px;margin-bottom:4px}
+.top .name{color:#f2e6c6;font-size:14px;letter-spacing:2px;font-weight:600}
+.hero{text-align:center;padding:26px 0 10px;color:#f2e6c6}
+.hero .bottle{font-size:46px;line-height:1;display:block;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(232,200,138,.4))}
+.hero h1{font-size:23px;letter-spacing:3px;margin:0 0 8px;font-weight:600}
+.hero p{font-size:12px;line-height:1.9;color:rgba(242,230,198,.72);letter-spacing:.5px;margin:0}
+.panel{background:rgba(247,244,236,.96);border-radius:20px;padding:18px 16px;margin-top:14px;
+box-shadow:0 10px 34px rgba(0,0,0,.28)}
+.step{font-size:12px;color:var(--sea);letter-spacing:2px;font-weight:600;margin:2px 0 12px;
+display:flex;align-items:center;gap:8px}
+.step i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--sea);color:#fff;
+font-size:12px;display:flex;align-items:center;justify-content:center;letter-spacing:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:12px;color:var(--sea);background:#eef4f1;border:1px solid var(--line);
+border-radius:18px;padding:7px 13px;cursor:pointer;transition:.15s}
+.tag:active,.tag.on{background:var(--sea);color:#fff;border-color:var(--sea)}
+.custom{display:flex;gap:8px;margin-top:12px}
+.custom input{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+font-size:12.5px;color:var(--ink);background:#fff;outline:none;font-family:inherit}
+.custom input:focus{border-color:var(--sea2)}
+.custom button{border:none;background:var(--sea2);color:#fff;border-radius:12px;padding:0 15px;
+font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:1px}
+.ids{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.idcard{border:1px solid var(--line);border-radius:14px;padding:11px 10px;cursor:pointer;
+background:#fbfaf6;transition:.15s;display:flex;align-items:center;gap:9px}
+.idcard:active{transform:scale(.97)}
+.idcard.on{border-color:var(--sea);background:#eef4f1;box-shadow:0 0 0 1px var(--sea) inset}
+.idcard .em{font-size:22px;line-height:1}
+.idcard b{display:block;font-size:12.5px;color:var(--sea);letter-spacing:.5px}
+.idcard small{display:block;font-size:10px;color:var(--mut);margin-top:2px}
+.bigbtn{display:block;width:100%;margin-top:16px;border:none;border-radius:26px;padding:14px;
+background:linear-gradient(135deg,#2d6b63,#3f847a);color:#fff;font-size:14px;letter-spacing:3px;
+font-weight:600;cursor:pointer;box-shadow:0 8px 22px rgba(45,107,99,.28)}
+.bigbtn:active{transform:scale(.98)}
+.bigbtn:disabled{opacity:.5;cursor:not-allowed}
+.story{display:none;margin-top:14px}
+.story.show{display:block}
+.story .head{text-align:center;font-size:11px;color:var(--mut);letter-spacing:2px;margin-bottom:12px}
+.story .body{font-size:13.5px;line-height:2.15;color:var(--ink);white-space:pre-wrap;min-height:60px;letter-spacing:.3px}
+.story .body .em{color:var(--sea2);font-weight:600}
+.story .tip{text-align:center;font-size:10px;color:var(--mut);margin-top:8px;min-height:14px}
+.story .divider{height:1px;background:var(--line);margin:16px 0}
+.gzhline{display:flex;align-items:center;gap:9px;text-align:left;text-decoration:none;
+background:linear-gradient(135deg,rgba(45,107,99,.10),rgba(63,132,122,.16));
+border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:14px}
+.gzhline .ic{font-size:18px}
+.gzhline .tx{flex:1}
+.gzhline b{display:block;font-size:12.5px;color:var(--sea)}
+.gzhline small{display:block;font-size:10.5px;color:var(--mut);margin-top:2px}
+.gzhline .ar{color:var(--sea2)}
+.again{display:flex;gap:10px;margin-top:12px}
+.again button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;
+font-size:12px;color:var(--sea);cursor:pointer;letter-spacing:1px}
+.again button:active{background:#eef4f1}
+.decl{text-align:center;color:rgba(242,230,198,.5);font-size:10px;line-height:1.9;margin-top:20px}
+.toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) translateY(10px);
+background:rgba(43,74,71,.95);color:#fff;font-size:12.5px;padding:10px 18px;border-radius:20px;
+opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,-50%) translateY(0)}
 </style>
 </head>
 <body>
+<canvas id="cv"></canvas>
 <div class="wrap">
+  <div class="top">
+    <span style="width:56px"></span>
+    <span class="name">奇li小岛 · 平行宇宙漂流瓶</span>
+    <span style="width:56px"></span>
+  </div>
 
-  <div class="head">
-    <div class="logo">
-      <svg viewBox="0 0 24 24"><path d="M3 16c1.5-1 3-1 4.5 0s3 1 4.5 0 3-1 4.5 0 3 1 4.5 0"/><path d="M12 13c-3.2 0-5.6-2.3-5.6-5.2C6.4 4.6 9 2 12 2s5.6 2.6 5.6 5.8C17.6 10.7 15.2 13 12 13z"/><path d="M12 13v6"/></svg>
+  <div class="hero">
+    <span class="bottle">🫙</span>
+    <h1>另一个你，正在替你赢</h1>
+    <p>写下此刻的委屈，捞起一只来自平行宇宙的瓶子<br>看看那个时空的你，会怎么回应</p>
+  </div>
+
+  <div class="panel" id="formPanel">
+    <div class="step"><i>1</i>此刻，你在为什么事烦心？</div>
+    <div class="tags" id="pains">
+      <span class="tag">被老板骂了</span><span class="tag">加班到深夜</span>
+      <span class="tag">方案被否了</span><span class="tag">被人误解了</span>
+      <span class="tag">又失眠了</span><span class="tag">当众社死</span>
+      <span class="tag">选择困难</span><span class="tag">好累啊</span>
     </div>
-    <h1>奇li小岛</h1>
-    <div class="slogan">休闲 · 治愈 · 海岛</div>
+    <div class="custom">
+      <input id="customPain" type="text" maxlength="24" placeholder="或自己写一句，比如：今天又被催婚了">
+      <button id="addPain">用这个</button>
+    </div>
+
+    <div class="step" style="margin-top:20px"><i>2</i>你想看看哪个宇宙的自己？</div>
+    <div class="ids" id="ids">
+      <div class="idcard on" data-id="ceo"><span class="em">🕴️</span><span><b>霸道总裁</b><small>一句话，全场安静</small></span></div>
+      <div class="idcard" data-id="xian"><span class="em">⚔️</span><span><b>修仙大能</b><small>剑一抬，恩怨了了</small></span></div>
+      <div class="idcard" data-id="star"><span class="em">🚀</span><span><b>星际舰长</b><small>星河都在你手上</small></span></div>
+      <div class="idcard" data-id="queen"><span class="em">👑</span><span><b>古代女王</b><small>奏折折成小船</small></span></div>
+      <div class="idcard" data-id="hacker"><span class="em">💻</span><span><b>赛博黑客</b><small>名字谁也删不掉</small></span></div>
+      <div class="idcard" data-id="random"><span class="em">🎲</span><span><b>随机宇宙</b><small>交给瓶子决定</small></span></div>
+    </div>
+
+    <button class="bigbtn" id="genBtn">捞 起 瓶 子</button>
   </div>
 
-  <div class="island" aria-hidden="true">
-    <svg viewBox="0 0 400 172" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#eef6f1"/><stop offset="1" stop-color="#dcece6"/>
-        </linearGradient>
-        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#a9cfc6"/><stop offset="1" stop-color="#7fb6ac"/>
-        </linearGradient>
-        <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#f0e4c6"/><stop offset="1" stop-color="#e2d0a8"/>
-        </linearGradient>
-      </defs>
-      <rect width="400" height="172" fill="url(#sky)"/>
-      <circle cx="316" cy="42" r="22" fill="#f6e6bd" opacity=".85"/>
-      <path d="M0 96 Q100 88 200 96 T400 96 V172 H0Z" fill="url(#sea)"/>
-      <ellipse cx="200" cy="128" rx="120" ry="30" fill="url(#sand)"/>
-      <ellipse cx="200" cy="120" rx="104" ry="24" fill="#e9dcb9"/>
-      <g stroke="#5c7f6e" stroke-width="2" fill="none" stroke-linecap="round">
-        <path d="M138 118 q-4-22 2-38"/><path d="M262 116 q4-20 -2-34"/>
-      </g>
-      <g fill="#7fa88a">
-        <path d="M140 80 q-16-6-22 4 q14-2 22 4 q8-12 22-6 q-14 0-22 8 q-2-6 0-10z"/>
-        <path d="M260 82 q-14-6-20 4 q13-2 20 4 q7-11 20-6 q-13 0-20 8 q-2-6 0-10z"/>
-      </g>
-      <g>
-        <rect x="186" y="92" width="28" height="20" rx="2" fill="#f6efe0" stroke="#cbbb98"/>
-        <path d="M182 92 l18-12 18 12z" fill="#c98f6e"/>
-        <rect x="196" y="100" width="8" height="12" fill="#a98d6b"/>
-      </g>
-      <g stroke="#fff" stroke-width="1.5" fill="none" opacity=".6">
-        <path d="M20 108 q14-5 28 0 t28 0"/>
-        <path d="M320 112 q14-5 28 0 t28 0"/>
-        <path d="M36 134 q12-4 24 0"/>
-      </g>
-      <g stroke="#5c7f6e" stroke-width="1.6" fill="none" stroke-linecap="round">
-        <path d="M96 46 q6-5 12 0 q6-5 12 0"/>
-        <path d="M228 34 q5-4 10 0 q5-4 10 0"/>
-      </g>
-    </svg>
+  <div class="story" id="story">
+    <div class="head" id="storyHead">来自平行宇宙的回信</div>
+    <div class="body" id="storyBody"></div>
+    <div class="tip" id="storyTip"></div>
+    <div class="divider"></div>
+    <a class="gzhline" href="javascript:void(0)" id="gzhLine">
+      <span class="ic">✦</span>
+      <span class="tx"><b>现实里的你，也值得被听见</b><small>关注「奇迹心li」· 倾诉陪伴 · 分享思路</small></span>
+      <span class="ar">›</span>
+    </a>
+    <div class="again">
+      <button id="copyBtn">复制这段剧情</button>
+      <button id="resetBtn">再捞一个瓶子</button>
+    </div>
   </div>
 
-  <div class="secTitle"><b>岛上的七个角落</b><span class="ln"></span><small>随便逛 · 不用关注</small></div>
-
-  <div class="grid">
-
-    <a class="card" href="game1/">
-      <div class="thumb" style="background:linear-gradient(160deg,#e7f0e6,#cfe3d6)">
-        <span class="no">01</span>
-        <svg viewBox="0 0 24 24" stroke="#3f847a"><ellipse cx="12" cy="10" rx="6.5" ry="4.5" fill="rgba(63,132,122,.18)"/><circle cx="10" cy="9" r=".9" fill="#3f847a" stroke="none"/><circle cx="14" cy="10" r=".9" fill="#3f847a" stroke="none"/><path d="M6 13c-1.4 1-2 2.4-2 3M18 13c1.4 1 2 2.4 2 3"/></svg>
-      </div>
-      <b>龟背湾</b>
-      <small>轻轻送海龟回家<br>抠藤壶 · 冲洗 · 放归</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-    <a class="card" href="game2/">
-      <div class="thumb" style="background:linear-gradient(160deg,#eef4e2,#d6e8d0)">
-        <span class="no">02</span>
-        <svg viewBox="0 0 24 24" stroke="#6f9a63"><path d="M5 16c0-4 3-7 7-7s7 3 7 7"/><path d="M9 9c0-2 1.5-4 3-4s3 2 3 4"/><circle cx="10" cy="8.5" r=".7" fill="#6f9a63" stroke="none"/><path d="M12 9l2 1-2 1z" fill="#e8c88a" stroke="none"/></svg>
-      </div>
-      <b>白鸥礁</b>
-      <small>撒一把谷，看海鸥落下来<br>听它们一声声合唱</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-    <a class="card" href="game3/">
-      <div class="thumb" style="background:linear-gradient(160deg,#f3e7d2,#e6d3ad)">
-        <span class="no">03</span>
-        <svg viewBox="0 0 24 24" stroke="#c98f6e"><path d="M12 3c1.6 3 .8 4.2 2.4 6.2C16 11 15 14 12 16c-3-2-4-5-2.4-6.8C11.2 7.2 10.4 6 12 3z" fill="rgba(232,200,138,.5)"/></svg>
-      </div>
-      <b>星火滩</b>
-      <small>天暗下来，添一把柴<br>守着一堆安静的火</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-    <a class="card" href="game4/">
-      <div class="thumb" style="background:linear-gradient(160deg,#e4eef0,#cbdee0)">
-        <span class="no">04</span>
-        <svg viewBox="0 0 24 24" stroke="#4f8b96"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 13c3-1.5 6-1.5 9 0s6 1.5 9 0"/><path d="M9 21h6"/></svg>
-      </div>
-      <b>听海休息室</b>
-      <small>靠窗坐下，跟着海浪呼吸<br>海风、海鸟，慢下来</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-    <a class="card" href="game6/">
-      <div class="thumb" style="background:linear-gradient(160deg,#2b3d54,#46637a)">
-        <span class="no">05</span>
-        <svg viewBox="0 0 24 24" stroke="#f0d9a8"><path d="M9 21h6"/><path d="M10 21l1-12h2l1 12"/><rect x="10.5" y="6" width="3" height="3"/><path d="M12 2v4"/><path d="M5 8l3-1M19 8l-3-1"/></svg>
-      </div>
-      <b>灯塔湾</b>
-      <small>天黑了，为经过的船留一盏灯<br>光束慢慢转，照到就亮一下</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-    <a class="card" href="game5/">
-      <div class="thumb" style="background:linear-gradient(160deg,#eae6f2,#d6cfeb)">
-        <span class="no">06</span>
-        <svg viewBox="0 0 24 24" stroke="#8a7fc0"><path d="M9 3h6l-1 5 3 6a4 4 0 0 1-4 6h-2a4 4 0 0 1-4-6l3-6z"/><path d="M8 17h8"/></svg>
-      </div>
-      <b>星砂瓶</b>
-      <small>滴几滴颜色，攒一片星云<br>攒成属于自己的小宇宙</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-    <a class="card" href="game7/">
-      <div class="thumb" style="background:linear-gradient(160deg,#1c3040,#37566b)">
-        <span class="no">07</span>
-        <svg viewBox="0 0 24 24" stroke="#e8d6a8"><path d="M9 3h6M9 21h6"/><path d="M8 3c0 3-3 4-3 8s3 5 3 10M16 3c0 3 3 4 3 8s-3 5-3 10"/><path d="M12 10l1.2 2.4L16 13l-2.2 2 .6 3-2.4-1.4L9.6 18l.6-3L8 13l2.8-.6z" fill="rgba(232,214,168,.35)" stroke="none"/></svg>
-      </div>
-      <b>平行宇宙漂流瓶</b>
-      <small>写下此刻的委屈，捞起另一个你<br>看看那个时空怎么替你赢</small>
-      <span class="go">走 进 去 ›</span>
-    </a>
-
-  </div>
-
-  <a class="gzhbar" href="javascript:void(0)" id="gzhBtn">
-    <span class="gbico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.2 7.7L3 21l1.8-5.8A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg></span>
-    <span class="gbtx"><b>关注「奇迹心li」</b><small>倾诉陪伴 · 分享思路</small></span>
-    <span class="gbarw">›</span>
-  </a>
-
-  <div class="decl">
-    小岛由公众号「奇迹心li」出品 · 全部画面由代码实时绘制<br>
-    <b>仅供放松与陪伴，点开即玩，无需关注</b> · 适度游戏，合理安排时间
-  </div>
-
+  <div class="decl">全部剧情由本地模板生成 · 仅供放松与陪伴<br>这里的另一个你，是来陪你的，不是来替你做决定的</div>
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
-document.getElementById('gzhBtn').addEventListener('click',openGzh);
+(function(){
+  var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2);
+  function resize(){W=window.innerWidth;H=window.innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);}
+  window.addEventListener('resize',resize);resize();
+  var t=0;
+  function frame(){
+    t+=0.016;
+    var g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0b1826');g.addColorStop(0.55,'#14293a');g.addColorStop(1,'#1d3b4a');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    for(var i=0;i<70;i++){
+      var x=(i*97.3)%W,y=(i*53.7)%(H*0.72),a=0.25+0.55*(0.5+0.5*Math.sin(t*1.2+i));
+      ctx.globalAlpha=a;ctx.fillStyle='#f3e6c4';
+      ctx.beginPath();ctx.arc(x,y,(i%4===0?1.4:0.8),0,6.2832);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(180,214,220,.10)';ctx.lineWidth=1;
+    for(var r=0;r<9;r++){var yy=H*0.72+r*(H*0.28/9);ctx.beginPath();
+      for(var x=0;x<=W;x+=14){var dy=Math.sin(x*0.03+t*0.8+r)*2;
+        if(x===0)ctx.moveTo(x,yy+dy);else ctx.lineTo(x,yy+dy);}ctx.stroke();}
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ===== 本地剧情模板库（全部预审、无外部接口、无 UGC）=====
+  var IDS={
+    ceo:{name:'霸道总裁',open:'在那个宇宙，你三十岁，掌着一座城的公司。\n你习惯在落地窗前站很久，看整片灯火都属于自己。',
+      move:'今天，同样的事发生在该发生的会议上。你没争辩，只是把文件合上：“按原案执行，出问题我担。”\n转身走进电梯时，门合拢前，你听见整间会议室安静了下来。',
+      close:'你没有提高音量，却让所有人都听见了——这里的你，说话是算数的。'},
+    xian:{name:'修仙大能',open:'在那个宇宙，你是闭关三百年的散修，腰间一柄剑，名叫“照夜”。\n山下的纷纷扰扰，本与你无关。',
+      move:'今天，同样的事传到山上。你只是抬手，指尖一点光落进茶盏，茶水泛起一圈涟漪，又平了。\n“名字随他们写，路我自己走。”说完，你背起剑，下了山。',
+      close:'风从袖口穿过，你没有回头。有些事，在更高的地方看，就小了。'},
+    star:{name:'星际舰长',open:'在那个宇宙，你是一艘星舰的舰长。\n舷窗外是望不到边的星河，船员们都睡了，只有你还醒着。',
+      move:'今天，母星发来质询，说你的航线不合规范。你回了一句：“舰在我手上，我看见的路，和你们看见的不一样。”\n然后按下跃迁——星河在窗外被拉成一条长长的线。',
+      close:'驾驶舱里只剩你一个人的呼吸声，很轻，但很稳。前方没有地图，你照样能开。'},
+    queen:{name:'古代女王',open:'在那个宇宙，你坐在自己挣来的王座上。\n朝堂上的人低着头，没人敢直视你的眼睛。',
+      move:'今天，有人上书弹劾你，说你太过独断。你听完，笑了一下：“准了。”\n把那道奏折折成一只小船，放进殿外的水渠，看它慢慢漂远。',
+      close:'“说的人随他说，做的人，还是我。”你端起茶盏，手一点都不抖。'},
+    hacker:{name:'赛博黑客',open:'在那个宇宙，你住在城市最亮的那层楼。\n指尖敲动，整座网络都听得见你的呼吸。',
+      move:'今天，有人试图抹掉你的名字。你只敲了几行代码，屏幕暗下去又亮起来——\n你的名字还在，比刚才更亮。“想删我？先学会别被我删。”',
+      close:'你摘下耳机，第一次在凌晨三点，觉得有点困了，也觉得有点爽。'}
+  };
+  var ID_ORDER=['ceo','xian','star','queen','hacker'];
+  var pain='',chosenId='ceo';
+
+  var tagEls=document.querySelectorAll('#pains .tag');
+  tagEls.forEach(function(el){el.addEventListener('click',function(){
+    tagEls.forEach(function(x){x.classList.remove('on');});
+    el.classList.add('on');pain=el.textContent.trim();
+    document.getElementById('customPain').value='';
+  });});
+  document.getElementById('addPain').addEventListener('click',function(){
+    var v=document.getElementById('customPain').value.trim();
+    if(!v){toast('先写一句你的心事吧');return;}
+    pain=v;tagEls.forEach(function(x){x.classList.remove('on');});
+    toast('记下了，这就去平行宇宙看看');
+  });
+  var idEls=document.querySelectorAll('#ids .idcard');
+  idEls.forEach(function(el){el.addEventListener('click',function(){
+    idEls.forEach(function(x){x.classList.remove('on');});
+    el.classList.add('on');chosenId=el.getAttribute('data-id');
+  });});
+
+  document.getElementById('genBtn').addEventListener('click',function(){
+    if(!pain){toast('先选一个心事，或自己写一句');return;}
+    var key=chosenId==='random'?ID_ORDER[Math.floor(Math.random()*ID_ORDER.length)]:chosenId;
+    var d=IDS[key];
+    var text=d.open+'\n\n“'+pain+'”——现实里的你，刚刚经历了这件事。\n可在那个宇宙，同样的事发生时——\n\n'+d.move+'\n\n'+d.close+
+      '\n\n平行宇宙的你，替你赢了一次。\n但真正扛过今天的你，就在这里。\n已经很了不起了。';
+    showStory(d.name,text);
+    var c=0;try{c=+(localStorage.getItem('game7_parallel_count')||0)+1;localStorage.setItem('game7_parallel_count',c);}catch(e){}
+    TRACK('generate',{id:key,count:c});
+  });
+
+  var typing=null,fullText='';
+  function showStory(name,text){
+    document.getElementById('formPanel').style.display='none';
+    var s=document.getElementById('story');s.classList.add('show');
+    document.getElementById('storyHead').textContent='来自「'+name+'」宇宙的回信';
+    var body=document.getElementById('storyBody'),tip=document.getElementById('storyTip');
+    body.textContent='';tip.textContent='';fullText=text;
+    var i=0;clearInterval(typing);
+    typing=setInterval(function(){
+      i+=2;body.textContent=text.slice(0,i);
+      if(i>=text.length){clearInterval(typing);tip.textContent='（这封信，从头到尾都属于你）';}
+    },16);
+    body.onclick=function(){clearInterval(typing);body.textContent=text;tip.textContent='（这封信，从头到尾都属于你）';};
+    s.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    try{var tx=document.createElement('textarea');tx.value=fullText;tx.style.position='fixed';tx.style.opacity='0';
+      document.body.appendChild(tx);tx.select();document.execCommand('copy');document.body.removeChild(tx);
+      toast('剧情已复制，可以存下来啦');TRACK('copy',{});
+    }catch(e){toast('复制失败，长按文字手动复制吧');}
+  });
+  document.getElementById('resetBtn').addEventListener('click',function(){
+    clearInterval(typing);document.getElementById('story').classList.remove('show');
+    document.getElementById('formPanel').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  document.getElementById('gzhLine').addEventListener('click',openGzh);
+})();
 </script>
 </body>
 </html>
