@@ -37,7 +37,7 @@ padding:12px 0 10px;margin-bottom:2px}
 .hero h1{position:relative;font-size:21px;letter-spacing:2px;margin:0 0 7px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.8)}
 .hero p{position:relative;font-size:11.5px;line-height:1.8;color:rgba(242,230,198,.88);letter-spacing:.5px;margin:0;text-shadow:0 1px 8px rgba(0,0,0,.85)}
 .hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:150px;z-index:1;pointer-events:none;
--webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 34%);mask-image:linear-gradient(to bottom,transparent 0%,#000 34%)}
+-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 24%);mask-image:linear-gradient(to bottom,transparent 0%,#000 24%)}
 /* 半透明玻璃表单 */
 .panel{background:rgba(11,30,42,.56);border:1px solid rgba(143,192,182,.22);border-radius:20px;
 padding:18px 16px;margin-top:10px;box-shadow:0 12px 40px rgba(0,0,0,.3);
@@ -153,75 +153,130 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     <svg class="scene" viewBox="0 0 400 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
       <defs>
         <radialGradient id="mg" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stop-color="#ffe6a8" stop-opacity=".5"/><stop offset="1" stop-color="#ffe6a8" stop-opacity="0"/>
+          <stop offset="0" stop-color="#cfe0ec" stop-opacity=".42"/><stop offset="1" stop-color="#cfe0ec" stop-opacity="0"/>
         </radialGradient>
-        <radialGradient id="ff" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stop-color="#e8f0a8" stop-opacity=".85"/><stop offset="1" stop-color="#e8f0a8" stop-opacity="0"/>
-        </radialGradient>
+        <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#28433f"/><stop offset="1" stop-color="#0c1c24"/>
+        </linearGradient>
+        <linearGradient id="rockLit" x1="1" y1="0" x2="0" y2="0">
+          <stop offset="0" stop-color="#8aa8b4" stop-opacity=".5"/><stop offset="1" stop-color="#8aa8b4" stop-opacity="0"/>
+        </linearGradient>
         <linearGradient id="islandSea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#2c5962"/><stop offset="1" stop-color="#16323e"/>
+          <stop offset="0" stop-color="#1e3e49"/><stop offset="1" stop-color="#0c1e27"/>
         </linearGradient>
-        <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#a89a78"/><stop offset="1" stop-color="#7b7358"/>
-        </linearGradient>
-        <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#62826a"/><stop offset="1" stop-color="#456450"/>
-        </linearGradient>
+        <radialGradient id="mist" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#a6c5cd" stop-opacity=".34"/><stop offset="1" stop-color="#a6c5cd" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="spark" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#bff0d0" stop-opacity=".9"/><stop offset="1" stop-color="#bff0d0" stop-opacity="0"/>
+        </radialGradient>
       </defs>
-      <circle cx="350" cy="30" r="42" fill="url(#mg)"/>
-      <circle cx="350" cy="30" r="13" fill="#ffecbd" opacity=".95"/>
-      <g fill="#f3e6c4">
-        <circle cx="38" cy="22" r="1" opacity=".7"/><circle cx="92" cy="12" r="1.1" opacity=".5"/>
-        <circle cx="150" cy="26" r=".9" opacity=".55"/><circle cx="206" cy="10" r="1" opacity=".5"/>
-        <circle cx="264" cy="22" r="1" opacity=".6"/><circle cx="116" cy="42" r=".8" opacity=".4"/>
-        <circle cx="296" cy="8" r=".9" opacity=".5"/><circle cx="60" cy="48" r=".7" opacity=".4"/>
+
+      <!-- 冷月 -->
+      <circle cx="316" cy="30" r="44" fill="url(#mg)"/>
+      <circle cx="316" cy="30" r="12" fill="#e3edf2" opacity=".9"/>
+
+      <!-- 疏星 -->
+      <g fill="#cfe0ec">
+        <circle cx="40" cy="20" r=".9" opacity=".5"/><circle cx="96" cy="12" r="1" opacity=".4"/>
+        <circle cx="150" cy="26" r=".8" opacity=".45"/><circle cx="210" cy="10" r="1" opacity=".5"/>
+        <circle cx="262" cy="18" r=".9" opacity=".4"/><circle cx="120" cy="44" r=".7" opacity=".3"/>
+        <circle cx="360" cy="12" r=".8" opacity=".4"/><circle cx="64" cy="46" r=".7" opacity=".3"/>
       </g>
-      <path d="M0 104 Q30 88 58 100 Q84 84 112 102 Q140 90 168 104 L168 112 L0 112Z" fill="#264751" opacity=".45"/>
-      <path d="M236 104 Q264 88 292 102 Q320 86 348 102 Q374 92 400 104 L400 112 L236 112Z" fill="#264751" opacity=".38"/>
-      <path d="M0 100 Q100 95 200 100 T400 100 V150 H0Z" fill="url(#islandSea)"/>
-      <g fill="#ffecbd" opacity=".18">
-        <ellipse cx="350" cy="108" rx="16" ry="1.8"/><ellipse cx="348" cy="116" rx="11" ry="1.5"/><ellipse cx="351" cy="123" rx="7" ry="1.2"/>
+
+      <!-- 归巢的鸟，给海上添一点活气 -->
+      <g stroke="#b8d0d6" fill="none" stroke-width="1" stroke-linecap="round" opacity=".5">
+        <path d="M262 40 q5-5 10 0 q5-5 10 0"/>
+        <path d="M288 52 q4-4 8 0 q4-4 8 0"/>
+        <path d="M246 30 q3-3 6 0 q3-3 6 0" opacity=".7"/>
       </g>
-      <path d="M26 110 Q58 96 106 93 Q158 89 212 95 Q268 99 308 109 Q326 115 308 121 Q246 131 158 129 Q68 127 26 110Z" fill="url(#sand)"/>
-      <path d="M44 109 Q76 98 120 96 Q168 93 214 98 Q260 102 288 110 Q226 119 148 118 Q80 116 44 109Z" fill="url(#grass)"/>
-      <ellipse cx="336" cy="118" rx="18" ry="4" fill="#4a5f50" opacity=".7"/>
-      <circle cx="196" cy="104" r="18" fill="url(#mg)" opacity=".7"/>
-      <g>
-        <rect x="182" y="96" width="28" height="20" rx="2.5" fill="#c8b395"/>
-        <path d="M178 97 Q196 82 214 97 Z" fill="#9d6e52"/>
-        <rect x="190" y="101" width="9" height="9" rx="1.2" fill="#ffd98a"/>
-        <rect x="204" y="101" width="5" height="6" rx="1" fill="#ffd98a" opacity=".75"/>
-        <rect x="194" y="106" width="6" height="10" rx="1" fill="#7d5c43"/>
+
+      <!-- 远海薄雾 -->
+      <path d="M0 96 Q200 90 400 96 V114 H0Z" fill="#193440" opacity=".5"/>
+      <ellipse cx="200" cy="100" rx="230" ry="14" fill="url(#mist)" opacity=".5"/>
+
+      <!-- 海面 -->
+      <path d="M0 102 Q200 97 400 102 V150 H0Z" fill="url(#islandSea)"/>
+
+      <!-- 冷月碎影 -->
+      <g fill="#bcd4de" opacity=".14">
+        <ellipse cx="316" cy="110" rx="10" ry="1.6"/><ellipse cx="314" cy="118" rx="7" ry="1.3"/>
+        <ellipse cx="318" cy="126" rx="5" ry="1"/><ellipse cx="315" cy="134" rx="3" ry=".8"/>
       </g>
-      <g stroke="#6b5847" fill="none" stroke-linecap="round">
-        <path d="M62 110 Q60 96 64 86" stroke-width="2.8"/><path d="M96 109 Q98 94 94 84" stroke-width="2.6"/>
-        <path d="M130 108 Q128 96 132 88" stroke-width="2.3"/><path d="M240 110 Q242 94 238 84" stroke-width="2.8"/>
-        <path d="M272 111 Q270 98 274 90" stroke-width="2.4"/><path d="M298 113 Q300 102 297 95" stroke-width="2"/>
+
+      <!-- 孤岛礁岩：左高右缓入海，孤悬海上 -->
+      <path d="M88 116 L92 100 L96 88 L102 82 L108 70 L114 74 L120 60 L128 64 L134 56 L142 60 L148 54 L156 58 L164 56 L172 62 L180 60 L188 66 L196 64 L204 70 L214 68 L224 76 L236 74 L248 82 L262 88 L278 98 L296 106 L316 116 Z" fill="url(#rock)"/>
+      <path d="M88 116 L92 100 L96 88 L102 82 L108 70 L114 74 L120 60 L128 64 L134 56 L142 60 L148 54 L156 58 L164 56 L172 62 L180 60 L188 66 L196 64 L204 70 L214 68 L224 76 L236 74 L248 82 L262 88 L278 98 L296 106 L316 116 Z" fill="url(#rockLit)"/>
+
+      <!-- 岩面青苔与蔓草：野生，不是修剪过的园林 -->
+      <g fill="#2f6a4c" opacity=".5">
+        <path d="M104 92 q10-9 20-4 q6 8-4 12 q-14 3-16-8z"/>
+        <path d="M150 74 q10-7 18 0 q-2 10-12 10 q-10-2-6-10z"/>
+        <path d="M210 86 q9-6 15 2 q-3 8-12 8 q-8-3-3-10z"/>
+        <path d="M266 94 q8-5 13 2 q-2 7-10 7 q-7-2-3-9z"/>
       </g>
-      <g fill="#4e7057">
-        <ellipse cx="64" cy="82" rx="15" ry="9"/><ellipse cx="54" cy="86" rx="9" ry="6"/><ellipse cx="75" cy="86" rx="10" ry="6"/>
-        <ellipse cx="94" cy="81" rx="13" ry="8"/><ellipse cx="85" cy="85" rx="8" ry="5"/><ellipse cx="104" cy="85" rx="9" ry="5"/>
-        <ellipse cx="132" cy="85" rx="11" ry="7"/><ellipse cx="124" cy="88" rx="7" ry="5"/><ellipse cx="140" cy="88" rx="7" ry="5"/>
-        <ellipse cx="238" cy="81" rx="15" ry="9"/><ellipse cx="228" cy="85" rx="9" ry="6"/><ellipse cx="249" cy="85" rx="10" ry="6"/>
-        <ellipse cx="274" cy="87" rx="12" ry="7"/><ellipse cx="265" cy="90" rx="7" ry="5"/><ellipse cx="283" cy="90" rx="8" ry="5"/>
-        <ellipse cx="297" cy="92" rx="10" ry="6"/><ellipse cx="289" cy="95" rx="6" ry="4"/>
+      <g stroke="#4b8a63" fill="none" stroke-width="1" stroke-linecap="round" opacity=".6">
+        <path d="M116 88 l-2-8 M120 88 l1-9 M124 89 l3-7"/>
+        <path d="M160 72 l-2-7 M164 73 l2-8"/>
+        <path d="M220 84 l-2-7 M224 85 l2-6"/>
       </g>
-      <g fill="#577a5c" opacity=".95">
-        <ellipse cx="112" cy="110" rx="6" ry="4"/><ellipse cx="158" cy="110" rx="5" ry="3.5"/>
-        <ellipse cx="218" cy="110" rx="5.5" ry="4"/><ellipse cx="256" cy="112" rx="5" ry="3.5"/>
+
+      <!-- 岩顶几棵树：错落、歪斜、不成排，像自己长出来的 -->
+      <g stroke="#122c26" fill="none" stroke-linecap="round">
+        <path d="M142 58 Q138 44 142 34" stroke-width="2.4"/>
+        <path d="M160 57 Q164 44 159 38" stroke-width="2"/>
+        <path d="M124 62 Q119 52 123 45" stroke-width="1.7"/>
       </g>
-      <g>
-        <circle cx="78" cy="104" r="5.5" fill="url(#ff)" opacity=".7"/><circle cx="78" cy="104" r="1.2" fill="#eef4c8"/>
-        <circle cx="126" cy="95" r="5" fill="url(#ff)" opacity=".65"/><circle cx="126" cy="95" r="1" fill="#eef4c8"/>
-        <circle cx="204" cy="94" r="5.5" fill="url(#ff)" opacity=".7"/><circle cx="204" cy="94" r="1.2" fill="#eef4c8"/>
-        <circle cx="260" cy="104" r="5" fill="url(#ff)" opacity=".6"/><circle cx="260" cy="104" r="1" fill="#eef4c8"/>
-        <circle cx="290" cy="98" r="5" fill="url(#ff)" opacity=".65"/><circle cx="290" cy="98" r="1.1" fill="#eef4c8"/>
+      <g fill="#265640" opacity=".92">
+        <path d="M142 36 q-11-2-10-11 q1-8 9-9 q2-9 11-7 q8 2 7 10 q7 3 5 10 q-2 6-11 6 q-6 6-11 1z"/>
+        <path d="M159 40 q-9-1-8-9 q1-7 8-8 q2-7 9-6 q6 2 5 8 q6 3 4 8 q-2 5-9 5 q-5 5-9 2z"/>
+        <path d="M123 46 q-7-1-6-7 q1-6 7-6 q1-6 7-5 q5 1 4 6 q5 2 3 6 q-2 4-7 4 q-4 4-8 2z"/>
       </g>
-      <g stroke="#8a6b4f" stroke-width="2.6" opacity=".9">
-        <path d="M312 116 l18 7"/><path d="M318 113 l18 7"/>
+      <!-- 枝头几点花，世外桃源的信物 -->
+      <g fill="#f6d9e2" opacity=".9">
+        <circle cx="136" cy="30" r="1.5"/><circle cx="150" cy="26" r="1.4"/>
+        <circle cx="146" cy="38" r="1.2"/><circle cx="163" cy="34" r="1.3"/>
+        <circle cx="156" cy="42" r="1.1"/><circle cx="120" cy="42" r="1.2"/>
+        <circle cx="128" cy="48" r="1"/>
       </g>
-      <g stroke="#8fc0b6" stroke-width="1.1" fill="none" opacity=".28">
-        <path d="M16 132 q13-4 26 0 t26 0"/><path d="M300 138 q13-4 26 0 t26 0"/><path d="M180 144 q13-4 26 0"/>
+
+      <!-- 藤蔓垂落 -->
+      <g stroke="#2f6048" fill="none" stroke-width="1" opacity=".65" stroke-linecap="round">
+        <path d="M150 58 q3 12 -2 20"/><path d="M180 62 q-3 10 2 17"/>
+        <path d="M132 64 q2 8 -1 14"/>
+      </g>
+
+      <!-- 一线山泉入海 -->
+      <path d="M122 62 q4 22 0 40 q-2 8 2 12" fill="none" stroke="#a8d8d0" stroke-width="1.6" opacity=".4"/>
+      <g stroke="#bcd4de" fill="none" opacity=".3" stroke-linecap="round">
+        <path d="M118 114 q4-4 8 0"/>
+      </g>
+
+      <!-- 岛上的灵光：自然的萤光，不是谁家的灯 -->
+      <g fill="url(#spark)" opacity=".8">
+        <circle cx="134" cy="70" r="4"/><circle cx="176" cy="66" r="3.4"/>
+        <circle cx="160" cy="86" r="3"/><circle cx="212" cy="92" r="3.2"/>
+        <circle cx="112" cy="100" r="2.6"/><circle cx="244" cy="82" r="2.6"/>
+      </g>
+      <g fill="#dfffee" opacity=".8">
+        <circle cx="134" cy="70" r=".8"/><circle cx="176" cy="66" r=".7"/>
+        <circle cx="160" cy="86" r=".7"/><circle cx="212" cy="92" r=".7"/>
+        <circle cx="112" cy="100" r=".6"/><circle cx="244" cy="82" r=".6"/>
+      </g>
+
+      <!-- 海浪拍岸 -->
+      <g stroke="#bcd4de" fill="none" opacity=".28" stroke-linecap="round">
+        <path d="M62 116 q12 4 24 0"/><path d="M56 122 q16 5 32 0"/>
+        <path d="M300 116 q12 4 24 0"/><path d="M294 122 q16 5 32 0"/>
+      </g>
+
+      <!-- 雾锁孤礁 -->
+      <ellipse cx="200" cy="114" rx="132" ry="12" fill="url(#mist)" opacity=".62"/>
+
+      <!-- 前景波纹 -->
+      <g stroke="#7fa6ae" stroke-width="1" fill="none" opacity=".2">
+        <path d="M20 134 q14-4 28 0 t28 0"/><path d="M300 140 q14-4 28 0 t28 0"/>
+        <path d="M150 144 q14-4 28 0"/>
       </g>
     </svg>
     <div class="txt">
@@ -305,7 +360,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
     for(var i=0;i<70;i++){
       var x=(i*97.3)%W,y=(i*53.7)%(H*0.72),a=0.25+0.55*(0.5+0.5*Math.sin(t*1.2+i));
-      ctx.globalAlpha=a;ctx.fillStyle='#f3e6c4';
+      ctx.globalAlpha=a;ctx.fillStyle='#cfe0ec';
       ctx.beginPath();ctx.arc(x,y,(i%4===0?1.4:0.8),0,6.2832);ctx.fill();
     }
     ctx.globalAlpha=1;
