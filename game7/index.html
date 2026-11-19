@@ -123,7 +123,7 @@ transform:translateY(150px) rotate(-40deg);opacity:0;transition:all 1s cubic-bez
 .pick-glow{position:absolute;left:50%;bottom:60px;width:120px;height:120px;margin-left:-60px;border-radius:50%;
 background:radial-gradient(circle,rgba(242,217,160,.35),transparent 70%);opacity:0;transition:opacity .6s}
 .pick-stage.up .pick-glow{opacity:1}
-/* 如果档案卡 */
+/* 穿越签证卡 */
 .mail{display:none;position:relative;border-radius:20px;overflow:hidden;padding:0;
 background:linear-gradient(155deg,var(--e1),var(--e2));
 border:1px solid rgba(242,217,160,.45);
@@ -333,9 +333,9 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     </svg>
     <div class="txt">
       <span class="bottle">🫙</span>
-      <div class="kicker">如 果 · 穿 越 · 盲 盒</div>
-      <h1>如果你穿越，会是谁？</h1>
-      <p>投一只心事瓶进时光海，大海会回赠你一只盲盒<br>打开它——如果回到过去或未来，你会是谁？</p>
+      <div class="kicker">穿 越 · 盲 盒</div>
+      <h1>投一只瓶，穿越成另一个你</h1>
+      <p>投一只心事瓶进时光海，大海会回赠你一只盲盒<br>打开它，看看你穿越到了哪一年、成为了谁</p>
     </div>
   </div>
 
@@ -356,7 +356,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
       <input id="customPain" type="text" maxlength="24" placeholder="或自己写一句，比如：今天又被催婚了">
       <button id="addPain">用这个</button>
     </div>
-    <div class="seal-note">你投出一只，大海就回赠你一只。里面装着一个「如果」——<b>如果你回到那个年代，会成为谁？</b>纯属想象，图你一乐。</div>
+    <div class="seal-note">你投出一只，大海就回赠你一只。里面藏着<b>你穿越到的那一年，和那时候的你</b>——漂过百年，只为和你相遇。</div>
     <div class="times" id="times"><span>今日可投</span><i class="on"></i><i class="on"></i><i class="on"></i><span id="timesLeft">3 次</span></div>
     <button class="bigbtn" id="genBtn">封 好 瓶 子 · 投 进 时 光 海</button>
   </div>
@@ -413,23 +413,23 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
           <path d="M30 34 q-6 12 0 26 q6 4 12 0 q-6-6-6-16 q0-7 2-11 Z" fill="#f2e6c6" opacity=".95" stroke="#c9a86a" stroke-width="1"/>
         </svg>
       </div>
-      <div class="sf-sub" id="pickSub">海面浮起一只瓶——这是大海回赠你的盲盒，藏着一个「如果」。</div>
+      <div class="sf-sub" id="pickSub">海面浮起一只瓶——这是大海回赠你的盲盒，里面是你穿越后的那一年。</div>
       <button class="bigbtn ghost" id="pickBtn" style="display:none;max-width:280px">拔 开 瓶 塞 · 拆 开 盲 盒</button>
     </div>
 
-    <!-- 如果档案卡 -->
+    <!-- 穿越签证卡 -->
     <div class="mail" id="mail">
       <div class="mail-glow" style="width:120px;height:120px;top:20px;left:-30px;background:rgba(242,217,160,.14)"></div>
       <div class="mail-glow" style="width:110px;height:110px;bottom:20px;right:-24px;background:rgba(143,192,182,.14)"></div>
-      <div class="mail-hd"><b>如 果 · 档 案</b><span>THE "WHAT IF" FILE · QILI ISLAND</span></div>
-      <div class="mail-from" id="mailFrom">一个关于「如果」的想象</div>
+      <div class="mail-hd"><b>时 光 签 证</b><span>TIME PASSPORT · QILI ISLAND</span></div>
+      <div class="mail-from" id="mailFrom">来自另一段时光的回信</div>
       <div class="mail-no" id="mailNo">漂流编号 NO. 000001</div>
       <div class="mail-symbol" id="mailSymbol"></div>
       <div class="mail-year" id="mailYear">公元 1003 年</div>
       <div class="mail-era" id="mailEra">北宋 · 景德年间</div>
       <div class="mail-art" id="mailArt"></div>
-      <div class="mail-stamp" id="mailStamp">想 象</div>
-      <div class="mail-become">如果回到那一年，你会是<b><em id="mailIcon">匠</em><span id="mailRole">青铜工匠</span></b></div>
+      <div class="mail-stamp" id="mailStamp">已 抵 达</div>
+      <div class="mail-become">你穿越成了<b><em id="mailIcon">匠</em><span id="mailRole">青铜工匠</span></b></div>
       <div class="mail-quote" id="mailQuote"></div>
       <div class="mail-note" id="mailNote"></div>
       <div class="mail-sign" id="mailSign"></div>
@@ -450,13 +450,13 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
         </div>
       </div>
       <div class="again">
-        <button id="copyBtn">复制这张档案</button>
+        <button id="copyBtn">复制这张签证</button>
         <button id="resetBtn">再投一只</button>
       </div>
     </div>
   </div>
 
-  <div class="decl">一场关于「如果」的想象，并非预言，也与命理无关<br>你在那儿活得投入，这里的你也一样可以</div>
+  <div class="decl">全部画面与文案由本地程序生成 · 仅供放松与陪伴<br>那个时空的你，是来陪你的，不是来替你做决定的</div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -572,7 +572,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     var pstage=document.getElementById('pickStage'),pb=document.getElementById('pickBottle');
     pstage.classList.remove('up');pb.classList.remove('up','open');
     document.getElementById('pickBtn').style.display='none';
-    document.getElementById('pickSub').textContent='海面浮起一只瓶——这是大海回赠你的盲盒，藏着一个「如果」。';
+    document.getElementById('pickSub').textContent='海面浮起一只瓶——这是大海回赠你的盲盒，里面是你穿越后的那一年。';
     setTimeout(function(){pstage.classList.add('up');pb.classList.add('up');},160);
     setTimeout(function(){document.getElementById('pickBtn').style.display='block';},1150);
     TRACK('pick_show',{year:pending.era.year});
@@ -582,7 +582,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     var pb=document.getElementById('pickBottle');
     pb.classList.add('open');
     document.getElementById('pickBtn').style.display='none';
-    document.getElementById('pickSub').textContent='瓶塞拔开了，一张「如果档案」正在展开……';
+    document.getElementById('pickSub').textContent='瓶塞拔开了，你的穿越签证正在展开……';
     TRACK('open',{year:pending.era.year,role:pending.role.name});
     setTimeout(function(){
       document.getElementById('pickScene').classList.remove('show');
@@ -594,8 +594,8 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     var mail=document.getElementById('mail');
     mail.style.setProperty('--e1',era.c1);
     mail.style.setProperty('--e2',era.c2);
-    document.getElementById('mailFrom').textContent='一个关于「如果」的想象 · '+era.year;
-    document.getElementById('mailNo').textContent='时空档案 NO. '+String(100000+n);
+    document.getElementById('mailFrom').textContent='来自 '+era.year+' 的穿越回信';
+    document.getElementById('mailNo').textContent='穿越签证 NO. '+String(100000+n);
     document.getElementById('mailSymbol').innerHTML='<svg viewBox="0 0 32 32">'+era.symbol+'</svg>';
     document.getElementById('mailYear').textContent=era.year;
     document.getElementById('mailEra').textContent=era.era;
@@ -603,18 +603,18 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     document.getElementById('mailIcon').textContent=role.icon;
     document.getElementById('mailRole').textContent=role.name;
     document.getElementById('mailQuote').textContent=role.q;
-    document.getElementById('mailNote').innerHTML='如果那年你也遇到「<em>'+esc(pain)+'</em>」——<br>'+esc(role.echo);
-    document.getElementById('mailSign').innerHTML='这一切只是一场关于「如果」的想象，不是预言，也与命理无关。<br>不必真的穿越——此刻的你，一样能活出那份<b>从容与本事</b>。';
+    document.getElementById('mailNote').innerHTML='当初让你烦心的「<em>'+esc(pain)+'</em>」——<br>'+esc(role.echo);
+    document.getElementById('mailSign').innerHTML='这一次，是你自己穿过去活了一回。<br>那个时空的你，是来陪你的，不是来替你做决定的。';
     mail.classList.remove('show');void mail.offsetWidth;mail.classList.add('show');
     document.getElementById('guide').style.display='flex';
     window.scrollTo({top:0,behavior:'smooth'});
-    lastText='时光漂流瓶 · 如果档案\n'+era.year+' · '+era.era+'\n如果回到那一年，你会是'+role.name+'\n「'+role.q+'」\n如果那年遇到「'+pain+'」——'+role.echo+'\n这只是一场关于「如果」的想象，不是预言。';
+    lastText='时光漂流瓶 · 穿越签证\n'+era.year+' · '+era.era+'\n你穿越成了'+role.name+'\n「'+role.q+'」\n当初的「'+pain+'」——'+role.echo+'\n这一次，是你自己穿过去活了一回。';
     TRACK('render',{year:era.year,era:era.era,role:role.name,n:n});
   }
   document.getElementById('copyBtn').addEventListener('click',function(){
     try{var tx=document.createElement('textarea');tx.value=lastText;tx.style.position='fixed';tx.style.opacity='0';
       document.body.appendChild(tx);tx.select();document.execCommand('copy');document.body.removeChild(tx);
-      toast('这张档案已复制');TRACK('copy',{});
+      toast('这张签证已复制');TRACK('copy',{});
     }catch(e){toast('复制失败，长按文字手动复制吧');}
   });
   document.getElementById('resetBtn').addEventListener('click',function(){
