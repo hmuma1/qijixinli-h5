@@ -85,6 +85,16 @@ border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:14p
 .again button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;
 font-size:12px;color:var(--sea);cursor:pointer;letter-spacing:1px}
 .again button:active{background:#eef4f1}
+.miniapp{display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(135deg,#eef4ea,#dcead9);
+border:1px solid var(--line);border-radius:16px;padding:13px}
+.ma-qr{flex:none;width:76px;height:76px;border-radius:10px;background:#fff;border:1px dashed #9db6ab;
+display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ma-qr span{font-size:9.5px;color:#9aae9f;line-height:1.5;text-align:center;letter-spacing:.5px}
+.ma-qr img{width:100%;height:100%;object-fit:contain;display:block}
+.ma-tx{flex:1;min-width:0}
+.ma-tx b{display:block;font-size:12.5px;color:var(--sea);letter-spacing:.5px}
+.ma-tx small{display:block;font-size:10px;color:var(--mut);margin-top:4px;line-height:1.55}
+.ma-tx .ma-hint{color:var(--sea2);opacity:.85}
 .decl{text-align:center;color:rgba(242,230,198,.5);font-size:10px;line-height:1.9;margin-top:20px}
 .toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) translateY(10px);
 background:rgba(43,74,71,.95);color:#fff;font-size:12.5px;padding:10px 18px;border-radius:20px;
@@ -240,6 +250,14 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
       <span class="tx"><b>现实里的你，也值得被听见</b><small>关注「奇迹心li」· 倾诉陪伴 · 分享思路</small></span>
       <span class="ar">›</span>
     </a>
+    <div class="miniapp" id="miniApp">
+      <div class="ma-qr" id="miniQr"><span>小程序码<br>待放入</span></div>
+      <div class="ma-tx">
+        <b>回到「奇历小岛」小程序</b>
+        <small>长按识别左侧小程序码，回到小岛继续添柴、捡石头</small>
+        <small class="ma-hint">没看到码？关注公众号，菜单里也能进小程序 ›</small>
+      </div>
+    </div>
     <div class="again">
       <button id="copyBtn">复制这段剧情</button>
       <button id="resetBtn">再捞一个瓶子</button>
@@ -278,24 +296,64 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
 
   // ===== 本地剧情模板库（全部预审、无外部接口、无 UGC）=====
   var IDS={
-    ceo:{name:'霸道总裁',open:'在那个宇宙，你三十岁，掌着一座城的公司。\n你习惯在落地窗前站很久，看整片灯火都属于自己。',
-      move:'今天，同样的事发生在该发生的会议上。你没争辩，只是把文件合上：“按原案执行，出问题我担。”\n转身走进电梯时，门合拢前，你听见整间会议室安静了下来。',
-      close:'你没有提高音量，却让所有人都听见了——这里的你，说话是算数的。'},
-    xian:{name:'修仙大能',open:'在那个宇宙，你是闭关三百年的散修，腰间一柄剑，名叫“照夜”。\n山下的纷纷扰扰，本与你无关。',
-      move:'今天，同样的事传到山上。你只是抬手，指尖一点光落进茶盏，茶水泛起一圈涟漪，又平了。\n“名字随他们写，路我自己走。”说完，你背起剑，下了山。',
-      close:'风从袖口穿过，你没有回头。有些事，在更高的地方看，就小了。'},
-    star:{name:'星际舰长',open:'在那个宇宙，你是一艘星舰的舰长。\n舷窗外是望不到边的星河，船员们都睡了，只有你还醒着。',
-      move:'今天，母星发来质询，说你的航线不合规范。你回了一句：“舰在我手上，我看见的路，和你们看见的不一样。”\n然后按下跃迁——星河在窗外被拉成一条长长的线。',
-      close:'驾驶舱里只剩你一个人的呼吸声，很轻，但很稳。前方没有地图，你照样能开。'},
-    queen:{name:'古代女王',open:'在那个宇宙，你坐在自己挣来的王座上。\n朝堂上的人低着头，没人敢直视你的眼睛。',
-      move:'今天，有人上书弹劾你，说你太过独断。你听完，笑了一下：“准了。”\n把那道奏折折成一只小船，放进殿外的水渠，看它慢慢漂远。',
-      close:'“说的人随他说，做的人，还是我。”你端起茶盏，手一点都不抖。'},
-    hacker:{name:'赛博黑客',open:'在那个宇宙，你住在城市最亮的那层楼。\n指尖敲动，整座网络都听得见你的呼吸。',
-      move:'今天，有人试图抹掉你的名字。你只敲了几行代码，屏幕暗下去又亮起来——\n你的名字还在，比刚才更亮。“想删我？先学会别被我删。”',
-      close:'你摘下耳机，第一次在凌晨三点，觉得有点困了，也觉得有点爽。'}
+    ceo:{name:'霸道总裁',vars:[
+      {open:'在那个宇宙，你三十岁，掌着一座城的公司。\n你习惯在落地窗前站很久，看整片灯火都属于自己。',
+       move:'今天，同样的事发生在该发生的会议上。你没争辩，只是把文件合上：“按原案执行，出问题我担。”\n转身走进电梯时，门合拢前，你听见整间会议室安静了下来。',
+       close:'你没有提高音量，却让所有人都听见了——这里的你，说话是算数的。'},
+      {open:'在那个宇宙，你是这家公司最年轻的掌舵人。\n外人只看见你的签批飞快，没人见过你深夜亮着的那盏灯。',
+       move:'今天，同样的事被摆上桌面，所有人都等着看你追不追究。你翻到那一页，却合上本子：“到此为止，人留下。”\n满座愕然时，你已起身，把外套搭在了那个低着头的人椅背上。',
+       close:'你护下的不是一个错误，是一个还在发抖的人。这里的你，比权力更高的东西，叫担当。'},
+      {open:'在那个宇宙，你手里握着能决定很多人去留的那支笔。\n你给自己定过一条规矩：不在情绪里签字。',
+       move:'今天，同样的事冲你而来，措辞难听。你听完，只说：“明天再来，带上你的方案，不是你的道歉。”\n你把门轻轻带上，没有一句多余的话——却让那句话，在对方心里响了整夜。',
+       close:'你给体面留了一道门。走不走是别人的事，但门，是你亲手留的。'}
+    ]},
+    xian:{name:'修仙大能',vars:[
+      {open:'在那个宇宙，你是闭关三百年的散修，腰间一柄剑，名叫“照夜”。\n山下的纷纷扰扰，本与你无关。',
+       move:'今天，同样的事传到山上。你只是抬手，指尖一点光落进茶盏，茶水泛起一圈涟漪，又平了。\n“名字随他们写，路我自己走。”说完，你背起剑，下了山。',
+       close:'风从袖口穿过，你没有回头。有些事，在更高的地方看，就小了。'},
+      {open:'在那个宇宙，你是宗门里最不起眼的长老，整日在后山晒药。\n没人知道，三百年前那场大劫，是你一个人挡下的。',
+       move:'今天，同样的事又起波澜，有人当众发难。你没动，只把手里那味药递过去：“先压压火气。”\n那药入口，躁动的人忽然安静下来——你治的从来不是争执，是人心里的那把火。',
+       close:'你笑着收好药篓。真正厉害的人，从不需要谁跪着服气。'},
+      {open:'在那个宇宙，你修的是“无用之道”：看云、听雨、替迷路的人指路。\n同门都笑你，说你这辈子成不了仙。',
+       move:'今天，同样的事把所有人卷进去。你却走到崖边，对那团乱麻似的人群说：“先歇一晚，明天路就清楚了。”\n不知为何，众人真的散去。夜里你独自坐着，替他们守着那盏灯。',
+       close:'你没做什么惊天动地的事。可天亮时，路真的出现了——因为你一直醒着。'}
+    ]},
+    star:{name:'星际舰长',vars:[
+      {open:'在那个宇宙，你是一艘星舰的舰长。\n舷窗外是望不到边的星河，船员们都睡了，只有你还醒着。',
+       move:'今天，母星发来质询，说你的航线不合规范。你回了一句：“舰在我手上，我看见的路，和你们看见的不一样。”\n然后按下跃迁——星河在窗外被拉成一条长长的线。',
+       close:'驾驶舱里只剩你一个人的呼吸声，很轻，但很稳。前方没有地图，你照样能开。'},
+      {open:'在那个宇宙，你指挥的是一艘旧船，零件总出问题。\n可你从没丢下过任何一个人。',
+       move:'今天，同样的事发生在任务里，救援名单上最后一个名字被划掉了。你亲自划回来：“名单不改，一个都不放。”\n引擎在抖，你握住舵，声音穿过整个舰桥：“别怕，我带你们回家。”',
+       close:'舷窗外的星河静静的。你不是不害怕，你只是把害怕，调成了静音。'},
+      {open:'在那个宇宙，你迷失在星图之外，信号断了三个月。\n所有人都以为你回不来了。',
+       move:'今天，同样的事在你身上重演——通讯中断，坐标全无。你却打开舰上所有的灯，朝着可能的航线，一盏一盏亮过去。\n“总有人会看见的，”你对着空荡的舱室说，“我来当那个坐标。”',
+       close:'很久以后，有人顺着那串灯找到了你。你说：我哪也没去，我一直在等你们。'}
+    ]},
+    queen:{name:'古代女王',vars:[
+      {open:'在那个宇宙，你坐在自己挣来的王座上。\n朝堂上的人低着头，没人敢直视你的眼睛。',
+       move:'今天，有人上书弹劾你，说你太过独断。你听完，笑了一下：“准了。”\n把那道奏折折成一只小船，放进殿外的水渠，看它慢慢漂远。',
+       close:'“说的人随他说，做的人，还是我。”你端起茶盏，手一点都不抖。'},
+      {open:'在那个宇宙，你是从不起眼的偏殿，一步步走到殿前的。\n那些年你学会一件事：替没说话的人说话。',
+       move:'今天，同样的事落在一个小宫女身上，众人缄口。你却当着满朝的面问：“她做错了什么，说来听听。”\n无人应答。你解下自己的披风，披在她身上：“回吧，今晚不罚任何人。”',
+       close:'你扶起的不是一个婢女，是这座宫里，久违的一点公道。'},
+      {open:'在那个宇宙，你登基那天，手心里全是汗。\n可你告诉自己：坐上这个位子，就不是为自己坐的。',
+       move:'今天，同样的事逼到你面前，是战是和，只等你一句话。你没拍案，而是问身后的将军：“若是你，会怎么护这些百姓？”\n听了很久，你才开口：“依他。”——满殿哗然，你却很平静。',
+       close:'你放下了“必须正确”的执念，却守住了比正确更重要的东西。'}
+    ]},
+    hacker:{name:'赛博黑客',vars:[
+      {open:'在那个宇宙，你住在城市最亮的那层楼。\n指尖敲动，整座网络都听得见你的呼吸。',
+       move:'今天，有人试图抹掉你的名字。你只敲了几行代码，屏幕暗下去又亮起来——\n你的名字还在，比刚才更亮。“想删我？先学会别被我删。”',
+       close:'你摘下耳机，第一次在凌晨三点，觉得有点困了，也觉得有点爽。'},
+      {open:'在那个宇宙，你是个只在深夜出现的“守夜人”。\n你黑进系统，不为破坏，只为替人补上那些没人管的漏洞。',
+       move:'今天，同样的事被引爆，一片混乱。你没先看热闹，而是默默堵住了那个最危险的缺口。\n天亮时，没人知道是谁修好的。你只是关掉屏幕，去睡了一个很沉的觉。',
+       close:'世界安稳运转的夜里，总有人醒着。你就是那个，不问姓名的人。'},
+      {open:'在那个宇宙，你的名字是一串很多人想破解的代码。\n可你给自己留了一句注释：如果看见了，就当我在跟你打招呼。',
+       move:'今天，同样的事把你推到风口浪尖。你没躲，反而把那段代码公之于众：“拿去吧，能修的人，比我多。”\n你本可以独享，却选择交给所有人——那一刻，屏幕那头有无数个“谢谢”在滚动。',
+       close:'你从不是一个人在战斗。你只是比别人，早一点把手伸了出来。'}
+    ]}
   };
   var ID_ORDER=['ceo','xian','star','queen','hacker'];
-  var pain='',chosenId='ceo';
+  var pain='',chosenId='ceo',lastVariant=-1;
 
   var tagEls=document.querySelectorAll('#pains .tag');
   tagEls.forEach(function(el){el.addEventListener('click',function(){
@@ -318,12 +376,16 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
   document.getElementById('genBtn').addEventListener('click',function(){
     if(!pain){toast('先选一个心事，或自己写一句');return;}
     var key=chosenId==='random'?ID_ORDER[Math.floor(Math.random()*ID_ORDER.length)]:chosenId;
-    var d=IDS[key];
+    var g=IDS[key];
+    var vi=Math.floor(Math.random()*g.vars.length);
+    if(g.vars.length>1 && vi===lastVariant) vi=(vi+1)%g.vars.length;
+    lastVariant=vi;
+    var d=g.vars[vi];
     var text=d.open+'\n\n“'+pain+'”——现实里的你，刚刚经历了这件事。\n可在那个宇宙，同样的事发生时——\n\n'+d.move+'\n\n'+d.close+
       '\n\n平行宇宙的你，替你赢了一次。\n但真正扛过今天的你，就在这里。\n已经很了不起了。';
-    showStory(d.name,text);
+    showStory(g.name,text);
     var c=0;try{c=+(localStorage.getItem('game7_parallel_count')||0)+1;localStorage.setItem('game7_parallel_count',c);}catch(e){}
-    TRACK('generate',{id:key,count:c});
+    TRACK('generate',{id:key,variant:vi,count:c});
   });
 
   var typing=null,fullText='';
