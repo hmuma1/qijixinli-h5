@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>平行宇宙盲盒 · 奇li小岛</title>
+<title>时空穿越盲盒 · 奇li小岛</title>
 <script>
 var _hmt=_hmt||[];
 (function(){var hm=document.createElement('script');
@@ -31,14 +31,13 @@ font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",san
 .top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
 padding:12px 0 10px;margin-bottom:2px}
 .top .name{color:var(--gold);font-size:14px;letter-spacing:2px;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.7)}
-.hero{position:relative;text-align:center;color:var(--paper);padding:12px 10px 0;height:272px;overflow:hidden}
+.hero{position:relative;text-align:center;color:var(--paper);padding:12px 10px 0;height:300px;overflow:hidden}
 .hero .txt{position:relative;z-index:3}
 .hero .bottle{position:relative;display:block;font-size:30px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 14px rgba(232,200,138,.5))}
 .hero h1{position:relative;font-size:21px;letter-spacing:2px;margin:0 0 7px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.8)}
 .hero p{position:relative;font-size:11.5px;line-height:1.8;color:rgba(242,230,198,.88);letter-spacing:.5px;margin:0;text-shadow:0 1px 8px rgba(0,0,0,.85)}
-.hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:150px;z-index:1;pointer-events:none;
+.hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:170px;z-index:1;pointer-events:none;
 -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 24%);mask-image:linear-gradient(to bottom,transparent 0%,#000 24%)}
-/* 半透明玻璃表单 */
 .panel{background:rgba(11,30,42,.56);border:1px solid rgba(143,192,182,.22);border-radius:20px;
 padding:18px 16px;margin-top:10px;box-shadow:0 12px 40px rgba(0,0,0,.3);
 -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
@@ -57,58 +56,56 @@ font-size:12.5px;color:var(--paper);background:rgba(255,255,255,.06);outline:non
 .custom input:focus{border-color:var(--gold)}
 .custom button{border:none;background:rgba(242,217,160,.88);color:#0e2230;border-radius:12px;padding:0 15px;
 font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:1px;font-weight:600}
-.ids{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.idcard{border:1px solid rgba(143,192,182,.28);border-radius:14px;padding:11px 10px;cursor:pointer;
-background:rgba(143,192,182,.08);transition:.15s;display:flex;align-items:center;gap:9px}
-.idcard:active{transform:scale(.97)}
-.idcard.on{border-color:var(--gold);background:rgba(242,217,160,.13);box-shadow:0 0 0 1px var(--gold) inset}
-.idcard .em{font-size:21px;line-height:1}
-.idcard b{display:block;font-size:12.5px;color:var(--paper);letter-spacing:.5px}
-.idcard small{display:block;font-size:10px;color:rgba(242,230,198,.55);margin-top:2px}
-.bigbtn{display:block;width:100%;margin-top:16px;border:none;border-radius:26px;padding:14px;
+.travel-note{margin-top:16px;padding:11px 13px;border-radius:12px;background:rgba(143,192,182,.08);
+border:1px dashed rgba(143,192,182,.3);font-size:11px;line-height:1.75;color:rgba(242,230,198,.72);text-align:center;letter-spacing:.5px}
+.travel-note b{color:var(--gold);font-weight:600}
+.bigbtn{display:block;width:100%;margin-top:14px;border:none;border-radius:26px;padding:15px;
 background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0e2230;font-size:14px;letter-spacing:3px;
 font-weight:600;cursor:pointer;box-shadow:0 8px 26px rgba(232,200,138,.3)}
 .bigbtn:active{transform:scale(.98)}
-/* 开盒动画 */
 .reveal{display:none;margin-top:14px}
 .reveal.show{display:block}
-.jarstage{text-align:center;padding:26px 0 6px;min-height:90px}
-.jarstage .jar{display:inline-block;font-size:46px;line-height:1;filter:drop-shadow(0 0 18px rgba(232,200,138,.55))}
-.jarstage.shake .jar{animation:shake .55s ease}
-.jarstage.flip .jar{animation:flip .8s ease forwards}
-@keyframes shake{0%,100%{transform:rotate(0) translateY(0)}20%{transform:rotate(-14deg) translateY(-6px)}
-40%{transform:rotate(12deg) translateY(0)}60%{transform:rotate(-9deg) translateY(-4px)}80%{transform:rotate(6deg) translateY(0)}}
-@keyframes flip{0%{transform:rotateY(0) scale(1);opacity:1}45%{transform:rotateY(90deg) scale(1.15);opacity:.85}
-100%{transform:rotateY(360deg) scale(.6);opacity:0}}
-/* 半透明身份卡 */
-.idcardbox{display:none;position:relative;border-radius:22px;padding:20px 18px 18px;overflow:hidden;
+/* 时空穿越：年份老虎机 */
+.wormhole{display:none;text-align:center;padding:34px 0 26px;position:relative}
+.wormhole.show{display:block}
+.wh-ring{position:relative;width:150px;height:150px;margin:0 auto 18px}
+.wh-ring:before,.wh-ring:after{content:'';position:absolute;inset:0;border-radius:50%;
+border:1px solid rgba(242,217,160,.35);animation:spin 3.4s linear infinite}
+.wh-ring:after{inset:16px;border-color:rgba(143,192,182,.4);border-style:dashed;animation:spin 5s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wh-core{position:absolute;inset:34px;border-radius:50%;background:radial-gradient(circle,rgba(242,217,160,.35),rgba(143,192,182,.08) 60%,transparent 72%);
+box-shadow:0 0 50px rgba(242,217,160,.35);animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.92);opacity:.75}50%{transform:scale(1.06);opacity:1}}
+.wh-bottle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:30px;filter:drop-shadow(0 0 12px rgba(232,200,138,.7))}
+.wh-year{font-size:30px;font-weight:700;letter-spacing:2px;color:var(--gold);text-shadow:0 0 24px rgba(242,217,160,.5);font-variant-numeric:tabular-nums}
+.wh-year.rolling{color:#fff4d8;animation:roll .12s linear infinite}
+@keyframes roll{0%{opacity:.55;transform:translateY(-2px)}50%{opacity:1}100%{opacity:.65;transform:translateY(2px)}}
+.wh-tip{font-size:11px;color:rgba(242,230,198,.6);letter-spacing:3px;margin-top:8px}
+/* 结果卡：半透明玻璃 */
+.result{display:none;position:relative;border-radius:22px;padding:18px 18px 18px;overflow:hidden;
 background:linear-gradient(150deg,rgba(38,84,92,.5),rgba(12,32,46,.62));
 border:1px solid rgba(242,217,160,.42);
 box-shadow:0 0 36px rgba(232,200,138,.2),inset 0 0 26px rgba(143,192,182,.12);
 -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.idcardbox.show{display:block;animation:floatIn .75s cubic-bezier(.2,.85,.3,1)}
-@keyframes floatIn{from{opacity:0;transform:translateY(28px) scale(.93)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result.show{display:block;animation:floatIn .7s cubic-bezier(.2,.85,.3,1)}
+@keyframes floatIn{from{opacity:0;transform:translateY(26px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
 .glowdot{position:absolute;border-radius:50%;filter:blur(18px);pointer-events:none}
-.card-hd{text-align:center;color:var(--gold);font-size:11px;letter-spacing:5px;margin-bottom:10px;
-text-shadow:0 0 12px rgba(242,217,160,.5)}
-.card-hd .rar{color:#ffe9b8;font-size:9px;letter-spacing:2px;opacity:.85}
-.card-art{height:104px;margin:0 -4px 12px;position:relative;z-index:1}
+.card-land{text-align:center;color:var(--gold);font-size:10.5px;letter-spacing:4px;margin-bottom:2px;text-shadow:0 0 10px rgba(242,217,160,.5)}
+.card-year{text-align:center;color:#fff4d8;font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:3px;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.card-era{text-align:center;color:var(--mint);font-size:11px;letter-spacing:2px;margin-bottom:12px;opacity:.9}
+.card-art{height:120px;margin:0 -2px 12px;position:relative;z-index:1;border-radius:12px;overflow:hidden;
+border:1px solid rgba(242,217,160,.22);box-shadow:0 6px 20px rgba(0,0,0,.3)}
 .card-art svg{width:100%;height:100%;display:block}
+.card-role{position:relative;z-index:1;text-align:center;color:var(--gold);font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.card-role:before{content:'「';opacity:.7}.card-role:after{content:'」';opacity:.7}
 .card-quote{position:relative;z-index:1;text-align:center;color:#fff4d8;font-size:16.5px;line-height:1.65;
 letter-spacing:.5px;font-weight:600;text-shadow:0 2px 12px rgba(0,0,0,.7);margin:2px 0 12px}
-.card-quote::before,.card-quote::after{content:'「';color:var(--gold);opacity:.7}
-.card-quote::after{content:'」'}
-.card-echo{position:relative;z-index:1;color:rgba(242,230,198,.82);font-size:12px;line-height:1.9;
+.card-quote:before{content:'「';color:var(--gold);opacity:.7}.card-quote:after{content:'」';color:var(--gold);opacity:.7}
+.card-echo{position:relative;z-index:1;color:rgba(242,230,198,.85);font-size:12px;line-height:1.9;
 text-align:center;padding-top:12px;border-top:1px solid rgba(242,217,160,.2)}
 .card-echo em{color:var(--gold);font-style:normal}
-.card-sign{position:relative;z-index:1;text-align:center;color:rgba(242,230,198,.6);font-size:10.5px;margin-top:12px;letter-spacing:1px}
-/* 动效：星光 / 剑光 / 代码 */
-.twinkle{animation:tw 2.4s ease-in-out infinite}
-@keyframes tw{0%,100%{opacity:.35}50%{opacity:1}}
-.sword{animation:sw 3s ease-in-out infinite}
-@keyframes sw{0%{opacity:0;transform:translateX(-30px)}35%{opacity:1}70%{opacity:.5}100%{opacity:0;transform:translateX(50px)}}
-.code{animation:tw 1.8s ease-in-out infinite}
-/* 导流也半透明，不糊纸 */
+.card-sign{position:relative;z-index:1;text-align:center;color:rgba(242,230,198,.62);font-size:10px;margin-top:12px;letter-spacing:.5px;line-height:1.7}
+/* 导流 */
 .guide{display:flex;flex-direction:column;gap:9px;margin-top:13px}
 .gzhline{display:flex;align-items:center;gap:9px;text-align:left;text-decoration:none;
 background:rgba(11,30,42,.48);border:1px solid rgba(143,192,182,.22);border-radius:14px;padding:11px 13px;
@@ -145,7 +142,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 <div class="wrap">
   <div class="top">
     <span style="width:56px"></span>
-    <span class="name">奇li小岛 · 平行宇宙盲盒</span>
+    <span class="name">奇li小岛 · 时空穿越盲盒</span>
     <span style="width:56px"></span>
   </div>
 
@@ -281,8 +278,8 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     </svg>
     <div class="txt">
       <span class="bottle">🫙</span>
-      <h1>摇一只来自平行宇宙的瓶子</h1>
-      <p>写下此刻的心事，摇开一只盲盒<br>看看那个时空的你，正活成什么样</p>
+      <h1>摇一只瓶子，穿越到你的那一年</h1>
+      <p>写下此刻的心事，纵身一跃<br>上至青铜王朝，下至银河尽头，落点交给瓶子</p>
     </div>
   </div>
 
@@ -298,29 +295,30 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
       <input id="customPain" type="text" maxlength="24" placeholder="或自己写一句，比如：今天又被催婚了">
       <button id="addPain">用这个</button>
     </div>
-    <div class="step" style="margin-top:20px"><i>2</i>想摇开哪个宇宙的自己？</div>
-    <div class="ids" id="ids">
-      <div class="idcard on" data-id="ceo"><span class="em">🕴️</span><span><b>霸道总裁</b><small>一句话，全场安静</small></span></div>
-      <div class="idcard" data-id="xian"><span class="em">⚔️</span><span><b>修仙大能</b><small>剑一抬，恩怨了了</small></span></div>
-      <div class="idcard" data-id="star"><span class="em">🚀</span><span><b>星际舰长</b><small>星河都在你手上</small></span></div>
-      <div class="idcard" data-id="queen"><span class="em">👑</span><span><b>古代女王</b><small>奏折折成小船</small></span></div>
-      <div class="idcard" data-id="hacker"><span class="em">💻</span><span><b>赛博黑客</b><small>名字谁也删不掉</small></span></div>
-      <div class="idcard" data-id="random"><span class="em">🎲</span><span><b>随机盲盒</b><small>交给瓶子决定</small></span></div>
-    </div>
-    <button class="bigbtn" id="genBtn">摇 开 盲 盒</button>
+    <div class="travel-note">下面是<b>时空盲盒</b>：这一年是盛世还是末世、你是谁，<br>连瓶子自己也不知道——按下才会揭晓</div>
+    <button class="bigbtn" id="genBtn">纵 身 一 跃 · 开 始 穿 越</button>
   </div>
 
   <div class="reveal" id="reveal">
-    <div class="jarstage" id="jarstage"><span class="jar">🫙</span></div>
-    <div class="idcardbox" id="idcardbox">
-      <div class="glowdot" id="glowA" style="width:120px;height:120px;top:10px;left:-30px;background:rgba(242,217,160,.16)"></div>
-      <div class="glowdot" id="glowB" style="width:100px;height:100px;bottom:0;right:-20px;background:rgba(143,192,182,.16)"></div>
-      <div class="card-hd"><span id="cardName">霸道总裁</span> · <span class="rar">仅限此刻</span></div>
+    <div class="wormhole" id="wormhole">
+      <div class="wh-ring"><div class="wh-core"></div><div class="wh-bottle">🫙</div></div>
+      <div class="wh-year rolling" id="whYear">0000</div>
+      <div class="wh-tip">时 空 穿 梭 中</div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="glowdot" style="width:120px;height:120px;top:6px;left:-30px;background:rgba(242,217,160,.16)"></div>
+      <div class="glowdot" style="width:100px;height:100px;bottom:0;right:-20px;background:rgba(143,192,182,.16)"></div>
+      <div class="card-land">时空坐标 · 已锁定</div>
+      <div class="card-year" id="cardYear">公元 1003 年</div>
+      <div class="card-era" id="cardEra">北宋 · 景德年间</div>
       <div class="card-art" id="cardArt"></div>
+      <div class="card-role" id="cardRole">一个刚直的谏官</div>
       <div class="card-quote" id="cardQuote"></div>
       <div class="card-echo" id="cardEcho"></div>
-      <div class="card-sign">平行宇宙的你替你赢了一次 · 但扛过今天的你，就在这里</div>
+      <div class="card-sign">这一次，是你自己穿过去活了一回 · 扛过今天的你，就已经很了不起</div>
     </div>
+
     <div class="guide" id="guide" style="display:none">
       <a class="gzhline" href="javascript:void(0)" id="gzhLine">
         <span class="ic">✦</span>
@@ -336,13 +334,13 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
         </div>
       </div>
       <div class="again">
-        <button id="copyBtn">复制这张卡</button>
-        <button id="resetBtn">再摇一只瓶子</button>
+        <button id="copyBtn">复制这张穿越卡</button>
+        <button id="resetBtn">再穿一次</button>
       </div>
     </div>
   </div>
 
-  <div class="decl">全部画面与文案由本地程序生成 · 仅供放松与陪伴<br>这里的另一个你，是来陪你的，不是来替你做决定的</div>
+  <div class="decl">全部画面与文案由本地程序生成 · 仅供放松与陪伴<br>那个时空的你，是来陪你的，不是来替你做决定的</div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -372,71 +370,10 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
   }
   requestAnimationFrame(frame);
 
-  // 每个宇宙的场景剪影（程序绘制、半透明发光线条）
-  var ART={
-    ceo:'<path d="M8 10 h284 v78 h-284z" fill="none" stroke="#f2d9a0" stroke-width="1" opacity=".38"/>'+
-        '<path d="M150 10 v78" stroke="#f2d9a0" stroke-width=".8" opacity=".25"/>'+
-        '<path d="M14 84 h16 v-16 h10 v16 h14 v-24 h10 v24 h14 v-12 h16 v12 h12 v-26 h10 v26 h14 v-18 h10 v18 h16 v-28 h12 v28 h14 v-14 h10 v14 h18 v-22 h10 v22 h20" fill="none" stroke="#e8c88a" stroke-width="1.1" opacity=".6"/>'+
-        '<g fill="#ffd98a" opacity=".75"><rect x="19" y="72" width="2" height="3"/><rect x="46" y="64" width="2" height="3"/><rect x="88" y="70" width="2" height="3"/><rect x="128" y="62" width="2" height="3"/><rect x="176" y="60" width="2" height="3"/><rect x="222" y="66" width="2" height="3"/><rect x="262" y="58" width="2" height="3"/></g>'+
-        '<path d="M150 86 q0-16 6-20 q-6-5-6-13 q0-8 6-8 q6 0 6 8 q0 8-6 13 q6 4 6 20z" fill="#0d2732" stroke="#f2d9a0" stroke-width=".7" opacity=".9"/>',
-    xian:'<path d="M26 88 L92 26 L158 88Z" fill="none" stroke="#e8c88a" stroke-width="1.1" opacity=".55"/>'+
-         '<path d="M120 88 L190 18 L262 88Z" fill="none" stroke="#f2d9a0" stroke-width="1" opacity=".45"/>'+
-         '<path d="M10 86 q28-8 56 0 t56 0 t56 0 t56 0 t46 0" fill="none" stroke="#8fc0b6" stroke-width="1.5" opacity=".5"/>'+
-         '<path d="M18 94 q28-6 56 0 t70 0 t70 0 t60 0" fill="none" stroke="#8fc0b6" stroke-width="1.1" opacity=".3"/>'+
-         '<path class="sword" d="M64 74 L246 22" stroke="#fff3c4" stroke-width="2" opacity=".9"/>'+
-         '<circle cx="248" cy="22" r="2" fill="#fff3c4" class="twinkle"/>',
-    star:'<circle cx="150" cy="52" r="44" fill="none" stroke="#f2d9a0" stroke-width="2" opacity=".5"/>'+
-         '<circle cx="150" cy="52" r="39" fill="none" stroke="#8fc0b6" stroke-width=".8" opacity=".22"/>'+
-         '<path d="M112 62 q38-22 76 0" fill="none" stroke="#8fc0b6" stroke-width="6" opacity=".12"/>'+
-         '<g fill="#fff3c4" class="twinkle"><circle cx="132" cy="36" r="1.5"/><circle cx="168" cy="44" r="1.2"/><circle cx="150" cy="66" r="1.4"/><circle cx="122" cy="58" r="1"/><circle cx="180" cy="60" r="1.1"/></g>'+
-         '<path d="M132 54 q18-9 36 0 l-7 6 h-22z" fill="#0d2732" stroke="#f2d9a0" stroke-width=".8" opacity=".85"/>',
-    queen:'<path d="M96 40 q54-30 108 0" fill="none" stroke="#f2d9a0" stroke-width="1.2" opacity=".6"/>'+
-          '<path d="M92 42 h116" stroke="#f2d9a0" stroke-width="1" opacity=".5"/>'+
-          '<g stroke="#e8c88a" stroke-width="1.1" opacity=".55"><path d="M100 44 v40"/><path d="M128 44 v40"/><path d="M172 44 v40"/><path d="M200 44 v40"/></g>'+
-          '<path d="M24 6 q30 34 8 88" fill="none" stroke="#8fc0b6" stroke-width="2" opacity=".3"/>'+
-          '<path d="M276 6 q-30 34 -8 88" fill="none" stroke="#8fc0b6" stroke-width="2" opacity=".3"/>'+
-          '<path d="M136 32 l7-12 7 12 7-12 7 12z" fill="none" stroke="#ffd98a" stroke-width="1.1" opacity=".85" class="twinkle"/>',
-    hacker:'<rect x="42" y="8" width="216" height="84" rx="4" fill="none" stroke="#8fc0b6" stroke-width="1" opacity=".5"/>'+
-           '<g class="code" fill="#8fc0b6" font-size="9" font-family="monospace" opacity=".7">'+
-           '<text x="52" y="26">01 10 0110</text><text x="52" y="42">1101 01 1</text>'+
-           '<text x="52" y="58">011 0 1101</text><text x="52" y="74">1011 01 0</text>'+
-           '<text x="176" y="34">0 1101</text><text x="176" y="54">110 01</text></g>'+
-           '<rect x="176" y="66" width="6" height="10" fill="#ffd98a" class="twinkle"/>'
-  };
-
-  // 5 身份 × 3 变体：一句金句 + 一句对心事的回应（预审短句，无生成式AI）
-  var IDS={
-    ceo:{name:'霸道总裁',vars:[
-      {q:'这里的你，说话是算数的。',e:'“{pain}”——你只是合上文件：“按原案执行，出问题我担。”'},
-      {q:'你护下的，是一个还在发抖的人。',e:'“{pain}”——你把外套搭在低头的人椅背上，起身时满座无声。'},
-      {q:'你给体面，留了一道门。',e:'“{pain}”——你只说“明天带上方案来”，轻轻带上了门。'}
-    ]},
-    xian:{name:'修仙大能',vars:[
-      {q:'在更高的地方看，就小了。',e:'“{pain}”——你指尖一点，茶水泛起涟漪又平了：“路我自己走。”'},
-      {q:'真正厉害的人，从不需谁跪着服气。',e:'“{pain}”——你把药递过去：“先压压火气。”那人口中的火，真就熄了。'},
-      {q:'你没做什么，可天亮时路出现了。',e:'“{pain}”——你只是替所有人守着那盏灯，一夜没睡。'}
-    ]},
-    star:{name:'星际舰长',vars:[
-      {q:'前方没有地图，你照样能开。',e:'“{pain}”——你回了一句“我看见的路不一样”，然后按下跃迁。'},
-      {q:'你只是把害怕，调成了静音。',e:'“{pain}”——你握住舵：“名单不改，我带你们回家。”'},
-      {q:'你哪也没去，你一直在等他们。',e:'“{pain}”——你打开舰上所有的灯，自己成了那个坐标。'}
-    ]},
-    queen:{name:'古代女王',vars:[
-      {q:'说的人随他说，做的人还是我。',e:'“{pain}”——你把奏折折成小船，看它慢慢漂远，手一点不抖。'},
-      {q:'你扶起的，是久违的一点公道。',e:'“{pain}”——你当众问“她做错了什么”，无人应答，你解下披风给她。'},
-      {q:'你放下了正确，守住了更重要的。',e:'“{pain}”——你问将军“你会怎么护百姓”，听了很久，说：依他。'}
-    ]},
-    hacker:{name:'赛博黑客',vars:[
-      {q:'想删我？先学会别被我删。',e:'“{pain}”——你敲了几行代码，屏幕暗下去又亮起来，你的名字更亮了。'},
-      {q:'总有人醒着，你就是那个不问姓名的人。',e:'“{pain}”——你没看热闹，默默堵住了最危险的缺口，天亮去睡了很沉的觉。'},
-      {q:'你只是比别人，早一点把手伸出来。',e:'“{pain}”——你把代码公之于众：“拿去吧，能修的人比我多。”'}
-    ]}
-  };
-  var ORDER=['ceo','xian','star','queen','hacker'];
-  var pain='',chosen='ceo',lastFull='',lastFullText='';
+  var ERAS=[{"year": "公元前 221 年", "spin": "公元前 221", "era": "大秦 · 天下初定", "role": "一个管竹简的小吏", "art": "<defs><linearGradient id=\"g1\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#241a16\"/><stop offset=\"1\" stop-color=\"#0e0b0a\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g1)\"/><path d=\"M20 84 L20 50 L280 50 L280 84\" fill=\"none\" stroke=\"#7a5c3a\" stroke-width=\"2\" opacity=\".7\"/><path d=\"M14 50 L150 28 L286 50\" fill=\"none\" stroke=\"#8c2f2f\" stroke-width=\"3\"/><g stroke=\"#c9a86a\" fill=\"none\" stroke-width=\"1.4\" opacity=\".8\"><path d=\"M96 96 v-22 M108 96 v-22 M120 96 v-22 M132 96 v-22 M144 96 v-22\"/><path d=\"M94 80 h52 M94 88 h52\"/></g><circle cx=\"238\" cy=\"60\" r=\"9\" fill=\"#c9a86a\" opacity=\".35\"/><g transform=\"translate(150,74) scale(1.0)\" fill=\"#0a0807\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g>", "q": "你写的每一笔，都留给了还没来的人。", "e": "「{pain}」——你在灯下把那件事一笔一画记进竹简，手很稳。你不认得几百年后的人，但你知道，他们会替你记着。", "e2": "「{pain}」——你在竹简上写完，吹了吹墨。那时候没人催你交稿，你也把它写完了。"}, {"year": "公元 1003 年", "spin": "公元 1003", "era": "北宋 · 景德年间", "role": "一个刚直的谏官", "art": "<defs><linearGradient id=\"g2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3a4f4a\"/><stop offset=\"1\" stop-color=\"#16251f\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g2)\"/><path d=\"M0 96 Q40 60 90 78 Q150 92 210 70 Q260 56 300 92\" fill=\"none\" stroke=\"#7a9a8a\" stroke-width=\"2\" opacity=\".6\"/><path d=\"M120 92 Q150 58 180 92\" fill=\"none\" stroke=\"#a8433a\" stroke-width=\"3\"/><g fill=\"#a8433a\" opacity=\".75\"><circle cx=\"70\" cy=\"40\" r=\"7\"/><circle cx=\"232\" cy=\"46\" r=\"6\"/></g><g stroke=\"#c9a86a\" stroke-width=\"1\" opacity=\".7\"><path d=\"M70 47 v10 M232 52 v10\"/></g><g transform=\"translate(150,96) scale(1.0)\" fill=\"#0e1a16\"><circle cx=\"0\" cy=\"-29\" r=\"6\"/><path d=\"M-7 -23 Q0 -19 7 -23 L9 1 L-9 1 Z\"/><path d=\"M-8 1 L-11 24 L-3 24 L0 3 M8 1 L11 24 L3 24 L0 3\"/></g><path d=\"M158 70 l16 4\" stroke=\"#e8dcc0\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".85\"/>", "q": "你把该说的话，说完了。", "e": "「{pain}」——你在殿上站了很久，声音不大，没有一句是违心的。散朝时天正蓝，你忽然觉得，今天没白过。", "e2": "「{pain}」——你没有拍案，也没有吵赢谁。你只是把真话放在那儿，谁都挪不动。"}, {"year": "公元 755 年", "spin": "公元 755", "era": "盛唐 · 天宝年间", "role": "一个写诗的人", "art": "<defs><linearGradient id=\"g3\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#23304e\"/><stop offset=\"1\" stop-color=\"#0d1424\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g3)\"/><circle cx=\"228\" cy=\"34\" r=\"18\" fill=\"#e8e8d0\" opacity=\".85\"/><circle cx=\"234\" cy=\"30\" r=\"16\" fill=\"#23304e\" opacity=\".95\"/><g stroke=\"#d98a9a\" fill=\"none\" stroke-width=\"2\" opacity=\".8\"><path d=\"M14 20 Q50 34 78 26 M30 40 Q60 30 92 44\"/></g><g fill=\"#d98a9a\" opacity=\".7\"><circle cx=\"46\" cy=\"26\" r=\"3\"/><circle cx=\"66\" cy=\"36\" r=\"3\"/><circle cx=\"84\" cy=\"30\" r=\"2.5\"/></g><g transform=\"translate(150,100) scale(1.0)\" fill=\"#080e1c\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g><path d=\"M150 86 l0 -10\" stroke=\"#e8dcc0\" stroke-width=\"2\" opacity=\".7\"/>", "q": "你举杯的时候，月亮也举了杯。", "e": "「{pain}」——你没跟谁讲道理，只是把那口气写进诗里，念给月亮听。风一吹，就轻了。", "e2": "「{pain}」——那天你没写成一句满意的，但不着急——好句子都在路上。"}, {"year": "公元前 500 年", "spin": "公元前 500", "era": "春秋 · 礼崩乐坏", "role": "一个讲学的人", "art": "<defs><linearGradient id=\"g4\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#4a3a28\"/><stop offset=\"1\" stop-color=\"#1c1610\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g4)\"/><path d=\"M40 84 Q44 44 76 44 Q108 44 112 84\" fill=\"none\" stroke=\"#6b8e6b\" stroke-width=\"3\" opacity=\".7\"/><g fill=\"#6b8e6b\" opacity=\".6\"><circle cx=\"58\" cy=\"52\" r=\"10\"/><circle cx=\"82\" cy=\"48\" r=\"12\"/><circle cx=\"96\" cy=\"58\" r=\"8\"/></g><g stroke=\"#c9a86a\" stroke-width=\"1\" opacity=\".6\"><path d=\"M196 84 v-16 M206 84 v-16 M216 84 v-16 M226 84 v-16\"/></g><g transform=\"translate(150,92) scale(1.0)\" fill=\"#120e09\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g><g transform=\"translate(200,96) scale(0.7)\" fill=\"#120e09\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g>", "q": "你讲的东西，有人听进去了。", "e": "「{pain}」——你席地坐着，把心里那点困惑讲给学生听。讲着讲着，你自己先明白了。", "e2": "「{pain}」——有个学生听哭了。你没安慰他，只是继续讲：有些道理要自己长出来。"}, {"year": "公元 1405 年", "spin": "公元 1405", "era": "大明 · 宝船下西洋", "role": "一个远航的水手", "art": "<defs><linearGradient id=\"g5\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1a3a5c\"/><stop offset=\"1\" stop-color=\"#0a1a2c\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g5)\"/><circle cx=\"60\" cy=\"34\" r=\"13\" fill=\"#c9a86a\" opacity=\".7\"/><path d=\"M150 20 L150 84\" stroke=\"#e0dcc8\" stroke-width=\"2.5\"/><path d=\"M154 28 Q230 48 154 72 Z\" fill=\"#e0dcc8\" opacity=\".75\"/><path d=\"M96 84 Q150 98 204 84 L196 96 L104 96 Z\" fill=\"#3a2a1c\"/><g stroke=\"#7aa0c0\" fill=\"none\" stroke-width=\"1.5\" opacity=\".6\"><path d=\"M0 104 Q30 96 60 104 T120 104 T180 104 T240 104 T300 104\"/></g><g transform=\"translate(128,88) scale(0.8)\" fill=\"#080f18\"><circle cx=\"0\" cy=\"-29\" r=\"6\"/><path d=\"M-7 -23 Q0 -19 7 -23 L9 1 L-9 1 Z\"/><path d=\"M-8 1 L-11 24 L-3 24 L0 3 M8 1 L11 24 L3 24 L0 3\"/></g>", "q": "海那么大，装得下你所有没说出口的话。", "e": "「{pain}」——你爬上桅杆看了一眼天，风把那些字吹散了。你忽然想去更远的地方，先不急着难过。", "e2": "「{pain}」——你在甲板上站了一整夜。不是为了想通什么，就是想站一会儿。"}, {"year": "公元 1689 年", "spin": "公元 1689", "era": "大清 · 康熙年间", "role": "一个画师", "art": "<defs><linearGradient id=\"g6\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2e2a24\"/><stop offset=\"1\" stop-color=\"#12100d\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g6)\"/><rect x=\"90\" y=\"24\" width=\"120\" height=\"72\" fill=\"#e8dfc8\" opacity=\".9\"/><path d=\"M108 76 Q140 44 176 70 M120 80 Q150 56 186 78\" fill=\"none\" stroke=\"#4a4a42\" stroke-width=\"1.5\" opacity=\".7\"/><circle cx=\"188\" cy=\"42\" r=\"8\" fill=\"#a8433a\" opacity=\".6\"/><path d=\"M40 96 L72 30\" stroke=\"#7a5c3a\" stroke-width=\"4\" stroke-linecap=\"round\"/><g transform=\"translate(150,108) scale(0.9)\" fill=\"#0c0a08\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g>", "q": "你把那件事，画成了山水的背景。", "e": "「{pain}」——你磨了很久的墨，落笔时手很静。画完之后你才发现，那件烦心事，远没有画里的山高。", "e2": "「{pain}」——那幅画你画了三年。没人催，你自己也没催自己。"}, {"year": "公元 2178 年", "spin": "公元 2178", "era": "火星 · 第一个春天", "role": "一个种树的人", "art": "<defs><linearGradient id=\"g7\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5a2e26\"/><stop offset=\"1\" stop-color=\"#1a0e0c\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g7)\"/><circle cx=\"246\" cy=\"30\" r=\"14\" fill=\"#d98a6a\" opacity=\".7\"/><path d=\"M40 100 Q80 34 160 34 Q240 34 280 100\" fill=\"none\" stroke=\"#6ba8a0\" stroke-width=\"2\" opacity=\".6\"/><path d=\"M0 100 Q150 92 300 100 V120 H0 Z\" fill=\"#8c4a3a\" opacity=\".5\"/><g stroke=\"#7ac08a\" stroke-width=\"2\" fill=\"none\"><path d=\"M124 100 v-20 M124 88 q-10-8-16-4 M124 92 q10-8 16-4\"/></g><circle cx=\"124\" cy=\"78\" r=\"4\" fill=\"#7ac08a\" opacity=\".6\"/><g transform=\"translate(170,100) scale(0.85)\" fill=\"#d0d8d8\"><circle cx=\"0\" cy=\"-29\" r=\"6\"/><path d=\"M-7 -23 Q0 -19 7 -23 L9 1 L-9 1 Z\"/><path d=\"M-8 1 L-11 24 L-3 24 L0 3 M8 1 L11 24 L3 24 L0 3\"/></g>", "q": "在别的星球，你重新学会了呼吸。", "e": "「{pain}」——你在红色荒原上种下第一棵树，手心全是土。抬头看见地球那颗小蓝点时，你忽然没那么紧张了。", "e2": "「{pain}」——树活了。你蹲在它旁边很久，比在地球上的任何一个夜晚都踏实。"}, {"year": "公元 3055 年", "spin": "公元 3055", "era": "永生纪 · 时间失重", "role": "一个不再怕时间的人", "art": "<defs><linearGradient id=\"g8\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2a3a5a\"/><stop offset=\"1\" stop-color=\"#0c1428\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g8)\"/><circle cx=\"150\" cy=\"52\" r=\"34\" fill=\"none\" stroke=\"#7ab0e0\" stroke-width=\"1\" opacity=\".4\"/><circle cx=\"150\" cy=\"52\" r=\"26\" fill=\"none\" stroke=\"#b0e0e8\" stroke-width=\".8\" opacity=\".3\"/><g fill=\"#b0e0e8\" opacity=\".5\"><circle cx=\"60\" cy=\"30\" r=\"1.6\"/><circle cx=\"238\" cy=\"40\" r=\"1.4\"/><circle cx=\"210\" cy=\"18\" r=\"1.2\"/><circle cx=\"90\" cy=\"70\" r=\"1.3\"/></g><path d=\"M20 104 h260\" stroke=\"#4a6a9a\" stroke-width=\"1\" opacity=\".5\"/><g transform=\"translate(150,96) scale(1.1)\" fill=\"none\" stroke=\"#cfe8f0\" stroke-width=\"1.6\" opacity=\".9\"><circle cx=\"0\" cy=\"-27\" r=\"6\"/><path d=\"M0 -21 L0 2 M0 -16 L-12 -6 M0 -16 L12 -6 M0 2 L-9 24 M0 2 L9 24\"/></g>", "q": "活得太久，你学会了不跟一天较劲。", "e": "「{pain}」——你活了一千年，见过太多人把今天的天当成真的塌了。你只是泡了杯茶，等它自己亮起来。", "e2": "「{pain}」——你学会了一件事——再难过的事，放长到一千年看，都只是一小段。"}, {"year": "公元 4412 年", "spin": "公元 4412", "era": "银河系边缘 · 长夜", "role": "一个守灯的人", "art": "<defs><linearGradient id=\"g9\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2a1a4a\"/><stop offset=\"1\" stop-color=\"#0a0618\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g9)\"/><g fill=\"#d0b070\" opacity=\".7\"><circle cx=\"40\" cy=\"24\" r=\"1.4\"/><circle cx=\"96\" cy=\"44\" r=\"1\"/><circle cx=\"218\" cy=\"26\" r=\"1.6\"/><circle cx=\"268\" cy=\"60\" r=\"1.2\"/><circle cx=\"160\" cy=\"18\" r=\"1\"/></g><path d=\"M150 100 L150 40\" stroke=\"#7ab0e0\" stroke-width=\"2\" opacity=\".7\"/><path d=\"M144 40 L156 40 L160 18 L140 18 Z\" fill=\"#cfe8f0\" opacity=\".55\"/><circle cx=\"150\" cy=\"18\" r=\"14\" fill=\"#7ab0e0\" opacity=\".3\"/><path d=\"M0 104 Q150 96 300 104\" fill=\"none\" stroke=\"#4a3a7a\" stroke-width=\"1.5\"/><g transform=\"translate(150,104) scale(0.8)\" fill=\"#080514\"><circle cx=\"0\" cy=\"-29\" r=\"6\"/><path d=\"M-7 -23 Q0 -19 7 -23 L9 1 L-9 1 Z\"/><path d=\"M-8 1 L-11 24 L-3 24 L0 3 M8 1 L11 24 L3 24 L0 3\"/></g>", "q": "你守的那盏灯，是给别人认路用的。", "e": "「{pain}」——你一个人在银河边上待了很久，也不孤单。因为你知道，有人正循着这点光，慢慢走过来。", "e2": "「{pain}」——灯亮着就够了。你不需要知道谁会来，守着它本身，就是答案。"}, {"year": "公元 2240 年", "spin": "公元 2240", "era": "海底城 · 深蓝纪", "role": "一个听得懂鲸鱼的人", "art": "<defs><linearGradient id=\"g10\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#123a52\"/><stop offset=\"1\" stop-color=\"#061826\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g10)\"/><path d=\"M0 40 Q40 20 80 40 T160 40 T240 40 T320 40\" fill=\"none\" stroke=\"#7aa0c0\" stroke-width=\"1.5\" opacity=\".5\"/><g fill=\"#9a7ab0\" opacity=\".6\"><circle cx=\"70\" cy=\"60\" r=\"8\"/><circle cx=\"230\" cy=\"48\" r=\"6\"/><circle cx=\"200\" cy=\"76\" r=\"5\"/></g><g stroke=\"#9a7ab0\" stroke-width=\"1\" opacity=\".6\"><path d=\"M70 68 v8 M230 54 v8 M200 81 v6\"/></g><path d=\"M0 104 Q150 96 300 104 V120 H0Z\" fill=\"#0a2030\"/><path d=\"M120 104 L120 78 L180 78 L180 104\" fill=\"none\" stroke=\"#70c0b0\" stroke-width=\"1.5\" opacity=\".6\"/><g transform=\"translate(150,74) scale(0.8)\" fill=\"none\" stroke=\"#a0e0d0\" stroke-width=\"1.6\" opacity=\".9\"><circle cx=\"0\" cy=\"-27\" r=\"6\"/><path d=\"M0 -21 L0 2 M0 -16 L-12 -6 M0 -16 L12 -6 M0 2 L-9 24 M0 2 L9 24\"/></g>", "q": "安静下来，你才听见心里那句话。", "e": "「{pain}」——你沉到很深的地方，周围全是蓝色的静。你终于听清了自己一直想说的那句话。", "e2": "「{pain}」——鲸鱼从你头顶游过去，叫了一声。你听懂了：它会一直游，你也可以。"}, {"year": "公元 3600 年", "spin": "公元 3600", "era": "云端 · 浮空纪", "role": "一个坐在云边的人", "art": "<defs><linearGradient id=\"g11\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#6a80a0\"/><stop offset=\"1\" stop-color=\"#243554\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g11)\"/><g fill=\"#d8d8e0\" opacity=\".55\"><ellipse cx=\"70\" cy=\"80\" rx=\"46\" ry=\"14\"/><ellipse cx=\"220\" cy=\"72\" rx=\"56\" ry=\"16\"/><ellipse cx=\"150\" cy=\"96\" rx=\"70\" ry=\"12\"/></g><g fill=\"#e0d0a0\" opacity=\".7\"><circle cx=\"210\" cy=\"26\" r=\"1.6\"/><circle cx=\"90\" cy=\"34\" r=\"1.3\"/><circle cx=\"260\" cy=\"46\" r=\"1.2\"/></g><g transform=\"translate(150,88) scale(0.9)\" fill=\"#1c2740\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g>", "q": "你离地面很远，心却从来没有这么近过。", "e": "「{pain}」——你坐在云边上晃着腿，想起那件让你睡不着的事。它还在，可好像没那么沉了。", "e2": "「{pain}」——你什么都没做，就坐了一下午。原来什么都不做，也算好好活着。"}, {"year": "公元 5021 年", "spin": "公元 5021", "era": "宇宙尽头 · 最后一页", "role": "一个替宇宙记日记的人", "art": "<defs><linearGradient id=\"g12\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1a1028\"/><stop offset=\"1\" stop-color=\"#06040e\"/></linearGradient></defs><rect width=\"300\" height=\"120\" fill=\"url(#g12)\"/><g fill=\"#a090c0\" opacity=\".6\"><circle cx=\"50\" cy=\"30\" r=\"1.4\"/><circle cx=\"110\" cy=\"60\" r=\"1\"/><circle cx=\"200\" cy=\"24\" r=\"1.5\"/><circle cx=\"260\" cy=\"52\" r=\"1.2\"/><circle cx=\"160\" cy=\"80\" r=\"1\"/></g><path d=\"M96 100 L96 40 L204 40 L204 100 Z\" fill=\"none\" stroke=\"#c0a060\" stroke-width=\"1\" opacity=\".5\"/><g stroke=\"#c0a060\" stroke-width=\".8\" opacity=\".4\"><path d=\"M110 54 h80 M110 66 h80 M110 78 h60\"/></g><g transform=\"translate(150,112) scale(0.7)\" fill=\"#040208\"><circle cx=\"0\" cy=\"-14\" r=\"6\"/><path d=\"M-6 -9 Q0 -5 6 -9 L10 8 Q0 12 -10 8 Z\"/><path d=\"M-11 8 Q-17 11 -15 15 L15 15 Q17 11 11 8 Z\"/></g>", "q": "你把今天记下来了，哪怕宇宙会忘。", "e": "「{pain}」——你在宇宙的最后一页写下今天。字很小，但你知道，有人还会读到这里。", "e2": "「{pain}」——宇宙会忘，但你记得。你替它记着——有一天，你为那件事烦恼过。"}];
+  var pain='',lastIdx=-1,lastText='';
 
   function esc(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function keyByName(n){for(var k in IDS){if(IDS[k].name===n)return k;}return 'ceo';}
 
   var tagEls=document.querySelectorAll('#pains .tag');
   tagEls.forEach(function(el){el.addEventListener('click',function(){
@@ -446,57 +383,65 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
   document.getElementById('addPain').addEventListener('click',function(){
     var v=document.getElementById('customPain').value.trim();
     if(!v){toast('先写一句你的心事吧');return;}
-    pain=v;tagEls.forEach(function(x){x.classList.remove('on');});toast('记下了，这就去摇盲盒');
+    pain=v;tagEls.forEach(function(x){x.classList.remove('on');});toast('记下了，这就去穿越');
   });
-  var idEls=document.querySelectorAll('#ids .idcard');
-  idEls.forEach(function(el){el.addEventListener('click',function(){
-    idEls.forEach(function(x){x.classList.remove('on');});
-    el.classList.add('on');chosen=el.getAttribute('data-id');
-  });});
 
   document.getElementById('genBtn').addEventListener('click',function(){
     if(!pain){toast('先选一个心事，或自己写一句');return;}
-    var key=chosen==='random'?ORDER[Math.floor(Math.random()*ORDER.length)]:chosen;
-    var g=IDS[key];
-    var v=0,full='';
-    for(var tries=0;tries<8;tries++){
-      v=Math.floor(Math.random()*g.vars.length);full=key+'_'+v;
-      if(full!==lastFull)break;
-    }
-    lastFull=full;
+    // 随机落点，避免与上一次相同
+    var idx;
+    do{idx=Math.floor(Math.random()*ERAS.length);}while(idx===lastIdx&&ERAS.length>1);
+    lastIdx=idx;
+    var era=ERAS[idx];
+    var v=Math.floor(Math.random()*2);
+
     document.getElementById('formPanel').style.display='none';
     var rev=document.getElementById('reveal');rev.classList.add('show');
-    var js=document.getElementById('jarstage');js.style.display='';js.className='jarstage shake';
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('guide').style.display='none';
+    var wh=document.getElementById('wormhole');wh.classList.add('show');
     rev.scrollIntoView({behavior:'smooth',block:'start'});
-    window.setTimeout(function(){js.className='jarstage flip';},560);
-    window.setTimeout(function(){
-      render(g.name,g.vars[v],key);
-      js.className='jarstage';js.style.display='none';
-    },1360);
+
+    // 年份老虎机：先快后慢，最后定格
+    var yEl=document.getElementById('whYear');
+    var n=0,total=34;
+    yEl.classList.add('rolling');
+    var timer=setInterval(function(){
+      yEl.textContent=ERAS[Math.floor(Math.random()*ERAS.length)].spin;
+      n++;
+      if(n>=total){
+        clearInterval(timer);
+        yEl.classList.remove('rolling');
+        yEl.textContent=era.spin;
+        setTimeout(function(){wh.classList.remove('show');render(era,v);},520);
+      }
+    },44+Math.max(0,n-14)*5);
+
     var c=0;try{c=+(localStorage.getItem('game7_box_count')||0)+1;localStorage.setItem('game7_box_count',c);}catch(e){}
-    TRACK('open',{id:key,variant:v,count:c});
+    TRACK('travel',{year:era.year,role:era.role,count:c});
   });
 
-  function render(name,v,key){
-    document.getElementById('cardName').textContent=name;
-    document.getElementById('cardQuote').textContent=v.q;
-    document.getElementById('cardEcho').innerHTML=v.e.replace('{pain}','<em>'+esc(pain)+'</em>');
-    document.getElementById('cardArt').innerHTML='<svg viewBox="0 0 300 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">'+
-      (ART[key]||ART.ceo)+'</svg>';
-    var box=document.getElementById('idcardbox');box.classList.remove('show');void box.offsetWidth;box.classList.add('show');
+  function render(era,v){
+    document.getElementById('cardYear').textContent=era.year;
+    document.getElementById('cardEra').textContent=era.era;
+    document.getElementById('cardRole').textContent=era.role;
+    document.getElementById('cardQuote').textContent=era.q;
+    document.getElementById('cardEcho').innerHTML=(v?era.e2:era.e).replace('{pain}','<em>'+esc(pain)+'</em>');
+    document.getElementById('cardArt').innerHTML='<svg viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+era.art+'</svg>';
+    var box=document.getElementById('result');box.classList.remove('show');void box.offsetWidth;box.classList.add('show');
     document.getElementById('guide').style.display='flex';
-    lastFullText=name+' · '+v.q+'\n'+v.e.replace('{pain}','“'+pain+'”')+'\n平行宇宙的你替你赢了一次，但扛过今天的你，就已经很了不起了。';
+    lastText='你穿到了 '+era.year+' · '+era.era+'\n身份：'+era.role+'\n'+era.q+'\n'+(v?era.e2:era.e).replace('{pain}','“'+pain+'”')+'\n这一次，是你自己穿过去活了一回。';
   }
   document.getElementById('copyBtn').addEventListener('click',function(){
-    try{var tx=document.createElement('textarea');tx.value=lastFullText;tx.style.position='fixed';tx.style.opacity='0';
+    try{var tx=document.createElement('textarea');tx.value=lastText;tx.style.position='fixed';tx.style.opacity='0';
       document.body.appendChild(tx);tx.select();document.execCommand('copy');document.body.removeChild(tx);
-      toast('这张卡已复制，可以存下来啦');TRACK('copy',{});
+      toast('这张穿越卡已复制，可以存下来啦');TRACK('copy',{});
     }catch(e){toast('复制失败，长按文字手动复制吧');}
   });
   document.getElementById('resetBtn').addEventListener('click',function(){
-    document.getElementById('idcardbox').classList.remove('show');
+    document.getElementById('result').classList.remove('show');
     document.getElementById('guide').style.display='none';
-    var js=document.getElementById('jarstage');js.style.display='';js.className='jarstage';
+    document.getElementById('wormhole').classList.remove('show');
     document.getElementById('reveal').classList.remove('show');
     document.getElementById('formPanel').style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
