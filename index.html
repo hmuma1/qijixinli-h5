@@ -31,12 +31,13 @@ font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",san
 .top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
 padding:12px 0 10px;margin-bottom:4px}
 .top .name{color:#f2e6c6;font-size:14px;letter-spacing:2px;font-weight:600}
-.hero{position:relative;text-align:center;color:#f2e6c6;padding:20px 0 8px;min-height:280px;overflow:hidden}
-.hero .scene{position:absolute;left:0;right:0;bottom:-2px;width:100%;height:250px;pointer-events:none;
+.hero{position:relative;text-align:center;color:#f2e6c6;padding:14px 10px 0;height:288px;overflow:hidden}
+.hero .txt{position:relative;z-index:3}
+.hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:152px;z-index:1;pointer-events:none;
 -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 34%);mask-image:linear-gradient(to bottom,transparent 0%,#000 34%)}
-.hero .bottle{position:relative;display:block;font-size:46px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(232,200,138,.4))}
-.hero h1{position:relative;font-size:23px;letter-spacing:3px;margin:0 0 8px;font-weight:600}
-.hero p{position:relative;font-size:12px;line-height:1.9;color:rgba(242,230,198,.72);letter-spacing:.5px;margin:0}
+.hero .bottle{position:relative;display:block;font-size:29px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 12px rgba(232,200,138,.45))}
+.hero h1{position:relative;font-size:21px;letter-spacing:2px;margin:0 0 7px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.75)}
+.hero p{position:relative;font-size:11.5px;line-height:1.8;color:rgba(242,230,198,.88);letter-spacing:.5px;margin:0;text-shadow:0 1px 8px rgba(0,0,0,.85)}
 .panel{background:rgba(247,244,236,.96);border-radius:20px;padding:18px 16px;margin-top:14px;
 box-shadow:0 10px 34px rgba(0,0,0,.28)}
 .step{font-size:12px;color:var(--sea);letter-spacing:2px;font-weight:600;margin:2px 0 12px;
@@ -66,7 +67,7 @@ background:linear-gradient(135deg,#2d6b63,#3f847a);color:#fff;font-size:14px;let
 font-weight:600;cursor:pointer;box-shadow:0 8px 22px rgba(45,107,99,.28)}
 .bigbtn:active{transform:scale(.98)}
 .bigbtn:disabled{opacity:.5;cursor:not-allowed}
-.story{display:none;margin-top:14px}
+.story{display:none;margin-top:14px;background:rgba(247,244,236,.97);border-radius:20px;padding:18px 16px;box-shadow:0 10px 34px rgba(0,0,0,.28)}
 .story.show{display:block}
 .story .head{text-align:center;font-size:11px;color:var(--mut);letter-spacing:2px;margin-bottom:12px}
 .story .body{font-size:13.5px;line-height:2.15;color:var(--ink);white-space:pre-wrap;min-height:60px;letter-spacing:.3px}
@@ -112,106 +113,107 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
   </div>
 
   <div class="hero">
-    <svg class="scene" viewBox="0 0 400 250" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <svg class="scene" viewBox="0 0 400 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
       <defs>
         <radialGradient id="mg" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stop-color="#f6e6bd" stop-opacity=".45"/><stop offset="1" stop-color="#f6e6bd" stop-opacity="0"/>
+          <stop offset="0" stop-color="#ffe6a8" stop-opacity=".5"/><stop offset="1" stop-color="#ffe6a8" stop-opacity="0"/>
         </radialGradient>
         <radialGradient id="ff" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stop-color="#d8e9a8" stop-opacity=".9"/><stop offset="1" stop-color="#d8e9a8" stop-opacity="0"/>
+          <stop offset="0" stop-color="#e8f0a8" stop-opacity=".85"/><stop offset="1" stop-color="#e8f0a8" stop-opacity="0"/>
         </radialGradient>
         <linearGradient id="islandSea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#2b5b62"/><stop offset="1" stop-color="#153440"/>
-        </linearGradient>
-        <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#26454f"/><stop offset="1" stop-color="#1a333d"/>
+          <stop offset="0" stop-color="#2c5962"/><stop offset="1" stop-color="#16323e"/>
         </linearGradient>
         <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5a6e5c"/><stop offset="1" stop-color="#3c564e"/>
+          <stop offset="0" stop-color="#a89a78"/><stop offset="1" stop-color="#7b7358"/>
+        </linearGradient>
+        <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#62826a"/><stop offset="1" stop-color="#456450"/>
         </linearGradient>
       </defs>
-      <!-- 月亮与光晕（右上，避开标题） -->
-      <circle cx="356" cy="34" r="46" fill="url(#mg)"/>
-      <circle cx="356" cy="34" r="15" fill="#f6e6bd" opacity=".92"/>
+      <!-- 月亮 + 光晕 -->
+      <circle cx="350" cy="30" r="42" fill="url(#mg)"/>
+      <circle cx="350" cy="30" r="13" fill="#ffecbd" opacity=".95"/>
       <!-- 星点 -->
       <g fill="#f3e6c4">
-        <circle cx="40" cy="24" r="1" opacity=".7"/><circle cx="96" cy="14" r="1.2" opacity=".55"/>
-        <circle cx="158" cy="30" r=".9" opacity=".6"/><circle cx="210" cy="10" r="1.1" opacity=".5"/>
-        <circle cx="268" cy="24" r="1" opacity=".65"/><circle cx="120" cy="46" r=".8" opacity=".45"/>
-        <circle cx="300" cy="8" r=".9" opacity=".5"/><circle cx="62" cy="52" r=".7" opacity=".4"/>
+        <circle cx="38" cy="22" r="1" opacity=".7"/><circle cx="92" cy="12" r="1.1" opacity=".5"/>
+        <circle cx="150" cy="26" r=".9" opacity=".55"/><circle cx="206" cy="10" r="1" opacity=".5"/>
+        <circle cx="264" cy="22" r="1" opacity=".6"/><circle cx="116" cy="42" r=".8" opacity=".4"/>
+        <circle cx="296" cy="8" r=".9" opacity=".5"/><circle cx="60" cy="48" r=".7" opacity=".4"/>
       </g>
-      <!-- 远山剪影（神秘氛围，左侧连绵） -->
-      <path d="M0 118 Q34 74 66 106 Q92 70 128 110 Q150 88 178 116 L178 132 L0 132Z" fill="url(#hill1)" opacity=".55"/>
-      <path d="M232 120 Q268 84 300 112 Q330 80 366 116 Q388 96 400 112 L400 132 L232 132Z" fill="url(#hill1)" opacity=".45"/>
+      <!-- 远山（柔和低矮） -->
+      <path d="M0 104 Q30 88 58 100 Q84 84 112 102 Q140 90 168 104 L168 112 L0 112Z" fill="#264751" opacity=".45"/>
+      <path d="M236 104 Q264 88 292 102 Q320 86 348 102 Q374 92 400 104 L400 112 L236 112Z" fill="#264751" opacity=".38"/>
       <!-- 海面 -->
-      <path d="M0 128 Q100 122 200 128 T400 128 V250 H0Z" fill="url(#islandSea)"/>
+      <path d="M0 100 Q100 95 200 100 T400 100 V150 H0Z" fill="url(#islandSea)"/>
       <!-- 月光倒影 -->
-      <g fill="#f6e6bd" opacity=".16">
-        <ellipse cx="356" cy="138" rx="20" ry="2"/><ellipse cx="354" cy="148" rx="13" ry="1.7"/><ellipse cx="357" cy="158" rx="8" ry="1.3"/>
+      <g fill="#ffecbd" opacity=".18">
+        <ellipse cx="350" cy="108" rx="16" ry="1.8"/><ellipse cx="348" cy="116" rx="11" ry="1.5"/><ellipse cx="351" cy="123" rx="7" ry="1.2"/>
       </g>
-      <!-- 主岛（放大，横向铺展） -->
-      <ellipse cx="168" cy="150" rx="132" ry="24" fill="url(#sand)"/>
-      <ellipse cx="168" cy="145" rx="120" ry="18" fill="#5b7160" opacity=".9"/>
-      <ellipse cx="168" cy="142" rx="98" ry="13" fill="#657d67" opacity=".6"/>
+      <!-- 不规则海岸线（暖沙 + 柔绿草地） -->
+      <path d="M26 110 Q58 96 106 93 Q158 89 212 95 Q268 99 308 109 Q326 115 308 121 Q246 131 158 129 Q68 127 26 110Z" fill="url(#sand)"/>
+      <path d="M44 109 Q76 98 120 96 Q168 93 214 98 Q260 102 288 110 Q226 119 148 118 Q80 116 44 109Z" fill="url(#grass)"/>
       <!-- 远处小礁石 -->
-      <ellipse cx="330" cy="150" rx="26" ry="6" fill="#3c564e" opacity=".8"/>
-      <!-- 小屋 + 暖光窗（岛中部偏右） -->
-      <circle cx="196" cy="128" r="17" fill="url(#mg)" opacity=".6"/>
+      <ellipse cx="336" cy="118" rx="18" ry="4" fill="#4a5f50" opacity=".7"/>
+      <!-- 小屋：暖墙 + 圆润屋顶 + 暖光窗 -->
+      <circle cx="196" cy="104" r="18" fill="url(#mg)" opacity=".7"/>
       <g>
-        <rect x="180" y="114" width="32" height="25" rx="2" fill="#27423f"/>
-        <path d="M175 114 l21-14 21 14z" fill="#1f3634"/>
-        <rect x="191" y="122" width="10" height="11" rx="1" fill="#f6d99a"/>
-        <rect x="205" y="122" width="5" height="7" rx="1" fill="#e8c88a" opacity=".7"/>
+        <rect x="182" y="96" width="28" height="20" rx="2.5" fill="#c8b395"/>
+        <path d="M178 97 Q196 82 214 97 Z" fill="#9d6e52"/>
+        <rect x="190" y="101" width="9" height="9" rx="1.2" fill="#ffd98a"/>
+        <rect x="204" y="101" width="5" height="6" rx="1" fill="#ffd98a" opacity=".75"/>
+        <rect x="194" y="106" width="6" height="10" rx="1" fill="#7d5c43"/>
       </g>
-      <!-- 小码头（从岛伸向海面） -->
-      <g stroke="#2a4038" stroke-width="3" opacity=".85">
-        <path d="M258 158 l30 12"/><path d="M266 154 l30 12"/>
+      <!-- 圆润云朵树冠 6 棵（弯干） -->
+      <g stroke="#6b5847" fill="none" stroke-linecap="round">
+        <path d="M62 110 Q60 96 64 86" stroke-width="2.8"/>
+        <path d="M96 109 Q98 94 94 84" stroke-width="2.6"/>
+        <path d="M130 108 Q128 96 132 88" stroke-width="2.3"/>
+        <path d="M240 110 Q242 94 238 84" stroke-width="2.8"/>
+        <path d="M272 111 Q270 98 274 90" stroke-width="2.4"/>
+        <path d="M298 113 Q300 102 297 95" stroke-width="2"/>
       </g>
-      <g stroke="#243a33" stroke-width="1.6" opacity=".8">
-        <path d="M262 160 v6"/><path d="M272 164 v6"/><path d="M282 168 v6"/><path d="M292 172 v6"/>
+      <g fill="#4e7057">
+        <ellipse cx="64" cy="82" rx="15" ry="9"/><ellipse cx="54" cy="86" rx="9" ry="6"/><ellipse cx="75" cy="86" rx="10" ry="6"/>
+        <ellipse cx="94" cy="81" rx="13" ry="8"/><ellipse cx="85" cy="85" rx="8" ry="5"/><ellipse cx="104" cy="85" rx="9" ry="5"/>
+        <ellipse cx="132" cy="85" rx="11" ry="7"/><ellipse cx="124" cy="88" rx="7" ry="5"/><ellipse cx="140" cy="88" rx="7" ry="5"/>
+        <ellipse cx="238" cy="81" rx="15" ry="9"/><ellipse cx="228" cy="85" rx="9" ry="6"/><ellipse cx="249" cy="85" rx="10" ry="6"/>
+        <ellipse cx="274" cy="87" rx="12" ry="7"/><ellipse cx="265" cy="90" rx="7" ry="5"/><ellipse cx="283" cy="90" rx="8" ry="5"/>
+        <ellipse cx="297" cy="92" rx="10" ry="6"/><ellipse cx="289" cy="95" rx="6" ry="4"/>
       </g>
-      <!-- 椰树群（高低错落，共 7 棵） -->
-      <g stroke="#1e3a37" fill="none" stroke-linecap="round">
-        <path d="M52 148 q-4-30 6-48" stroke-width="3.4"/>
-        <path d="M88 146 q5-24 -2-40" stroke-width="3"/>
-        <path d="M118 144 q-3-20 4-32" stroke-width="2.6"/>
-        <path d="M144 146 q4-16 -2-26" stroke-width="2.3"/>
-        <path d="M236 148 q-4-26 4-42" stroke-width="3.2"/>
-        <path d="M264 150 q3-18 -2-30" stroke-width="2.6"/>
-        <path d="M294 152 q-3-16 3-26" stroke-width="2.2"/>
+      <!-- 灌木 -->
+      <g fill="#577a5c" opacity=".95">
+        <ellipse cx="112" cy="110" rx="6" ry="4"/><ellipse cx="158" cy="110" rx="5" ry="3.5"/>
+        <ellipse cx="218" cy="110" rx="5.5" ry="4"/><ellipse cx="256" cy="112" rx="5" ry="3.5"/>
       </g>
-      <g fill="#24463e">
-        <path d="M58 100 q-20-7-27 6 q16-4 27 4 q10-15 27-7 q-16 0-27 8 q-2-6 0-11z"/>
-        <path d="M86 106 q-17-6-23 5 q14-3 23 3 q9-13 23-6 q-14 0-23 7 q-2-5 0-9z"/>
-        <path d="M122 112 q-14-5-19 4 q11-2 19 3 q8-11 19-5 q-12 0-19 6 q-1-5 0-8z"/>
-        <path d="M142 120 q-12-4-16 4 q10-2 16 2 q7-9 16-4 q-10 0-16 5 q-1-4 0-7z"/>
-        <path d="M240 106 q-18-6-25 5 q15-3 25 4 q9-14 25-6 q-15 0-25 8 q-2-6 0-11z"/>
-        <path d="M262 120 q-13-5-18 4 q11-2 18 3 q8-10 18-5 q-11 0-18 6 q-1-5 0-8z"/>
-        <path d="M297 126 q-12-4-16 4 q9-2 16 2 q7-9 16-4 q-10 0-16 5 q-1-4 0-7z"/>
-      </g>
-      <!-- 灌木丛 -->
-      <g fill="#2c4a42" opacity=".9">
-        <circle cx="104" cy="146" r="5"/><circle cx="112" cy="148" r="4"/><circle cx="210" cy="143" r="4.5"/>
-        <circle cx="220" cy="145" r="3.5"/><circle cx="160" cy="148" r="4"/><circle cx="168" cy="149" r="3"/>
-      </g>
-      <!-- 萤火虫光点（神秘感） -->
+      <!-- 萤火虫（暖绿光点） -->
       <g>
-        <circle cx="76" cy="118" r="6" fill="url(#ff)" opacity=".7"/><circle cx="76" cy="118" r="1.3" fill="#eaf4c4"/>
-        <circle cx="132" cy="104" r="5" fill="url(#ff)" opacity=".65"/><circle cx="132" cy="104" r="1.1" fill="#eaf4c4"/>
-        <circle cx="204" cy="98" r="6" fill="url(#ff)" opacity=".7"/><circle cx="204" cy="98" r="1.3" fill="#eaf4c4"/>
-        <circle cx="252" cy="118" r="5" fill="url(#ff)" opacity=".6"/><circle cx="252" cy="118" r="1.1" fill="#eaf4c4"/>
-        <circle cx="286" cy="106" r="5.5" fill="url(#ff)" opacity=".65"/><circle cx="286" cy="106" r="1.2" fill="#eaf4c4"/>
-        <circle cx="46" cy="96" r="4.5" fill="url(#ff)" opacity=".55"/><circle cx="46" cy="96" r="1" fill="#eaf4c4"/>
+        <circle cx="78" cy="104" r="5.5" fill="url(#ff)" opacity=".7"/><circle cx="78" cy="104" r="1.2" fill="#eef4c8"/>
+        <circle cx="126" cy="95" r="5" fill="url(#ff)" opacity=".65"/><circle cx="126" cy="95" r="1" fill="#eef4c8"/>
+        <circle cx="204" cy="94" r="5.5" fill="url(#ff)" opacity=".7"/><circle cx="204" cy="94" r="1.2" fill="#eef4c8"/>
+        <circle cx="260" cy="104" r="5" fill="url(#ff)" opacity=".6"/><circle cx="260" cy="104" r="1" fill="#eef4c8"/>
+        <circle cx="290" cy="98" r="5" fill="url(#ff)" opacity=".65"/><circle cx="290" cy="98" r="1.1" fill="#eef4c8"/>
+        <circle cx="48" cy="92" r="4.5" fill="url(#ff)" opacity=".55"/><circle cx="48" cy="92" r="1" fill="#eef4c8"/>
+      </g>
+      <!-- 小码头（暖木色） -->
+      <g stroke="#8a6b4f" stroke-width="2.6" opacity=".9">
+        <path d="M312 116 l18 7"/><path d="M318 113 l18 7"/>
+      </g>
+      <g stroke="#75583f" stroke-width="1.4" opacity=".85">
+        <path d="M316 118 v5"/><path d="M324 121 v5"/><path d="M332 124 v5"/>
       </g>
       <!-- 海浪线 -->
-      <g stroke="#7fb6ac" stroke-width="1.2" fill="none" opacity=".3">
-        <path d="M14 176 q14-5 28 0 t28 0"/><path d="M300 190 q14-5 28 0 t28 0"/>
-        <path d="M200 210 q14-5 28 0 t28 0"/><path d="M60 224 q14-5 28 0 t28 0"/>
+      <g stroke="#8fc0b6" stroke-width="1.1" fill="none" opacity=".28">
+        <path d="M16 132 q13-4 26 0 t26 0"/>
+        <path d="M300 138 q13-4 26 0 t26 0"/>
+        <path d="M180 144 q13-4 26 0"/>
       </g>
     </svg>
-    <span class="bottle">🫙</span>
-    <h1>另一个你，正在替你赢</h1>
-    <p>写下此刻的委屈，捞起一只来自平行宇宙的瓶子<br>看看那个时空的你，会怎么回应</p>
+    <div class="txt">
+      <span class="bottle">🫙</span>
+      <h1>另一个你，正在替你赢</h1>
+      <p>写下此刻的委屈，捞起一只来自平行宇宙的瓶子<br>看看那个时空的你，会怎么回应</p>
+    </div>
   </div>
 
   <div class="panel" id="formPanel">
