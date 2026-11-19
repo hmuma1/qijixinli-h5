@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>平行宇宙漂流瓶 · 奇li小岛</title>
+<title>平行宇宙盲盒 · 奇li小岛</title>
 <script>
 var _hmt=_hmt||[];
 (function(){var hm=document.createElement('script');
 hm.src='https://hm.baidu.com/hm.js?e8ffc5809fb30e7ae87e03bc0fce1bfc';
 var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(hm,s);})();
-function TRACK(e,p){try{if(window._hmt)window._hmt.push(['_trackEvent','island_parallel',e,JSON.stringify(p||{})]);}catch(x){}}
+function TRACK(e,p){try{if(window._hmt)window._hmt.push(['_trackEvent','island_box',e,JSON.stringify(p||{})]);}catch(x){}}
 var GZH_BIZ='Mzg4NjQ3MjM3NQ==',GZH_NAME='奇迹心li';
 var GZH_HOME='https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz='+GZH_BIZ+'&scene=124#wechat_redirect';
 var inWeChat=/MicroMessenger/i.test(navigator.userAgent);
@@ -22,84 +22,121 @@ function toast(m){var el=document.getElementById('toast');el.textContent=m;el.cl
 clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove('show');},1800);}
 </script>
 <style>
-:root{--sea:#2d6b63;--sea2:#3f847a;--cream:#f7f4ec;--ink:#2b4a47;--mut:#7a9993;--line:rgba(45,107,99,.18)}
+:root{--gold:#f2d9a0;--gold2:#e8c88a;--sea:#2d6b63;--mint:#8fc0b6;--paper:#f2e6c6}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;min-height:100%;background:#0e1d2b;color:var(--ink);
+html,body{margin:0;width:100%;min-height:100%;background:#0b1826;color:var(--paper);
 font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;user-select:none}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
-.wrap{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:0 16px 24px;min-height:100vh}
+.wrap{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:0 16px 30px;min-height:100vh}
 .top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
-padding:12px 0 10px;margin-bottom:4px}
-.top .name{color:#f2e6c6;font-size:14px;letter-spacing:2px;font-weight:600}
-.hero{position:relative;text-align:center;color:#f2e6c6;padding:14px 10px 0;height:288px;overflow:hidden}
+padding:12px 0 10px;margin-bottom:2px}
+.top .name{color:var(--gold);font-size:14px;letter-spacing:2px;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.hero{position:relative;text-align:center;color:var(--paper);padding:12px 10px 0;height:272px;overflow:hidden}
 .hero .txt{position:relative;z-index:3}
-.hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:152px;z-index:1;pointer-events:none;
--webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 34%);mask-image:linear-gradient(to bottom,transparent 0%,#000 34%)}
-.hero .bottle{position:relative;display:block;font-size:29px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 12px rgba(232,200,138,.45))}
-.hero h1{position:relative;font-size:21px;letter-spacing:2px;margin:0 0 7px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.75)}
+.hero .bottle{position:relative;display:block;font-size:30px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 14px rgba(232,200,138,.5))}
+.hero h1{position:relative;font-size:21px;letter-spacing:2px;margin:0 0 7px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.8)}
 .hero p{position:relative;font-size:11.5px;line-height:1.8;color:rgba(242,230,198,.88);letter-spacing:.5px;margin:0;text-shadow:0 1px 8px rgba(0,0,0,.85)}
-.panel{background:rgba(247,244,236,.96);border-radius:20px;padding:18px 16px;margin-top:14px;
-box-shadow:0 10px 34px rgba(0,0,0,.28)}
-.step{font-size:12px;color:var(--sea);letter-spacing:2px;font-weight:600;margin:2px 0 12px;
+.hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:150px;z-index:1;pointer-events:none;
+-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 34%);mask-image:linear-gradient(to bottom,transparent 0%,#000 34%)}
+/* 半透明玻璃表单 */
+.panel{background:rgba(11,30,42,.56);border:1px solid rgba(143,192,182,.22);border-radius:20px;
+padding:18px 16px;margin-top:10px;box-shadow:0 12px 40px rgba(0,0,0,.3);
+-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.step{font-size:12px;color:var(--gold);letter-spacing:2px;font-weight:600;margin:2px 0 12px;
 display:flex;align-items:center;gap:8px}
-.step i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--sea);color:#fff;
+.step i{font-style:normal;width:22px;height:22px;border-radius:50%;background:rgba(242,217,160,.9);color:#0e2230;
 font-size:12px;display:flex;align-items:center;justify-content:center;letter-spacing:0}
 .tags{display:flex;flex-wrap:wrap;gap:8px}
-.tag{font-size:12px;color:var(--sea);background:#eef4f1;border:1px solid var(--line);
+.tag{font-size:12px;color:var(--paper);background:rgba(143,192,182,.12);border:1px solid rgba(143,192,182,.3);
 border-radius:18px;padding:7px 13px;cursor:pointer;transition:.15s}
-.tag:active,.tag.on{background:var(--sea);color:#fff;border-color:var(--sea)}
+.tag:active,.tag.on{background:var(--gold);color:#0e2230;border-color:var(--gold)}
 .custom{display:flex;gap:8px;margin-top:12px}
-.custom input{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
-font-size:12.5px;color:var(--ink);background:#fff;outline:none;font-family:inherit}
-.custom input:focus{border-color:var(--sea2)}
-.custom button{border:none;background:var(--sea2);color:#fff;border-radius:12px;padding:0 15px;
-font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:1px}
+.custom input{flex:1;min-width:0;border:1px solid rgba(143,192,182,.28);border-radius:12px;padding:10px 12px;
+font-size:12.5px;color:var(--paper);background:rgba(255,255,255,.06);outline:none;font-family:inherit}
+.custom input::placeholder{color:rgba(242,230,198,.4)}
+.custom input:focus{border-color:var(--gold)}
+.custom button{border:none;background:rgba(242,217,160,.88);color:#0e2230;border-radius:12px;padding:0 15px;
+font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:1px;font-weight:600}
 .ids{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.idcard{border:1px solid var(--line);border-radius:14px;padding:11px 10px;cursor:pointer;
-background:#fbfaf6;transition:.15s;display:flex;align-items:center;gap:9px}
+.idcard{border:1px solid rgba(143,192,182,.28);border-radius:14px;padding:11px 10px;cursor:pointer;
+background:rgba(143,192,182,.08);transition:.15s;display:flex;align-items:center;gap:9px}
 .idcard:active{transform:scale(.97)}
-.idcard.on{border-color:var(--sea);background:#eef4f1;box-shadow:0 0 0 1px var(--sea) inset}
-.idcard .em{font-size:22px;line-height:1}
-.idcard b{display:block;font-size:12.5px;color:var(--sea);letter-spacing:.5px}
-.idcard small{display:block;font-size:10px;color:var(--mut);margin-top:2px}
+.idcard.on{border-color:var(--gold);background:rgba(242,217,160,.13);box-shadow:0 0 0 1px var(--gold) inset}
+.idcard .em{font-size:21px;line-height:1}
+.idcard b{display:block;font-size:12.5px;color:var(--paper);letter-spacing:.5px}
+.idcard small{display:block;font-size:10px;color:rgba(242,230,198,.55);margin-top:2px}
 .bigbtn{display:block;width:100%;margin-top:16px;border:none;border-radius:26px;padding:14px;
-background:linear-gradient(135deg,#2d6b63,#3f847a);color:#fff;font-size:14px;letter-spacing:3px;
-font-weight:600;cursor:pointer;box-shadow:0 8px 22px rgba(45,107,99,.28)}
+background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0e2230;font-size:14px;letter-spacing:3px;
+font-weight:600;cursor:pointer;box-shadow:0 8px 26px rgba(232,200,138,.3)}
 .bigbtn:active{transform:scale(.98)}
-.bigbtn:disabled{opacity:.5;cursor:not-allowed}
-.story{display:none;margin-top:14px;background:rgba(247,244,236,.97);border-radius:20px;padding:18px 16px;box-shadow:0 10px 34px rgba(0,0,0,.28)}
-.story.show{display:block}
-.story .head{text-align:center;font-size:11px;color:var(--mut);letter-spacing:2px;margin-bottom:12px}
-.story .body{font-size:13.5px;line-height:2.15;color:var(--ink);white-space:pre-wrap;min-height:60px;letter-spacing:.3px}
-.story .body .em{color:var(--sea2);font-weight:600}
-.story .tip{text-align:center;font-size:10px;color:var(--mut);margin-top:8px;min-height:14px}
-.story .divider{height:1px;background:var(--line);margin:16px 0}
+/* 开盒动画 */
+.reveal{display:none;margin-top:14px}
+.reveal.show{display:block}
+.jarstage{text-align:center;padding:26px 0 6px;min-height:90px}
+.jarstage .jar{display:inline-block;font-size:46px;line-height:1;filter:drop-shadow(0 0 18px rgba(232,200,138,.55))}
+.jarstage.shake .jar{animation:shake .55s ease}
+.jarstage.flip .jar{animation:flip .8s ease forwards}
+@keyframes shake{0%,100%{transform:rotate(0) translateY(0)}20%{transform:rotate(-14deg) translateY(-6px)}
+40%{transform:rotate(12deg) translateY(0)}60%{transform:rotate(-9deg) translateY(-4px)}80%{transform:rotate(6deg) translateY(0)}}
+@keyframes flip{0%{transform:rotateY(0) scale(1);opacity:1}45%{transform:rotateY(90deg) scale(1.15);opacity:.85}
+100%{transform:rotateY(360deg) scale(.6);opacity:0}}
+/* 半透明身份卡 */
+.idcardbox{display:none;position:relative;border-radius:22px;padding:20px 18px 18px;overflow:hidden;
+background:linear-gradient(150deg,rgba(38,84,92,.5),rgba(12,32,46,.62));
+border:1px solid rgba(242,217,160,.42);
+box-shadow:0 0 36px rgba(232,200,138,.2),inset 0 0 26px rgba(143,192,182,.12);
+-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.idcardbox.show{display:block;animation:floatIn .75s cubic-bezier(.2,.85,.3,1)}
+@keyframes floatIn{from{opacity:0;transform:translateY(28px) scale(.93)}to{opacity:1;transform:translateY(0) scale(1)}}
+.glowdot{position:absolute;border-radius:50%;filter:blur(18px);pointer-events:none}
+.card-hd{text-align:center;color:var(--gold);font-size:11px;letter-spacing:5px;margin-bottom:10px;
+text-shadow:0 0 12px rgba(242,217,160,.5)}
+.card-hd .rar{color:#ffe9b8;font-size:9px;letter-spacing:2px;opacity:.85}
+.card-art{height:104px;margin:0 -4px 12px;position:relative;z-index:1}
+.card-art svg{width:100%;height:100%;display:block}
+.card-quote{position:relative;z-index:1;text-align:center;color:#fff4d8;font-size:16.5px;line-height:1.65;
+letter-spacing:.5px;font-weight:600;text-shadow:0 2px 12px rgba(0,0,0,.7);margin:2px 0 12px}
+.card-quote::before,.card-quote::after{content:'「';color:var(--gold);opacity:.7}
+.card-quote::after{content:'」'}
+.card-echo{position:relative;z-index:1;color:rgba(242,230,198,.82);font-size:12px;line-height:1.9;
+text-align:center;padding-top:12px;border-top:1px solid rgba(242,217,160,.2)}
+.card-echo em{color:var(--gold);font-style:normal}
+.card-sign{position:relative;z-index:1;text-align:center;color:rgba(242,230,198,.6);font-size:10.5px;margin-top:12px;letter-spacing:1px}
+/* 动效：星光 / 剑光 / 代码 */
+.twinkle{animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.35}50%{opacity:1}}
+.sword{animation:sw 3s ease-in-out infinite}
+@keyframes sw{0%{opacity:0;transform:translateX(-30px)}35%{opacity:1}70%{opacity:.5}100%{opacity:0;transform:translateX(50px)}}
+.code{animation:tw 1.8s ease-in-out infinite}
+/* 导流也半透明，不糊纸 */
+.guide{display:flex;flex-direction:column;gap:9px;margin-top:13px}
 .gzhline{display:flex;align-items:center;gap:9px;text-align:left;text-decoration:none;
-background:linear-gradient(135deg,rgba(45,107,99,.10),rgba(63,132,122,.16));
-border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:14px}
-.gzhline .ic{font-size:18px}
+background:rgba(11,30,42,.48);border:1px solid rgba(143,192,182,.22);border-radius:14px;padding:11px 13px;
+-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.gzhline .ic{font-size:18px;color:var(--gold)}
 .gzhline .tx{flex:1}
-.gzhline b{display:block;font-size:12.5px;color:var(--sea)}
-.gzhline small{display:block;font-size:10.5px;color:var(--mut);margin-top:2px}
-.gzhline .ar{color:var(--sea2)}
-.again{display:flex;gap:10px;margin-top:12px}
-.again button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;
-font-size:12px;color:var(--sea);cursor:pointer;letter-spacing:1px}
-.again button:active{background:#eef4f1}
-.miniapp{display:flex;align-items:center;gap:12px;margin-top:12px;background:linear-gradient(135deg,#eef4ea,#dcead9);
-border:1px solid var(--line);border-radius:16px;padding:13px}
-.ma-qr{flex:none;width:76px;height:76px;border-radius:10px;background:#fff;border:1px dashed #9db6ab;
-display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ma-qr span{font-size:9.5px;color:#9aae9f;line-height:1.5;text-align:center;letter-spacing:.5px}
+.gzhline b{display:block;font-size:12.5px;color:var(--gold)}
+.gzhline small{display:block;font-size:10.5px;color:rgba(242,230,198,.62);margin-top:2px}
+.gzhline .ar{color:var(--mint)}
+.miniapp{display:flex;align-items:center;gap:12px;background:rgba(11,30,42,.48);
+border:1px solid rgba(143,192,182,.22);border-radius:16px;padding:13px;
+-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ma-qr{flex:none;width:72px;height:72px;border-radius:10px;background:rgba(255,255,255,.92);
+border:1px dashed rgba(143,192,182,.6);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ma-qr span{font-size:9px;color:#5c7b73;line-height:1.5;text-align:center;letter-spacing:.5px}
 .ma-qr img{width:100%;height:100%;object-fit:contain;display:block}
 .ma-tx{flex:1;min-width:0}
-.ma-tx b{display:block;font-size:12.5px;color:var(--sea);letter-spacing:.5px}
-.ma-tx small{display:block;font-size:10px;color:var(--mut);margin-top:4px;line-height:1.55}
-.ma-tx .ma-hint{color:var(--sea2);opacity:.85}
-.decl{text-align:center;color:rgba(242,230,198,.5);font-size:10px;line-height:1.9;margin-top:20px}
+.ma-tx b{display:block;font-size:12.5px;color:var(--gold);letter-spacing:.5px}
+.ma-tx small{display:block;font-size:10px;color:rgba(242,230,198,.62);margin-top:4px;line-height:1.55}
+.ma-tx .ma-hint{color:var(--mint);opacity:.85}
+.again{display:flex;gap:10px;margin-top:12px}
+.again button{flex:1;border:1px solid rgba(143,192,182,.3);background:rgba(143,192,182,.1);border-radius:12px;
+padding:11px;font-size:12px;color:var(--paper);cursor:pointer;letter-spacing:1px}
+.again button:active{background:rgba(143,192,182,.2)}
+.decl{text-align:center;color:rgba(242,230,198,.42);font-size:10px;line-height:1.9;margin-top:20px}
 .toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) translateY(10px);
-background:rgba(43,74,71,.95);color:#fff;font-size:12.5px;padding:10px 18px;border-radius:20px;
-opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
+background:rgba(11,30,42,.95);color:var(--paper);font-size:12.5px;padding:10px 18px;border-radius:20px;
+opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;border:1px solid rgba(242,217,160,.3)}
 .toast.show{opacity:1;transform:translate(-50%,-50%) translateY(0)}
 </style>
 </head>
@@ -108,7 +145,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
 <div class="wrap">
   <div class="top">
     <span style="width:56px"></span>
-    <span class="name">奇li小岛 · 平行宇宙漂流瓶</span>
+    <span class="name">奇li小岛 · 平行宇宙盲盒</span>
     <span style="width:56px"></span>
   </div>
 
@@ -131,31 +168,23 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
           <stop offset="0" stop-color="#62826a"/><stop offset="1" stop-color="#456450"/>
         </linearGradient>
       </defs>
-      <!-- 月亮 + 光晕 -->
       <circle cx="350" cy="30" r="42" fill="url(#mg)"/>
       <circle cx="350" cy="30" r="13" fill="#ffecbd" opacity=".95"/>
-      <!-- 星点 -->
       <g fill="#f3e6c4">
         <circle cx="38" cy="22" r="1" opacity=".7"/><circle cx="92" cy="12" r="1.1" opacity=".5"/>
         <circle cx="150" cy="26" r=".9" opacity=".55"/><circle cx="206" cy="10" r="1" opacity=".5"/>
         <circle cx="264" cy="22" r="1" opacity=".6"/><circle cx="116" cy="42" r=".8" opacity=".4"/>
         <circle cx="296" cy="8" r=".9" opacity=".5"/><circle cx="60" cy="48" r=".7" opacity=".4"/>
       </g>
-      <!-- 远山（柔和低矮） -->
       <path d="M0 104 Q30 88 58 100 Q84 84 112 102 Q140 90 168 104 L168 112 L0 112Z" fill="#264751" opacity=".45"/>
       <path d="M236 104 Q264 88 292 102 Q320 86 348 102 Q374 92 400 104 L400 112 L236 112Z" fill="#264751" opacity=".38"/>
-      <!-- 海面 -->
       <path d="M0 100 Q100 95 200 100 T400 100 V150 H0Z" fill="url(#islandSea)"/>
-      <!-- 月光倒影 -->
       <g fill="#ffecbd" opacity=".18">
         <ellipse cx="350" cy="108" rx="16" ry="1.8"/><ellipse cx="348" cy="116" rx="11" ry="1.5"/><ellipse cx="351" cy="123" rx="7" ry="1.2"/>
       </g>
-      <!-- 不规则海岸线（暖沙 + 柔绿草地） -->
       <path d="M26 110 Q58 96 106 93 Q158 89 212 95 Q268 99 308 109 Q326 115 308 121 Q246 131 158 129 Q68 127 26 110Z" fill="url(#sand)"/>
       <path d="M44 109 Q76 98 120 96 Q168 93 214 98 Q260 102 288 110 Q226 119 148 118 Q80 116 44 109Z" fill="url(#grass)"/>
-      <!-- 远处小礁石 -->
       <ellipse cx="336" cy="118" rx="18" ry="4" fill="#4a5f50" opacity=".7"/>
-      <!-- 小屋：暖墙 + 圆润屋顶 + 暖光窗 -->
       <circle cx="196" cy="104" r="18" fill="url(#mg)" opacity=".7"/>
       <g>
         <rect x="182" y="96" width="28" height="20" rx="2.5" fill="#c8b395"/>
@@ -164,14 +193,10 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
         <rect x="204" y="101" width="5" height="6" rx="1" fill="#ffd98a" opacity=".75"/>
         <rect x="194" y="106" width="6" height="10" rx="1" fill="#7d5c43"/>
       </g>
-      <!-- 圆润云朵树冠 6 棵（弯干） -->
       <g stroke="#6b5847" fill="none" stroke-linecap="round">
-        <path d="M62 110 Q60 96 64 86" stroke-width="2.8"/>
-        <path d="M96 109 Q98 94 94 84" stroke-width="2.6"/>
-        <path d="M130 108 Q128 96 132 88" stroke-width="2.3"/>
-        <path d="M240 110 Q242 94 238 84" stroke-width="2.8"/>
-        <path d="M272 111 Q270 98 274 90" stroke-width="2.4"/>
-        <path d="M298 113 Q300 102 297 95" stroke-width="2"/>
+        <path d="M62 110 Q60 96 64 86" stroke-width="2.8"/><path d="M96 109 Q98 94 94 84" stroke-width="2.6"/>
+        <path d="M130 108 Q128 96 132 88" stroke-width="2.3"/><path d="M240 110 Q242 94 238 84" stroke-width="2.8"/>
+        <path d="M272 111 Q270 98 274 90" stroke-width="2.4"/><path d="M298 113 Q300 102 297 95" stroke-width="2"/>
       </g>
       <g fill="#4e7057">
         <ellipse cx="64" cy="82" rx="15" ry="9"/><ellipse cx="54" cy="86" rx="9" ry="6"/><ellipse cx="75" cy="86" rx="10" ry="6"/>
@@ -181,38 +206,28 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
         <ellipse cx="274" cy="87" rx="12" ry="7"/><ellipse cx="265" cy="90" rx="7" ry="5"/><ellipse cx="283" cy="90" rx="8" ry="5"/>
         <ellipse cx="297" cy="92" rx="10" ry="6"/><ellipse cx="289" cy="95" rx="6" ry="4"/>
       </g>
-      <!-- 灌木 -->
       <g fill="#577a5c" opacity=".95">
         <ellipse cx="112" cy="110" rx="6" ry="4"/><ellipse cx="158" cy="110" rx="5" ry="3.5"/>
         <ellipse cx="218" cy="110" rx="5.5" ry="4"/><ellipse cx="256" cy="112" rx="5" ry="3.5"/>
       </g>
-      <!-- 萤火虫（暖绿光点） -->
       <g>
         <circle cx="78" cy="104" r="5.5" fill="url(#ff)" opacity=".7"/><circle cx="78" cy="104" r="1.2" fill="#eef4c8"/>
         <circle cx="126" cy="95" r="5" fill="url(#ff)" opacity=".65"/><circle cx="126" cy="95" r="1" fill="#eef4c8"/>
         <circle cx="204" cy="94" r="5.5" fill="url(#ff)" opacity=".7"/><circle cx="204" cy="94" r="1.2" fill="#eef4c8"/>
         <circle cx="260" cy="104" r="5" fill="url(#ff)" opacity=".6"/><circle cx="260" cy="104" r="1" fill="#eef4c8"/>
         <circle cx="290" cy="98" r="5" fill="url(#ff)" opacity=".65"/><circle cx="290" cy="98" r="1.1" fill="#eef4c8"/>
-        <circle cx="48" cy="92" r="4.5" fill="url(#ff)" opacity=".55"/><circle cx="48" cy="92" r="1" fill="#eef4c8"/>
       </g>
-      <!-- 小码头（暖木色） -->
       <g stroke="#8a6b4f" stroke-width="2.6" opacity=".9">
         <path d="M312 116 l18 7"/><path d="M318 113 l18 7"/>
       </g>
-      <g stroke="#75583f" stroke-width="1.4" opacity=".85">
-        <path d="M316 118 v5"/><path d="M324 121 v5"/><path d="M332 124 v5"/>
-      </g>
-      <!-- 海浪线 -->
       <g stroke="#8fc0b6" stroke-width="1.1" fill="none" opacity=".28">
-        <path d="M16 132 q13-4 26 0 t26 0"/>
-        <path d="M300 138 q13-4 26 0 t26 0"/>
-        <path d="M180 144 q13-4 26 0"/>
+        <path d="M16 132 q13-4 26 0 t26 0"/><path d="M300 138 q13-4 26 0 t26 0"/><path d="M180 144 q13-4 26 0"/>
       </g>
     </svg>
     <div class="txt">
       <span class="bottle">🫙</span>
-      <h1>另一个你，正在替你赢</h1>
-      <p>写下此刻的委屈，捞起一只来自平行宇宙的瓶子<br>看看那个时空的你，会怎么回应</p>
+      <h1>摇一只来自平行宇宙的瓶子</h1>
+      <p>写下此刻的心事，摇开一只盲盒<br>看看那个时空的你，正活成什么样</p>
     </div>
   </div>
 
@@ -228,45 +243,51 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
       <input id="customPain" type="text" maxlength="24" placeholder="或自己写一句，比如：今天又被催婚了">
       <button id="addPain">用这个</button>
     </div>
-
-    <div class="step" style="margin-top:20px"><i>2</i>你想看看哪个宇宙的自己？</div>
+    <div class="step" style="margin-top:20px"><i>2</i>想摇开哪个宇宙的自己？</div>
     <div class="ids" id="ids">
       <div class="idcard on" data-id="ceo"><span class="em">🕴️</span><span><b>霸道总裁</b><small>一句话，全场安静</small></span></div>
       <div class="idcard" data-id="xian"><span class="em">⚔️</span><span><b>修仙大能</b><small>剑一抬，恩怨了了</small></span></div>
       <div class="idcard" data-id="star"><span class="em">🚀</span><span><b>星际舰长</b><small>星河都在你手上</small></span></div>
       <div class="idcard" data-id="queen"><span class="em">👑</span><span><b>古代女王</b><small>奏折折成小船</small></span></div>
       <div class="idcard" data-id="hacker"><span class="em">💻</span><span><b>赛博黑客</b><small>名字谁也删不掉</small></span></div>
-      <div class="idcard" data-id="random"><span class="em">🎲</span><span><b>随机宇宙</b><small>交给瓶子决定</small></span></div>
+      <div class="idcard" data-id="random"><span class="em">🎲</span><span><b>随机盲盒</b><small>交给瓶子决定</small></span></div>
     </div>
-
-    <button class="bigbtn" id="genBtn">捞 起 瓶 子</button>
+    <button class="bigbtn" id="genBtn">摇 开 盲 盒</button>
   </div>
 
-  <div class="story" id="story">
-    <div class="head" id="storyHead">来自平行宇宙的回信</div>
-    <div class="body" id="storyBody"></div>
-    <div class="tip" id="storyTip"></div>
-    <div class="divider"></div>
-    <a class="gzhline" href="javascript:void(0)" id="gzhLine">
-      <span class="ic">✦</span>
-      <span class="tx"><b>现实里的你，也值得被听见</b><small>关注「奇迹心li」· 倾诉陪伴 · 分享思路</small></span>
-      <span class="ar">›</span>
-    </a>
-    <div class="miniapp" id="miniApp">
-      <div class="ma-qr" id="miniQr"><span>小程序码<br>待放入</span></div>
-      <div class="ma-tx">
-        <b>回到「奇历小岛」小程序</b>
-        <small>长按识别左侧小程序码，回到小岛继续添柴、捡石头</small>
-        <small class="ma-hint">没看到码？关注公众号，菜单里也能进小程序 ›</small>
+  <div class="reveal" id="reveal">
+    <div class="jarstage" id="jarstage"><span class="jar">🫙</span></div>
+    <div class="idcardbox" id="idcardbox">
+      <div class="glowdot" id="glowA" style="width:120px;height:120px;top:10px;left:-30px;background:rgba(242,217,160,.16)"></div>
+      <div class="glowdot" id="glowB" style="width:100px;height:100px;bottom:0;right:-20px;background:rgba(143,192,182,.16)"></div>
+      <div class="card-hd"><span id="cardName">霸道总裁</span> · <span class="rar">仅限此刻</span></div>
+      <div class="card-art" id="cardArt"></div>
+      <div class="card-quote" id="cardQuote"></div>
+      <div class="card-echo" id="cardEcho"></div>
+      <div class="card-sign">平行宇宙的你替你赢了一次 · 但扛过今天的你，就在这里</div>
+    </div>
+    <div class="guide" id="guide" style="display:none">
+      <a class="gzhline" href="javascript:void(0)" id="gzhLine">
+        <span class="ic">✦</span>
+        <span class="tx"><b>现实里的你，也值得被听见</b><small>关注「奇迹心li」· 倾诉陪伴 · 分享思路</small></span>
+        <span class="ar">›</span>
+      </a>
+      <div class="miniapp" id="miniApp">
+        <div class="ma-qr" id="miniQr"><span>小程序码<br>待放入</span></div>
+        <div class="ma-tx">
+          <b>回到「奇历小岛」小程序</b>
+          <small>长按识别小程序码，回到小岛继续添柴、捡石头</small>
+          <small class="ma-hint">没看到码？关注公众号，菜单里也能进小程序 ›</small>
+        </div>
+      </div>
+      <div class="again">
+        <button id="copyBtn">复制这张卡</button>
+        <button id="resetBtn">再摇一只瓶子</button>
       </div>
     </div>
-    <div class="again">
-      <button id="copyBtn">复制这段剧情</button>
-      <button id="resetBtn">再捞一个瓶子</button>
-    </div>
   </div>
 
-  <div class="decl">全部剧情由本地模板生成 · 仅供放松与陪伴<br>这里的另一个你，是来陪你的，不是来替你做决定的</div>
+  <div class="decl">全部画面与文案由本地程序生成 · 仅供放松与陪伴<br>这里的另一个你，是来陪你的，不是来替你做决定的</div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -296,123 +317,132 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
   }
   requestAnimationFrame(frame);
 
-  // ===== 本地剧情模板库（全部预审、无外部接口、无 UGC）=====
+  // 每个宇宙的场景剪影（程序绘制、半透明发光线条）
+  var ART={
+    ceo:'<path d="M8 10 h284 v78 h-284z" fill="none" stroke="#f2d9a0" stroke-width="1" opacity=".38"/>'+
+        '<path d="M150 10 v78" stroke="#f2d9a0" stroke-width=".8" opacity=".25"/>'+
+        '<path d="M14 84 h16 v-16 h10 v16 h14 v-24 h10 v24 h14 v-12 h16 v12 h12 v-26 h10 v26 h14 v-18 h10 v18 h16 v-28 h12 v28 h14 v-14 h10 v14 h18 v-22 h10 v22 h20" fill="none" stroke="#e8c88a" stroke-width="1.1" opacity=".6"/>'+
+        '<g fill="#ffd98a" opacity=".75"><rect x="19" y="72" width="2" height="3"/><rect x="46" y="64" width="2" height="3"/><rect x="88" y="70" width="2" height="3"/><rect x="128" y="62" width="2" height="3"/><rect x="176" y="60" width="2" height="3"/><rect x="222" y="66" width="2" height="3"/><rect x="262" y="58" width="2" height="3"/></g>'+
+        '<path d="M150 86 q0-16 6-20 q-6-5-6-13 q0-8 6-8 q6 0 6 8 q0 8-6 13 q6 4 6 20z" fill="#0d2732" stroke="#f2d9a0" stroke-width=".7" opacity=".9"/>',
+    xian:'<path d="M26 88 L92 26 L158 88Z" fill="none" stroke="#e8c88a" stroke-width="1.1" opacity=".55"/>'+
+         '<path d="M120 88 L190 18 L262 88Z" fill="none" stroke="#f2d9a0" stroke-width="1" opacity=".45"/>'+
+         '<path d="M10 86 q28-8 56 0 t56 0 t56 0 t56 0 t46 0" fill="none" stroke="#8fc0b6" stroke-width="1.5" opacity=".5"/>'+
+         '<path d="M18 94 q28-6 56 0 t70 0 t70 0 t60 0" fill="none" stroke="#8fc0b6" stroke-width="1.1" opacity=".3"/>'+
+         '<path class="sword" d="M64 74 L246 22" stroke="#fff3c4" stroke-width="2" opacity=".9"/>'+
+         '<circle cx="248" cy="22" r="2" fill="#fff3c4" class="twinkle"/>',
+    star:'<circle cx="150" cy="52" r="44" fill="none" stroke="#f2d9a0" stroke-width="2" opacity=".5"/>'+
+         '<circle cx="150" cy="52" r="39" fill="none" stroke="#8fc0b6" stroke-width=".8" opacity=".22"/>'+
+         '<path d="M112 62 q38-22 76 0" fill="none" stroke="#8fc0b6" stroke-width="6" opacity=".12"/>'+
+         '<g fill="#fff3c4" class="twinkle"><circle cx="132" cy="36" r="1.5"/><circle cx="168" cy="44" r="1.2"/><circle cx="150" cy="66" r="1.4"/><circle cx="122" cy="58" r="1"/><circle cx="180" cy="60" r="1.1"/></g>'+
+         '<path d="M132 54 q18-9 36 0 l-7 6 h-22z" fill="#0d2732" stroke="#f2d9a0" stroke-width=".8" opacity=".85"/>',
+    queen:'<path d="M96 40 q54-30 108 0" fill="none" stroke="#f2d9a0" stroke-width="1.2" opacity=".6"/>'+
+          '<path d="M92 42 h116" stroke="#f2d9a0" stroke-width="1" opacity=".5"/>'+
+          '<g stroke="#e8c88a" stroke-width="1.1" opacity=".55"><path d="M100 44 v40"/><path d="M128 44 v40"/><path d="M172 44 v40"/><path d="M200 44 v40"/></g>'+
+          '<path d="M24 6 q30 34 8 88" fill="none" stroke="#8fc0b6" stroke-width="2" opacity=".3"/>'+
+          '<path d="M276 6 q-30 34 -8 88" fill="none" stroke="#8fc0b6" stroke-width="2" opacity=".3"/>'+
+          '<path d="M136 32 l7-12 7 12 7-12 7 12z" fill="none" stroke="#ffd98a" stroke-width="1.1" opacity=".85" class="twinkle"/>',
+    hacker:'<rect x="42" y="8" width="216" height="84" rx="4" fill="none" stroke="#8fc0b6" stroke-width="1" opacity=".5"/>'+
+           '<g class="code" fill="#8fc0b6" font-size="9" font-family="monospace" opacity=".7">'+
+           '<text x="52" y="26">01 10 0110</text><text x="52" y="42">1101 01 1</text>'+
+           '<text x="52" y="58">011 0 1101</text><text x="52" y="74">1011 01 0</text>'+
+           '<text x="176" y="34">0 1101</text><text x="176" y="54">110 01</text></g>'+
+           '<rect x="176" y="66" width="6" height="10" fill="#ffd98a" class="twinkle"/>'
+  };
+
+  // 5 身份 × 3 变体：一句金句 + 一句对心事的回应（预审短句，无生成式AI）
   var IDS={
     ceo:{name:'霸道总裁',vars:[
-      {open:'在那个宇宙，你三十岁，掌着一座城的公司。\n你习惯在落地窗前站很久，看整片灯火都属于自己。',
-       move:'今天，同样的事发生在该发生的会议上。你没争辩，只是把文件合上：“按原案执行，出问题我担。”\n转身走进电梯时，门合拢前，你听见整间会议室安静了下来。',
-       close:'你没有提高音量，却让所有人都听见了——这里的你，说话是算数的。'},
-      {open:'在那个宇宙，你是这家公司最年轻的掌舵人。\n外人只看见你的签批飞快，没人见过你深夜亮着的那盏灯。',
-       move:'今天，同样的事被摆上桌面，所有人都等着看你追不追究。你翻到那一页，却合上本子：“到此为止，人留下。”\n满座愕然时，你已起身，把外套搭在了那个低着头的人椅背上。',
-       close:'你护下的不是一个错误，是一个还在发抖的人。这里的你，比权力更高的东西，叫担当。'},
-      {open:'在那个宇宙，你手里握着能决定很多人去留的那支笔。\n你给自己定过一条规矩：不在情绪里签字。',
-       move:'今天，同样的事冲你而来，措辞难听。你听完，只说：“明天再来，带上你的方案，不是你的道歉。”\n你把门轻轻带上，没有一句多余的话——却让那句话，在对方心里响了整夜。',
-       close:'你给体面留了一道门。走不走是别人的事，但门，是你亲手留的。'}
+      {q:'这里的你，说话是算数的。',e:'“{pain}”——你只是合上文件：“按原案执行，出问题我担。”'},
+      {q:'你护下的，是一个还在发抖的人。',e:'“{pain}”——你把外套搭在低头的人椅背上，起身时满座无声。'},
+      {q:'你给体面，留了一道门。',e:'“{pain}”——你只说“明天带上方案来”，轻轻带上了门。'}
     ]},
     xian:{name:'修仙大能',vars:[
-      {open:'在那个宇宙，你是闭关三百年的散修，腰间一柄剑，名叫“照夜”。\n山下的纷纷扰扰，本与你无关。',
-       move:'今天，同样的事传到山上。你只是抬手，指尖一点光落进茶盏，茶水泛起一圈涟漪，又平了。\n“名字随他们写，路我自己走。”说完，你背起剑，下了山。',
-       close:'风从袖口穿过，你没有回头。有些事，在更高的地方看，就小了。'},
-      {open:'在那个宇宙，你是宗门里最不起眼的长老，整日在后山晒药。\n没人知道，三百年前那场大劫，是你一个人挡下的。',
-       move:'今天，同样的事又起波澜，有人当众发难。你没动，只把手里那味药递过去：“先压压火气。”\n那药入口，躁动的人忽然安静下来——你治的从来不是争执，是人心里的那把火。',
-       close:'你笑着收好药篓。真正厉害的人，从不需要谁跪着服气。'},
-      {open:'在那个宇宙，你修的是“无用之道”：看云、听雨、替迷路的人指路。\n同门都笑你，说你这辈子成不了仙。',
-       move:'今天，同样的事把所有人卷进去。你却走到崖边，对那团乱麻似的人群说：“先歇一晚，明天路就清楚了。”\n不知为何，众人真的散去。夜里你独自坐着，替他们守着那盏灯。',
-       close:'你没做什么惊天动地的事。可天亮时，路真的出现了——因为你一直醒着。'}
+      {q:'在更高的地方看，就小了。',e:'“{pain}”——你指尖一点，茶水泛起涟漪又平了：“路我自己走。”'},
+      {q:'真正厉害的人，从不需谁跪着服气。',e:'“{pain}”——你把药递过去：“先压压火气。”那人口中的火，真就熄了。'},
+      {q:'你没做什么，可天亮时路出现了。',e:'“{pain}”——你只是替所有人守着那盏灯，一夜没睡。'}
     ]},
     star:{name:'星际舰长',vars:[
-      {open:'在那个宇宙，你是一艘星舰的舰长。\n舷窗外是望不到边的星河，船员们都睡了，只有你还醒着。',
-       move:'今天，母星发来质询，说你的航线不合规范。你回了一句：“舰在我手上，我看见的路，和你们看见的不一样。”\n然后按下跃迁——星河在窗外被拉成一条长长的线。',
-       close:'驾驶舱里只剩你一个人的呼吸声，很轻，但很稳。前方没有地图，你照样能开。'},
-      {open:'在那个宇宙，你指挥的是一艘旧船，零件总出问题。\n可你从没丢下过任何一个人。',
-       move:'今天，同样的事发生在任务里，救援名单上最后一个名字被划掉了。你亲自划回来：“名单不改，一个都不放。”\n引擎在抖，你握住舵，声音穿过整个舰桥：“别怕，我带你们回家。”',
-       close:'舷窗外的星河静静的。你不是不害怕，你只是把害怕，调成了静音。'},
-      {open:'在那个宇宙，你迷失在星图之外，信号断了三个月。\n所有人都以为你回不来了。',
-       move:'今天，同样的事在你身上重演——通讯中断，坐标全无。你却打开舰上所有的灯，朝着可能的航线，一盏一盏亮过去。\n“总有人会看见的，”你对着空荡的舱室说，“我来当那个坐标。”',
-       close:'很久以后，有人顺着那串灯找到了你。你说：我哪也没去，我一直在等你们。'}
+      {q:'前方没有地图，你照样能开。',e:'“{pain}”——你回了一句“我看见的路不一样”，然后按下跃迁。'},
+      {q:'你只是把害怕，调成了静音。',e:'“{pain}”——你握住舵：“名单不改，我带你们回家。”'},
+      {q:'你哪也没去，你一直在等他们。',e:'“{pain}”——你打开舰上所有的灯，自己成了那个坐标。'}
     ]},
     queen:{name:'古代女王',vars:[
-      {open:'在那个宇宙，你坐在自己挣来的王座上。\n朝堂上的人低着头，没人敢直视你的眼睛。',
-       move:'今天，有人上书弹劾你，说你太过独断。你听完，笑了一下：“准了。”\n把那道奏折折成一只小船，放进殿外的水渠，看它慢慢漂远。',
-       close:'“说的人随他说，做的人，还是我。”你端起茶盏，手一点都不抖。'},
-      {open:'在那个宇宙，你是从不起眼的偏殿，一步步走到殿前的。\n那些年你学会一件事：替没说话的人说话。',
-       move:'今天，同样的事落在一个小宫女身上，众人缄口。你却当着满朝的面问：“她做错了什么，说来听听。”\n无人应答。你解下自己的披风，披在她身上：“回吧，今晚不罚任何人。”',
-       close:'你扶起的不是一个婢女，是这座宫里，久违的一点公道。'},
-      {open:'在那个宇宙，你登基那天，手心里全是汗。\n可你告诉自己：坐上这个位子，就不是为自己坐的。',
-       move:'今天，同样的事逼到你面前，是战是和，只等你一句话。你没拍案，而是问身后的将军：“若是你，会怎么护这些百姓？”\n听了很久，你才开口：“依他。”——满殿哗然，你却很平静。',
-       close:'你放下了“必须正确”的执念，却守住了比正确更重要的东西。'}
+      {q:'说的人随他说，做的人还是我。',e:'“{pain}”——你把奏折折成小船，看它慢慢漂远，手一点不抖。'},
+      {q:'你扶起的，是久违的一点公道。',e:'“{pain}”——你当众问“她做错了什么”，无人应答，你解下披风给她。'},
+      {q:'你放下了正确，守住了更重要的。',e:'“{pain}”——你问将军“你会怎么护百姓”，听了很久，说：依他。'}
     ]},
     hacker:{name:'赛博黑客',vars:[
-      {open:'在那个宇宙，你住在城市最亮的那层楼。\n指尖敲动，整座网络都听得见你的呼吸。',
-       move:'今天，有人试图抹掉你的名字。你只敲了几行代码，屏幕暗下去又亮起来——\n你的名字还在，比刚才更亮。“想删我？先学会别被我删。”',
-       close:'你摘下耳机，第一次在凌晨三点，觉得有点困了，也觉得有点爽。'},
-      {open:'在那个宇宙，你是个只在深夜出现的“守夜人”。\n你黑进系统，不为破坏，只为替人补上那些没人管的漏洞。',
-       move:'今天，同样的事被引爆，一片混乱。你没先看热闹，而是默默堵住了那个最危险的缺口。\n天亮时，没人知道是谁修好的。你只是关掉屏幕，去睡了一个很沉的觉。',
-       close:'世界安稳运转的夜里，总有人醒着。你就是那个，不问姓名的人。'},
-      {open:'在那个宇宙，你的名字是一串很多人想破解的代码。\n可你给自己留了一句注释：如果看见了，就当我在跟你打招呼。',
-       move:'今天，同样的事把你推到风口浪尖。你没躲，反而把那段代码公之于众：“拿去吧，能修的人，比我多。”\n你本可以独享，却选择交给所有人——那一刻，屏幕那头有无数个“谢谢”在滚动。',
-       close:'你从不是一个人在战斗。你只是比别人，早一点把手伸了出来。'}
+      {q:'想删我？先学会别被我删。',e:'“{pain}”——你敲了几行代码，屏幕暗下去又亮起来，你的名字更亮了。'},
+      {q:'总有人醒着，你就是那个不问姓名的人。',e:'“{pain}”——你没看热闹，默默堵住了最危险的缺口，天亮去睡了很沉的觉。'},
+      {q:'你只是比别人，早一点把手伸出来。',e:'“{pain}”——你把代码公之于众：“拿去吧，能修的人比我多。”'}
     ]}
   };
-  var ID_ORDER=['ceo','xian','star','queen','hacker'];
-  var pain='',chosenId='ceo',lastVariant=-1;
+  var ORDER=['ceo','xian','star','queen','hacker'];
+  var pain='',chosen='ceo',lastFull='',lastFullText='';
+
+  function esc(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function keyByName(n){for(var k in IDS){if(IDS[k].name===n)return k;}return 'ceo';}
 
   var tagEls=document.querySelectorAll('#pains .tag');
   tagEls.forEach(function(el){el.addEventListener('click',function(){
     tagEls.forEach(function(x){x.classList.remove('on');});
-    el.classList.add('on');pain=el.textContent.trim();
-    document.getElementById('customPain').value='';
+    el.classList.add('on');pain=el.textContent.trim();document.getElementById('customPain').value='';
   });});
   document.getElementById('addPain').addEventListener('click',function(){
     var v=document.getElementById('customPain').value.trim();
     if(!v){toast('先写一句你的心事吧');return;}
-    pain=v;tagEls.forEach(function(x){x.classList.remove('on');});
-    toast('记下了，这就去平行宇宙看看');
+    pain=v;tagEls.forEach(function(x){x.classList.remove('on');});toast('记下了，这就去摇盲盒');
   });
   var idEls=document.querySelectorAll('#ids .idcard');
   idEls.forEach(function(el){el.addEventListener('click',function(){
     idEls.forEach(function(x){x.classList.remove('on');});
-    el.classList.add('on');chosenId=el.getAttribute('data-id');
+    el.classList.add('on');chosen=el.getAttribute('data-id');
   });});
 
   document.getElementById('genBtn').addEventListener('click',function(){
     if(!pain){toast('先选一个心事，或自己写一句');return;}
-    var key=chosenId==='random'?ID_ORDER[Math.floor(Math.random()*ID_ORDER.length)]:chosenId;
+    var key=chosen==='random'?ORDER[Math.floor(Math.random()*ORDER.length)]:chosen;
     var g=IDS[key];
-    var vi=Math.floor(Math.random()*g.vars.length);
-    if(g.vars.length>1 && vi===lastVariant) vi=(vi+1)%g.vars.length;
-    lastVariant=vi;
-    var d=g.vars[vi];
-    var text=d.open+'\n\n“'+pain+'”——现实里的你，刚刚经历了这件事。\n可在那个宇宙，同样的事发生时——\n\n'+d.move+'\n\n'+d.close+
-      '\n\n平行宇宙的你，替你赢了一次。\n但真正扛过今天的你，就在这里。\n已经很了不起了。';
-    showStory(g.name,text);
-    var c=0;try{c=+(localStorage.getItem('game7_parallel_count')||0)+1;localStorage.setItem('game7_parallel_count',c);}catch(e){}
-    TRACK('generate',{id:key,variant:vi,count:c});
+    var v=0,full='';
+    for(var tries=0;tries<8;tries++){
+      v=Math.floor(Math.random()*g.vars.length);full=key+'_'+v;
+      if(full!==lastFull)break;
+    }
+    lastFull=full;
+    document.getElementById('formPanel').style.display='none';
+    var rev=document.getElementById('reveal');rev.classList.add('show');
+    var js=document.getElementById('jarstage');js.style.display='';js.className='jarstage shake';
+    rev.scrollIntoView({behavior:'smooth',block:'start'});
+    window.setTimeout(function(){js.className='jarstage flip';},560);
+    window.setTimeout(function(){
+      render(g.name,g.vars[v],key);
+      js.className='jarstage';js.style.display='none';
+    },1360);
+    var c=0;try{c=+(localStorage.getItem('game7_box_count')||0)+1;localStorage.setItem('game7_box_count',c);}catch(e){}
+    TRACK('open',{id:key,variant:v,count:c});
   });
 
-  var typing=null,fullText='';
-  function showStory(name,text){
-    document.getElementById('formPanel').style.display='none';
-    var s=document.getElementById('story');s.classList.add('show');
-    document.getElementById('storyHead').textContent='来自「'+name+'」宇宙的回信';
-    var body=document.getElementById('storyBody'),tip=document.getElementById('storyTip');
-    body.textContent='';tip.textContent='';fullText=text;
-    var i=0;clearInterval(typing);
-    typing=setInterval(function(){
-      i+=2;body.textContent=text.slice(0,i);
-      if(i>=text.length){clearInterval(typing);tip.textContent='（这封信，从头到尾都属于你）';}
-    },16);
-    body.onclick=function(){clearInterval(typing);body.textContent=text;tip.textContent='（这封信，从头到尾都属于你）';};
-    s.scrollIntoView({behavior:'smooth',block:'start'});
+  function render(name,v,key){
+    document.getElementById('cardName').textContent=name;
+    document.getElementById('cardQuote').textContent=v.q;
+    document.getElementById('cardEcho').innerHTML=v.e.replace('{pain}','<em>'+esc(pain)+'</em>');
+    document.getElementById('cardArt').innerHTML='<svg viewBox="0 0 300 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">'+
+      (ART[key]||ART.ceo)+'</svg>';
+    var box=document.getElementById('idcardbox');box.classList.remove('show');void box.offsetWidth;box.classList.add('show');
+    document.getElementById('guide').style.display='flex';
+    lastFullText=name+' · '+v.q+'\n'+v.e.replace('{pain}','“'+pain+'”')+'\n平行宇宙的你替你赢了一次，但扛过今天的你，就已经很了不起了。';
   }
   document.getElementById('copyBtn').addEventListener('click',function(){
-    try{var tx=document.createElement('textarea');tx.value=fullText;tx.style.position='fixed';tx.style.opacity='0';
+    try{var tx=document.createElement('textarea');tx.value=lastFullText;tx.style.position='fixed';tx.style.opacity='0';
       document.body.appendChild(tx);tx.select();document.execCommand('copy');document.body.removeChild(tx);
-      toast('剧情已复制，可以存下来啦');TRACK('copy',{});
+      toast('这张卡已复制，可以存下来啦');TRACK('copy',{});
     }catch(e){toast('复制失败，长按文字手动复制吧');}
   });
   document.getElementById('resetBtn').addEventListener('click',function(){
-    clearInterval(typing);document.getElementById('story').classList.remove('show');
+    document.getElementById('idcardbox').classList.remove('show');
+    document.getElementById('guide').style.display='none';
+    var js=document.getElementById('jarstage');js.style.display='';js.className='jarstage';
+    document.getElementById('reveal').classList.remove('show');
     document.getElementById('formPanel').style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
   });
