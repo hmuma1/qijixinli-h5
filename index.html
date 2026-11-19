@@ -13,7 +13,7 @@ function TRACK(e,p){try{if(window._hmt)window._hmt.push(['_trackEvent','island_b
 var GZH_BIZ='Mzg4NjQ3MjM3NQ==',GZH_NAME='奇迹心li';
 var GZH_HOME='https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz='+GZH_BIZ+'&scene=124#wechat_redirect';
 var inWeChat=/MicroMessenger/i.test(navigator.userAgent);
-function openGzh(){TRACK('gzh',{ua:inWeChat?'wx':'other'});if(inWeChat){location.href=GZH_HOME;return;}copyName();}
+function openGzh(src){TRACK(typeof src==='string'?src:'gzh',{ua:inWeChat?'wx':'other'});if(inWeChat){location.href=GZH_HOME;return;}copyName();}
 function copyName(){try{var t=document.createElement('textarea');t.value=GZH_NAME;
 t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
 document.execCommand('copy');document.body.removeChild(t);toast('已复制「'+GZH_NAME+'」，去微信搜索关注');
@@ -190,6 +190,12 @@ border:1px dashed rgba(143,192,182,.6);display:flex;align-items:center;justify-c
 padding:11px;font-size:12px;color:var(--paper);cursor:pointer;letter-spacing:1px}
 .again button:active{background:rgba(143,192,182,.2)}
 .decl{text-align:center;color:rgba(242,230,198,.42);font-size:10px;line-height:1.9;margin-top:20px}
+.site-foot{margin:13px auto 0;text-align:center;line-height:1.7}
+.site-foot .made{display:block;color:rgba(242,230,198,.34);font-size:9.5px;letter-spacing:.35px}
+.foot-gzh{display:inline-flex;align-items:center;gap:3px;margin:3px auto 0;padding:2px 8px;border:0;border-bottom:1px solid rgba(242,217,160,.14);background:transparent;color:rgba(242,217,160,.55);font-size:9.5px;letter-spacing:.2px;cursor:pointer}
+.foot-gzh i{font-style:normal;color:rgba(143,192,182,.7)}
+.foot-gzh:active{color:rgba(242,217,160,.9);border-bottom-color:rgba(242,217,160,.32)}
+.site-foot .hint{display:block;color:rgba(242,230,198,.25);font-size:9px;margin-top:2px}
 .toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) translateY(10px);
 background:rgba(11,30,42,.96);color:var(--paper);font-size:12.5px;padding:11px 18px;border-radius:20px;
 opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;border:1px solid rgba(242,217,160,.3);text-align:center}
@@ -462,6 +468,11 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
   </div>
 
   <div class="decl">全部画面与文案由本地程序生成 · 仅供放松与陪伴<br>那个时空的你，是来陪你的，不是来替你做决定的</div>
+  <div class="site-foot">
+    <span class="made">本互动由公众号「奇迹心li」出品</span>
+    <button class="foot-gzh" id="footGzh" type="button" aria-label="关注公众号奇迹心li">关注「奇迹心li」· 倾诉陪伴 · 分享思路 <i>›</i></button>
+    <span class="hint">微信内点开关注 · 其他浏览器复制名称</span>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -632,7 +643,8 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     step(0);
     window.scrollTo({top:0,behavior:'smooth'});
   });
-  document.getElementById('gzhLine').addEventListener('click',openGzh);
+  document.getElementById('gzhLine').addEventListener('click',function(){openGzh('guide_gzh');});
+  document.getElementById('footGzh').addEventListener('click',function(){openGzh('foot_gzh');});
 })();
 </script>
 </body>
