@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>奇li小岛 · 平行宇宙漂流瓶</title>
+<title>七里小岛 · 平行宇宙漂流瓶</title>
 <script>
 var _hmt=_hmt||[];
 (function(){var hm=document.createElement('script');
@@ -31,10 +31,12 @@ font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",san
 .top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
 padding:12px 0 10px;margin-bottom:4px}
 .top .name{color:#f2e6c6;font-size:14px;letter-spacing:2px;font-weight:600}
-.hero{text-align:center;padding:26px 0 10px;color:#f2e6c6}
-.hero .bottle{font-size:46px;line-height:1;display:block;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(232,200,138,.4))}
-.hero h1{font-size:23px;letter-spacing:3px;margin:0 0 8px;font-weight:600}
-.hero p{font-size:12px;line-height:1.9;color:rgba(242,230,198,.72);letter-spacing:.5px;margin:0}
+.hero{position:relative;text-align:center;color:#f2e6c6;padding:20px 0 8px;min-height:218px;overflow:hidden}
+.hero .scene{position:absolute;left:0;right:0;bottom:-2px;width:100%;height:176px;pointer-events:none;
+-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 38%);mask-image:linear-gradient(to bottom,transparent 0%,#000 38%)}
+.hero .bottle{position:relative;display:block;font-size:46px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(232,200,138,.4))}
+.hero h1{position:relative;font-size:23px;letter-spacing:3px;margin:0 0 8px;font-weight:600}
+.hero p{position:relative;font-size:12px;line-height:1.9;color:rgba(242,230,198,.72);letter-spacing:.5px;margin:0}
 .panel{background:rgba(247,244,236,.96);border-radius:20px;padding:18px 16px;margin-top:14px;
 box-shadow:0 10px 34px rgba(0,0,0,.28)}
 .step{font-size:12px;color:var(--sea);letter-spacing:2px;font-weight:600;margin:2px 0 12px;
@@ -95,11 +97,65 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap}
 <div class="wrap">
   <div class="top">
     <span style="width:56px"></span>
-    <span class="name">奇li小岛 · 平行宇宙漂流瓶</span>
+    <span class="name">七里小岛 · 平行宇宙漂流瓶</span>
     <span style="width:56px"></span>
   </div>
 
   <div class="hero">
+    <svg class="scene" viewBox="0 0 400 176" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="mg" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#f6e6bd" stop-opacity=".45"/><stop offset="1" stop-color="#f6e6bd" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="islandSea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2b5b62"/><stop offset="1" stop-color="#153440"/>
+        </linearGradient>
+        <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5a6e5c"/><stop offset="1" stop-color="#3c564e"/>
+        </linearGradient>
+      </defs>
+      <!-- 月亮与光晕 -->
+      <circle cx="352" cy="30" r="44" fill="url(#mg)"/>
+      <circle cx="352" cy="30" r="16" fill="#f6e6bd" opacity=".92"/>
+      <!-- 星点 -->
+      <g fill="#f3e6c4">
+        <circle cx="58" cy="26" r="1" opacity=".7"/><circle cx="118" cy="14" r="1.2" opacity=".55"/>
+        <circle cx="196" cy="30" r=".9" opacity=".6"/><circle cx="248" cy="12" r="1.1" opacity=".5"/>
+        <circle cx="370" cy="22" r="1" opacity=".65"/><circle cx="88" cy="48" r=".8" opacity=".45"/>
+      </g>
+      <!-- 远云 -->
+      <path d="M36 60 q22-7 44 0 t44 0" stroke="#3c5c68" stroke-width="2" fill="none" opacity=".4"/>
+      <!-- 海面 -->
+      <path d="M0 116 Q100 110 200 116 T400 116 V176 H0Z" fill="url(#islandSea)"/>
+      <!-- 月光倒影 -->
+      <g fill="#f6e6bd" opacity=".16">
+        <ellipse cx="352" cy="124" rx="18" ry="2"/><ellipse cx="350" cy="132" rx="12" ry="1.7"/><ellipse cx="353" cy="140" rx="7" ry="1.3"/>
+      </g>
+      <!-- 小岛沙滩 -->
+      <ellipse cx="118" cy="120" rx="86" ry="15" fill="url(#sand)"/>
+      <ellipse cx="118" cy="116" rx="78" ry="11" fill="#59705f" opacity=".85"/>
+      <!-- 小屋 + 暖光窗 -->
+      <circle cx="120" cy="104" r="15" fill="url(#mg)" opacity=".55"/>
+      <g>
+        <rect x="105" y="92" width="30" height="23" rx="2" fill="#27423f"/>
+        <path d="M101 92 l19-13 19 13z" fill="#1f3634"/>
+        <rect x="115" y="99" width="10" height="10" rx="1" fill="#f6d99a"/>
+      </g>
+      <!-- 椰树（左） -->
+      <g stroke="#1e3a37" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M68 116 q-3-26 5-40"/>
+      </g>
+      <path d="M73 76 q-18-6-24 5 q14-3 24 3 q9-13 24-6 q-14 0-24 7 q-2-5 0-9z" fill="#24463e"/>
+      <!-- 椰树（右） -->
+      <g stroke="#1e3a37" stroke-width="2.4" fill="none" stroke-linecap="round">
+        <path d="M164 116 q4-20 -2-30"/>
+      </g>
+      <path d="M162 86 q-13-4-18 4 q11-2 18 2 q7-10 18-4 q-11 0-18 5 q-1-4 0-7z" fill="#24463e"/>
+      <!-- 海浪线 -->
+      <g stroke="#7fb6ac" stroke-width="1.2" fill="none" opacity=".32">
+        <path d="M18 136 q14-5 28 0 t28 0"/><path d="M232 148 q14-5 28 0 t28 0"/><path d="M286 132 q10-4 20 0"/>
+      </g>
+    </svg>
     <span class="bottle">🫙</span>
     <h1>另一个你，正在替你赢</h1>
     <p>写下此刻的委屈，捞起一只来自平行宇宙的瓶子<br>看看那个时空的你，会怎么回应</p>
