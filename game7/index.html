@@ -231,40 +231,26 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 .lp-close{border:0;background:transparent;color:rgba(143,192,182,.5);font-size:11px;letter-spacing:2px;padding:8px 14px;margin-top:8px}
 
 /* v5.1 海浪环境音开关 */
-.wave-btn{position:fixed;top:12px;left:12px;z-index:80;display:inline-flex;align-items:center;gap:7px;background:rgba(232,200,138,.06);border:1px solid rgba(232,200,138,.25);color:#a99c82;border-radius:20px;padding:7px 14px;font-size:12px;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px)}
-.wave-btn .wave-dot{width:7px;height:7px;border-radius:50%;background:#5a6b7d;transition:.2s}
+.wave-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;background:rgba(232,200,138,.06);border:1px solid rgba(232,200,138,.25);color:#a99c82;border-radius:14px;padding:4px 7px;font-size:10px;line-height:1;white-space:nowrap;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent}
+.wave-btn .wave-dot{width:5px;height:5px;border-radius:50%;background:#5a6b7d;transition:.2s}
 .wave-btn.on{color:#e8c88a;border-color:rgba(232,200,138,.6);background:rgba(232,200,138,.1)}
 .wave-btn.on .wave-dot{background:#e8c88a;box-shadow:0 0 6px rgba(232,200,138,.8);animation:wavePulse 2.4s ease-in-out infinite}
 @keyframes wavePulse{0%,100%{opacity:.55}50%{opacity:1}}
-/* 海面活气：拍岸浪/前景波纹轻缓漂移，月光碎影波光闪烁 */
-@keyframes shoreWave{0%,100%{transform:translateX(0);opacity:.28}50%{transform:translateX(5px);opacity:.12}}
-.shore path{animation:shoreWave 3.8s ease-in-out infinite}
-.shore path:nth-child(2){animation-delay:-.95s}
-.shore path:nth-child(3){animation-delay:-1.9s}
-.shore path:nth-child(4){animation-delay:-2.85s}
-@keyframes frontWave{0%,100%{transform:translateX(0);opacity:.2}50%{transform:translateX(-4px);opacity:.08}}
-.frontw path{animation:frontWave 4.8s ease-in-out infinite}
-.frontw path:nth-child(2){animation-delay:-1.6s}
-.frontw path:nth-child(3){animation-delay:-3.2s}
+/* 月光碎影波光闪烁 */
 @keyframes glint{0%,100%{opacity:.14}50%{opacity:.04}}
 .moongl ellipse{animation:glint 5.4s ease-in-out infinite}
 .moongl ellipse:nth-child(2){animation-delay:-1.3s}
 .moongl ellipse:nth-child(3){animation-delay:-2.7s}
 .moongl ellipse:nth-child(4){animation-delay:-4.1s}
-/* 归雁：三只错相向海平线飞去，渐小渐隐后循环 */
-@keyframes gullFly{0%{transform:translate(0,0) scale(1);opacity:.5}55%{opacity:.4}85%,100%{transform:translate(-120px,46px) scale(.18);opacity:0}}
-.gull{animation:gullFly 16s linear infinite;transform-box:fill-box;transform-origin:center}
-.g2{animation-delay:-5.3s}
-.g3{animation-delay:-10.6s}
 </style>
 </head>
 <body>
 <canvas id="cv"></canvas>
 <div class="wrap">
   <div class="top">
-    <span style="width:56px"></span>
+    <button class="wave-btn" id="waveBtn" type="button" aria-label="开关海浪环境音"><span class="wave-dot"></span>海浪声 · 开</button>
     <span class="name">奇li小岛 · 时光漂流瓶盲盒</span>
-    <span style="width:56px"></span>
+    <span style="width:92px"></span>
   </div>
 
   <div class="hero">
@@ -300,13 +286,6 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
         <circle cx="150" cy="26" r=".8" opacity=".45"/><circle cx="210" cy="10" r="1" opacity=".5"/>
         <circle cx="262" cy="18" r=".9" opacity=".4"/><circle cx="120" cy="44" r=".7" opacity=".3"/>
         <circle cx="360" cy="12" r=".8" opacity=".4"/><circle cx="64" cy="46" r=".7" opacity=".3"/>
-      </g>
-
-      <!-- 归巢的鸟，给海上添一点活气（三只错相向海平线飞去，渐远渐隐循环） -->
-      <g stroke="#b8d0d6" fill="none" stroke-width="1" stroke-linecap="round" opacity=".5">
-        <path class="gull g1" d="M262 40 q5-5 10 0 q5-5 10 0"/>
-        <path class="gull g2" d="M288 52 q4-4 8 0 q4-4 8 0"/>
-        <path class="gull g3" d="M246 30 q3-3 6 0 q3-3 6 0"/>
       </g>
 
       <!-- 远海薄雾 -->
@@ -382,19 +361,51 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
         <circle cx="112" cy="100" r=".6"/><circle cx="244" cy="82" r=".6"/>
       </g>
 
-      <!-- 海浪拍岸（轻缓漂移） -->
-      <g class="shore" stroke="#bcd4de" fill="none" opacity=".28" stroke-linecap="round">
-        <path d="M62 116 q12 4 24 0"/><path d="M56 122 q16 5 32 0"/>
-        <path d="M300 116 q12 4 24 0"/><path d="M294 122 q16 5 32 0"/>
+      <!-- 海浪拍岸：短促、断续、柔和漂移的碎浪（SMIL 动画，肉眼可见起伏） -->
+      <g stroke="#bcd4de" fill="none" stroke-linecap="round">
+        <path d="M56 118 q9 -3 18 0 t18 0" stroke-width="1.1" opacity=".55">
+          <animateTransform attributeName="transform" type="translate" values="0 0; 14 -2; 0 0" dur="4.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".18;.6;.18" dur="4.2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M62 126 q8 -2.5 16 0 t16 0" stroke-width="1" opacity=".4">
+          <animateTransform attributeName="transform" type="translate" values="0 0; -12 1.5; 0 0" dur="5.1s" begin="-1.4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".12;.45;.12" dur="5.1s" begin="-1.4s" repeatCount="indefinite"/>
+        </path>
+        <path d="M296 118 q9 -3 18 0 t18 0" stroke-width="1.1" opacity=".55">
+          <animateTransform attributeName="transform" type="translate" values="0 0; -14 -2; 0 0" dur="4.6s" begin="-0.8s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".18;.6;.18" dur="4.6s" begin="-0.8s" repeatCount="indefinite"/>
+        </path>
+        <path d="M292 126 q8 -2.5 16 0 t16 0" stroke-width="1" opacity=".4">
+          <animateTransform attributeName="transform" type="translate" values="0 0; 12 1.5; 0 0" dur="5.4s" begin="-2.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".12;.45;.12" dur="5.4s" begin="-2.2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M158 120 q7 -2.5 14 0 t14 0" stroke-width=".9" opacity=".35">
+          <animateTransform attributeName="transform" type="translate" values="0 0; 10 -1.5; 0 0" dur="3.9s" begin="-1s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".1;.4;.1" dur="3.9s" begin="-1s" repeatCount="indefinite"/>
+        </path>
+        <path d="M232 124 q7 -2.5 14 0 t14 0" stroke-width=".9" opacity=".35">
+          <animateTransform attributeName="transform" type="translate" values="0 0; -10 1.5; 0 0" dur="4.8s" begin="-2.6s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".1;.4;.1" dur="4.8s" begin="-2.6s" repeatCount="indefinite"/>
+        </path>
       </g>
 
       <!-- 雾锁孤礁 -->
       <ellipse cx="200" cy="114" rx="132" ry="12" fill="url(#mist)" opacity=".62"/>
 
-      <!-- 前景波纹（轻缓漂移） -->
-      <g class="frontw" stroke="#7fa6ae" stroke-width="1" fill="none" opacity=".2">
-        <path d="M20 134 q14-4 28 0 t28 0"/><path d="M300 140 q14-4 28 0 t28 0"/>
-        <path d="M150 144 q14-4 28 0"/>
+      <!-- 前景波纹：底部断续碎浪，缓缓横向漂移 -->
+      <g stroke="#7fa6ae" stroke-width="1" fill="none" stroke-linecap="round">
+        <path d="M16 136 q12 -3.5 24 0 t24 0" opacity=".3">
+          <animateTransform attributeName="transform" type="translate" values="0 0; 16 0; 0 0" dur="5.6s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".1;.34;.1" dur="5.6s" repeatCount="indefinite"/>
+        </path>
+        <path d="M300 141 q12 -3.5 24 0 t24 0" opacity=".28">
+          <animateTransform attributeName="transform" type="translate" values="0 0; -16 0; 0 0" dur="6.2s" begin="-2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".08;.3;.08" dur="6.2s" begin="-2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M150 145 q10 -3 20 0 t20 0" opacity=".22">
+          <animateTransform attributeName="transform" type="translate" values="0 0; 12 0; 0 0" dur="5s" begin="-3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".07;.26;.07" dur="5s" begin="-3s" repeatCount="indefinite"/>
+        </path>
       </g>
     </svg>
     <div class="txt">
@@ -518,7 +529,6 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 
   <div class="decl">原创版权 · 公众号「奇迹心li」出品 · 仅供娱乐与陪伴<br>那个时空的你，是来陪你的，不是来替你做决定的</div>
   <div class="site-foot">
-<button class="wave-btn" id="waveBtn" type="button" aria-label="开关海浪环境音"><span class="wave-dot"></span>海浪声 · 关</button>
     <button class="foot-gzh" id="footGzh" type="button" aria-label="关注公众号奇迹心li">关注「奇迹心li」· 倾诉陪伴 · 分享思路 <i>›</i></button>
   </div>
 </div>
