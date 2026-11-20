@@ -248,7 +248,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 <canvas id="cv"></canvas>
 <div class="wrap">
   <div class="top">
-    <button class="wave-btn" id="waveBtn" type="button" aria-label="开关海浪环境音"><span class="wave-dot"></span>海浪声 · 开</button>
+    <button class="wave-btn" id="waveBtn" type="button" aria-label="开关海浪环境音"><span class="wave-dot"></span>海浪声 · 关</button>
     <span class="name">奇li小岛 · 时光漂流瓶盲盒</span>
     <span style="width:92px"></span>
   </div>
@@ -1036,8 +1036,11 @@ var SND=(function(){
   }
   function waveStop(){if(waveInst){waveInst.stop();waveInst=null;}}
   var btn=null;
+  /* 按钮为「动作标识」：显示的字=点它之后的状态。
+     声音开着→显示「关」(点它关掉)；声音关着→显示「开」(点它打开)。
+     金色呼吸圆点代表当前正在响。 */
   function paint(){if(!btn)return;btn.classList.toggle('on',waveOn);
-    btn.innerHTML='<span class="wave-dot"></span>海浪声 · '+(waveOn?'开':'关');}
+    btn.innerHTML='<span class="wave-dot"></span>海浪声 · '+(waveOn?'关':'开');}
   function toggle(){
     waveOn=!waveOn;
     try{localStorage.setItem('game7_wave_on',waveOn?'1':'0');}catch(e){}
@@ -1049,9 +1052,9 @@ var SND=(function(){
     btn=document.getElementById('waveBtn');
     if(!btn)return;
     btn.addEventListener('click',function(){ensure();toggle();});
-    try{var wv=localStorage.getItem('game7_wave_on');waveOn=(wv===null)?true:(wv==='1');}catch(e){waveOn=true;}
+    waveOn=true; // 默认开启海浪声，不读取上次关闭记忆
     restored=true;paint();
-    // 记忆为开：首次任意手势激活音频后自动续播
+    // 默认开启：首次任意手势激活音频后自动淡入（浏览器要求先有手势才能出声）
     if(waveOn){
       var resume=function(){
         document.removeEventListener('pointerdown',resume);document.removeEventListener('touchstart',resume);
