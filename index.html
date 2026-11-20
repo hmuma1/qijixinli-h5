@@ -597,16 +597,10 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
   }
   function paintTimes(){
     var dots=document.querySelectorAll('#times i');
-    var left=TEST_UNLIMITED?MAX:Math.max(0,MAX-used);
-    for(var i=0;i<dots.length;i++)dots[i].classList.toggle('on',i<left);
-    document.getElementById('timesLeft').textContent=TEST_UNLIMITED?'不限次':(left+' 次');
+    for(var i=0;i<dots.length;i++)dots[i].classList.add('on');
+    document.getElementById('timesLeft').textContent='不限次';
     var btn=document.getElementById('genBtn');
-    if(!TEST_UNLIMITED&&used>=MAX){
-      // v2.0 投满后不再是禁用死按钮：变成活的引导按钮，点它直接弹温馨提醒层
-      btn.disabled=false;btn.classList.add('ghost');btn.textContent='今天海面平静了 · 看看海的回信 ›';
-    }else{
-      btn.disabled=false;btn.classList.remove('ghost');btn.textContent='封 好 瓶 子 · 投 进 时 光 海';
-    }
+    btn.disabled=false;btn.classList.remove('ghost');btn.textContent='封 好 瓶 子 · 投 进 时 光 海';
   }
   paintTimes();
 
@@ -622,7 +616,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
   });
 
   document.getElementById('genBtn').addEventListener('click',function(){
-    if(!TEST_UNLIMITED&&used>=MAX){showGentle();return;}
+    // v5.3 次数不设限：任何次数下心事标签与投瓶按钮都可点，次数用完也照常投
     if(!pain){toast('先选一个心事，或自己写一句');return;}
     var ei,ri,key,tries=0;
     // v4.6 四层光谱：royal 1.6% / 稀世(elite,sci,future) 2.8% / 殷实人家(prosper) 12% / 普通 83.6%
@@ -883,11 +877,8 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     TRACK('gentle',{used:used});
   }
   function checkGentle(){
-    if(used<=0||used%3!==0)return;
-    var last=0;try{last=+(localStorage.getItem('game7_gentle_at')||0);}catch(e){}
-    if(last===used)return;
-    try{localStorage.setItem('game7_gentle_at',String(used));}catch(e){}
-    showGentle();
+    // v5.3 次数不设限：不再自动弹出全屏温馨层，避免遮罩盖住心事/按钮导致点不上
+    return;
   }
   var pm=document.getElementById('posterMask'),pc=document.getElementById('posterClose');
   if(pc)pc.addEventListener('click',function(){pm.classList.remove('show');});
@@ -952,7 +943,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 
 /* ===== v5.1 音效系统：反馈音(电影级) + 海浪环境音(B档柔和稀疏) ===== */
 var SND=(function(){
-  var ctx,master,sfx,amb,rev,waveInst=null,waveOn=false,restored=false;
+  var ctx,master,sfx,amb,rev,waveOn=false,restored=false;
   function ensure(){
     if(!ctx){
       var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
@@ -995,45 +986,45 @@ var SND=(function(){
   function fxBtn(){var t=ensure().currentTime;tone(330,t,0.12,'triangle',0.4,{a:0.004,lp:1400,r:0.1,rev:0.3});}
   function fxPick(){var t=ensure().currentTime;tone(70,t,0.7,'sine',0.72,{a:0.04,slide:170,r:0.55,rev:0.6});noise(t,0.6,0.36,300,'bandpass',{slide:2000,q:0.7,rev:0.6});tone(320,t+0.06,0.5,'triangle',0.32,{a:0.02,slide:920,lp:2600,r:0.4,rev:0.5});}
   function fxOpen(){var t=ensure().currentTime;tone(130.81,t,1.6,'sine',0.4,{a:0.08,r:1.4,rev:0.7});tone(196,t,1.6,'sine',0.22,{a:0.08,r:1.4,rev:0.7});[392,523.25,659.25,784,1046.5].forEach(function(f,i){tone(f,t+0.15+i*0.12,1.0,'sawtooth',0.16,{a:0.02,lp:2200,r:0.8,rev:0.8});});tone(2093,t+0.85,1.2,'sine',0.18,{a:0.03,r:1.1,rev:1});}
-  /* 时光海年份滚轮：短促清脆的「叮嗒」，音高随翻动轻微起伏，音量压低避免30连响吵耳 */
-  function fxTick(i){var t=ensure().currentTime;var f=988+((i%8)-4)*55;
-    tone(f,t,0.05,'triangle',0.09,{a:0.001,lp:3600,r:0.03,rev:0.3});
-    tone(f*2,t,0.025,'sine',0.04,{a:0.001,lp:6000,r:0.02,rev:0.25});}
+  /* 时光海年份滚轮：低沉温润的轻扣，稳重不轻浮（不用高频叮声，避免老虎机感） */
+  function fxTick(i){var t=ensure().currentTime;var f=196+((i%5)-2)*7;
+    tone(f,t,0.12,'sine',0.06,{a:0.012,lp:700,r:0.07,rev:0.5});
+    tone(f*1.5,t,0.09,'triangle',0.028,{a:0.014,lp:900,r:0.06,rev:0.5});}
   /* 海浪环境音：24s 无缝循环真音频（CC0 · Joseph SARDIN / BigSoundBank）
-     播放链：ocean.mp3 → 2600Hz 低通 → 0.22 基准音量（4s 淡入 + 40s 呼吸 ±20%）→ amb 总线 */
-  var oceanBuf=null,oceanRaw=null;
-  /* 页面加载即预取+预解码音频：用户首次手势时零等待，立刻出声 */
-  function prefetch(){
-    try{
-      var p=fetch('ocean.mp3').then(function(r){return r.arrayBuffer();}).then(function(ab){oceanRaw=ab;return ensure()?ensure().decodeAudioData(ab):null;});
-      if(p&&p.then)p.then(function(buf){if(buf)oceanBuf=buf;}).catch(function(){});
-    }catch(e){}
+     播放链（v5.3 改为原生 audio，解锁零等待）：ocean.mp3(已离线低通2600Hz) → <audio loop preload=auto> → 音量淡入/呼吸 → 首次手势即播 */
+  var seaAudio=null,seaFade=null,seaBreath=null;
+  /* 页面加载即创建 audio 并预缓冲；浏览器原生解码，不受 AudioContext 挂起影响 */
+  function prepSea(){
+    if(seaAudio)return seaAudio;
+    var a=document.createElement('audio');
+    a.src='ocean.mp3';a.loop=true;a.preload='auto';a.setAttribute('playsinline','');
+    a.style.display='none';(document.body||document.documentElement).appendChild(a);
+    try{a.load();}catch(e){}
+    seaAudio=a;return a;
   }
   function waveStart(){
-    var c=ensure();if(!c||waveInst)return;
-    var inst={stop:function(){}};waveInst=inst;
-    amb.gain.value=1;
-    function build(buffer){
-      if(!waveInst||waveInst!==inst)return;
-      amb.gain.value=1;
-      var t=c.currentTime;
-      var src=c.createBufferSource();src.buffer=buffer;src.loop=true;
-      var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;lp.Q.value=0.5;
-      var g=c.createGain();g.gain.setValueAtTime(0.05,t);g.gain.linearRampToValueAtTime(0.22,t+1.1);
-      var br=c.createOscillator();br.frequency.value=1/40;
-      var bg=c.createGain();bg.gain.setValueAtTime(0,t);bg.gain.linearRampToValueAtTime(0.044,t+8);
-      br.connect(bg);bg.connect(g.gain);
-      src.connect(lp);lp.connect(g);g.connect(amb);
-      src.start(t);br.start(t);
-      inst.stop=function(){try{src.stop();br.stop();}catch(e){}};
-    }
-    if(oceanBuf){build(oceanBuf);return;}
-    var chain;
-    if(oceanRaw){chain=Promise.resolve(oceanRaw);}
-    else{chain=fetch('ocean.mp3').then(function(r){return r.arrayBuffer();});}
-    chain.then(function(ab){oceanRaw=ab;return c.decodeAudioData(ab);}).then(function(buf){oceanBuf=buf;if(waveInst===inst)build(buf);}).catch(function(){});
+    var a=prepSea();if(!a)return;
+    if(seaFade)clearInterval(seaFade);if(seaBreath)clearInterval(seaBreath);
+    var vol=0.22,phase=0;
+    try{a.volume=0.03;}catch(e){}
+    var p=a.play();if(p&&p.catch)p.catch(function(){});
+    // 柔和淡入(0.9s) + 40s 呼吸±18%，用音量实现，首个手势后立即有极小声、很快浮起
+    if(seaFade)clearInterval(seaFade);if(seaBreath)clearInterval(seaBreath);
+    var t0=Date.now();
+    seaFade=setInterval(function(){
+      var el=Math.min(1,(Date.now()-t0)/900);
+      var base=0.03+(vol-0.03)*el;
+      var b=1+0.18*Math.sin(phase);
+      try{a.volume=Math.max(0.001,Math.min(1,base*b));}catch(e){}
+    },60);
+    seaBreath=setInterval(function(){phase+=2*Math.PI*0.06/10;},1000); // 40s 周期
   }
-  function waveStop(){if(waveInst){waveInst.stop();waveInst=null;}}
+  function waveStop(){
+    if(seaFade){clearInterval(seaFade);seaFade=null;}
+    if(seaBreath){clearInterval(seaBreath);seaBreath=null;}
+    var a=seaAudio;
+    if(a){try{a.pause();}catch(e){}try{a.volume=0.22;}catch(e){}}
+  }
   var btn=null;
   /* 按钮为「动作标识」：显示的字=点它之后的状态。
      声音开着→显示「关」(点它关掉)；声音关着→显示「开」(点它打开)。
@@ -1057,7 +1048,7 @@ var SND=(function(){
     if(waveOn){
       var resume=function(){
         document.removeEventListener('pointerdown',resume);document.removeEventListener('touchstart',resume);
-        if(waveOn&&!waveInst){ensure();waveStart();}
+        if(waveOn){ensure();waveStart();}
       };
       document.addEventListener('pointerdown',resume);document.addEventListener('touchstart',resume);
     }
@@ -1075,7 +1066,7 @@ var SND=(function(){
       if(ps.classList.contains('up')){try{ensure();fxPick();}catch(e){}}
     }).observe(ps,{attributes:true,attributeFilter:['class']});}
   }
-  function boot(){init();bindFx();prefetch();}
+  function boot(){init();bindFx();prepSea();}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}else{boot();}
   return {btn:fxBtn,pick:fxPick,open:fxOpen,tick:fxTick,toggle:toggle};
 })();
