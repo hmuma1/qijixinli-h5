@@ -566,8 +566,12 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     for(var i=0;i<dots.length;i++)dots[i].classList.toggle('on',i<left);
     document.getElementById('timesLeft').textContent=TEST_UNLIMITED?'不限次':(left+' 次');
     var btn=document.getElementById('genBtn');
-    if(!TEST_UNLIMITED&&used>=MAX){btn.disabled=true;btn.textContent='今日三次已投完 · 明天再来';}
-    else{btn.disabled=false;btn.textContent='封 好 瓶 子 · 投 进 时 光 海';}
+    if(!TEST_UNLIMITED&&used>=MAX){
+      // v2.0 投满后不再是禁用死按钮：变成活的引导按钮，点它直接弹温馨提醒层
+      btn.disabled=false;btn.classList.add('ghost');btn.textContent='今天海面平静了 · 看看海的回信 ›';
+    }else{
+      btn.disabled=false;btn.classList.remove('ghost');btn.textContent='封 好 瓶 子 · 投 进 时 光 海';
+    }
   }
   paintTimes();
 
@@ -583,7 +587,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
   });
 
   document.getElementById('genBtn').addEventListener('click',function(){
-    if(!TEST_UNLIMITED&&used>=MAX){toast('今天的三次已投完');return;}
+    if(!TEST_UNLIMITED&&used>=MAX){showGentle();return;}
     if(!pain){toast('先选一个心事，或自己写一句');return;}
     var ei,ri,key,tries=0;
     do{ei=Math.floor(Math.random()*ERAS.length);ri=Math.floor(Math.random()*ERAS[ei].roles.length);
@@ -787,13 +791,16 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
       }else toast('生成失败，请重试');
     });
   }
+  function showGentle(){
+    var el=document.getElementById('gentle');if(el)el.classList.add('show');
+    TRACK('gentle',{used:used});
+  }
   function checkGentle(){
     if(used<=0||used%3!==0)return;
     var last=0;try{last=+(localStorage.getItem('game7_gentle_at')||0);}catch(e){}
     if(last===used)return;
     try{localStorage.setItem('game7_gentle_at',String(used));}catch(e){}
-    var el=document.getElementById('gentle');if(el)el.classList.add('show');
-    TRACK('gentle',{used:used});
+    showGentle();
   }
   var pm=document.getElementById('posterMask'),pc=document.getElementById('posterClose');
   if(pc)pc.addEventListener('click',function(){pm.classList.remove('show');});
