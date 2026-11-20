@@ -229,6 +229,13 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 .lp-inner img{width:100%;display:block;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.6)}
 .lp-tip{font-size:10.5px;line-height:1.6;color:rgba(242,230,198,.45);letter-spacing:1px;margin:13px 0 0}
 .lp-close{border:0;background:transparent;color:rgba(143,192,182,.5);font-size:11px;letter-spacing:2px;padding:8px 14px;margin-top:8px}
+
+/* v5.1 海浪环境音开关 */
+.wave-btn{display:inline-flex;align-items:center;gap:7px;background:rgba(232,200,138,.06);border:1px solid rgba(232,200,138,.25);color:#a99c82;border-radius:20px;padding:7px 14px;font-size:12px;cursor:pointer;margin-bottom:10px;transition:.2s;-webkit-tap-highlight-color:transparent}
+.wave-btn .wave-dot{width:7px;height:7px;border-radius:50%;background:#5a6b7d;transition:.2s}
+.wave-btn.on{color:#e8c88a;border-color:rgba(232,200,138,.6);background:rgba(232,200,138,.1)}
+.wave-btn.on .wave-dot{background:#e8c88a;box-shadow:0 0 6px rgba(232,200,138,.8);animation:wavePulse 2.4s ease-in-out infinite}
+@keyframes wavePulse{0%,100%{opacity:.55}50%{opacity:1}}
 </style>
 </head>
 <body>
@@ -491,6 +498,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
 
   <div class="decl">原创版权 · 公众号「奇迹心li」出品 · 仅供娱乐与陪伴<br>那个时空的你，是来陪你的，不是来替你做决定的</div>
   <div class="site-foot">
+<button class="wave-btn" id="waveBtn" type="button" aria-label="开关海浪环境音"><span class="wave-dot"></span>海浪声 · 关</button>
     <button class="foot-gzh" id="footGzh" type="button" aria-label="关注公众号奇迹心li">关注「奇迹心li」· 倾诉陪伴 · 分享思路 <i>›</i></button>
   </div>
 </div>
@@ -926,6 +934,135 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     }
   });
 })();
+
+/* ===== v5.1 音效系统：反馈音(电影级) + 海浪环境音(B档柔和稀疏) ===== */
+var SND=(function(){
+  var ctx,master,sfx,amb,rev,waveInst=null,waveOn=false,restored=false;
+  function ensure(){
+    if(!ctx){
+      var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
+      ctx=new AC();
+      master=ctx.createGain();master.gain.value=1;master.connect(ctx.destination);
+      sfx=ctx.createGain();sfx.gain.value=0.55;sfx.connect(master);
+      amb=ctx.createGain();amb.gain.value=0.12;amb.connect(master);
+      rev=ctx.createGain();
+      var cv=ctx.createConvolver(),rl=Math.floor(ctx.sampleRate*1.4),rb=ctx.createBuffer(2,rl,ctx.sampleRate);
+      for(var ch=0;ch<2;ch++){var rd=rb.getChannelData(ch);for(var i=0;i<rl;i++)rd[i]=(Math.random()*2-1)*Math.pow(1-i/rl,3);}
+      cv.buffer=rb;var wet=ctx.createGain();wet.gain.value=0.7;rev.connect(cv);cv.connect(wet);wet.connect(master);
+    }
+    if(ctx.state==='suspended')ctx.resume();
+    return ctx;
+  }
+  function env(g,t,a,d,s,r,peak,sus){sus=sus==null?0.5:sus;var pl=Math.max(0.0001,peak*sus);
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);
+    g.gain.exponentialRampToValueAtTime(pl,t+a+d);g.gain.setValueAtTime(pl,t+a+d+s);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+a+d+s+r);}
+  function tone(fq,t,dur,type,peak,o){o=o||{};var c=ensure();if(!c)return;
+    var osc=c.createOscillator(),g=c.createGain();osc.type=type||'sine';osc.frequency.setValueAtTime(fq,t);
+    if(o.slide)osc.frequency.exponentialRampToValueAtTime(o.slide,t+dur);
+    env(g,t,o.a||0.005,o.d||0.02,o.s||0.02,o.r||dur,peak,o.sus);
+    osc.connect(g);var n=g;
+    if(o.lp){var f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=o.lp;g.connect(f);n=f;}
+    n.connect(sfx);
+    if(o.rev!==0){var rg=c.createGain();rg.gain.value=o.rev||0.5;n.connect(rg);rg.connect(rev);}
+    osc.start(t);osc.stop(t+dur+0.12);}
+  function noise(t,dur,peak,fq,type,o){o=o||{};var c=ensure();if(!c)return;
+    var len=Math.floor(c.sampleRate*dur),buf=c.createBuffer(1,len,c.sampleRate),dd=buf.getChannelData(0);
+    for(var i=0;i<len;i++)dd[i]=Math.random()*2-1;
+    var src=c.createBufferSource();src.buffer=buf;
+    var f=c.createBiquadFilter();f.type=type||'bandpass';f.frequency.setValueAtTime(fq,t);
+    if(o.slide)f.frequency.exponentialRampToValueAtTime(o.slide,t+dur);f.Q.value=o.q||1;
+    var g=c.createGain();env(g,t,o.a||0.01,dur*0.25,0.05,dur*0.6,peak,0.4);
+    src.connect(f);f.connect(g);g.connect(sfx);
+    var rg=c.createGain();rg.gain.value=o.rev==null?0.4:o.rev;g.connect(rg);rg.connect(rev);
+    src.start(t);src.stop(t+dur+0.05);}
+  /* 电影级揭晓三音效（用户定稿） */
+  function fxBtn(){var t=ensure().currentTime;tone(330,t,0.12,'triangle',0.4,{a:0.004,lp:1400,r:0.1,rev:0.3});}
+  function fxPick(){var t=ensure().currentTime;tone(70,t,0.6,'sine',0.5,{a:0.05,slide:150,r:0.5,rev:0.6});noise(t,0.5,0.18,300,'bandpass',{slide:1800,q:0.7,rev:0.6});}
+  function fxOpen(){var t=ensure().currentTime;tone(130.81,t,1.6,'sine',0.4,{a:0.08,r:1.4,rev:0.7});tone(196,t,1.6,'sine',0.22,{a:0.08,r:1.4,rev:0.7});[392,523.25,659.25,784,1046.5].forEach(function(f,i){tone(f,t+0.15+i*0.12,1.0,'sawtooth',0.16,{a:0.02,lp:2200,r:0.8,rev:0.8});});tone(2093,t+0.85,1.2,'sine',0.18,{a:0.03,r:1.1,rev:1});}
+  /* 海浪环境音 B 档：柔和稀疏，涌-退-空档，静音占比约56% */
+  function waveStart(){
+    var c=ensure();if(!c||waveInst)return;
+    var out=c.createGain();out.gain.value=1;out.connect(amb);
+    var len=Math.floor(c.sampleRate*3),buf=c.createBuffer(1,len,c.sampleRate),dd=buf.getChannelData(0);
+    var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(var i=0;i<len;i++){var w=Math.random()*2-1;
+      b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.96900*b2+w*0.1538520;
+      b3=0.86650*b3+w*0.3104856;b4=0.55000*b4+w*0.5329522;b5=-0.7616*b5-w*0.0168980;
+      dd[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.6;b6=w*0.115926;}
+    var stopped=false,timer=null;
+    function wave(){
+      if(stopped)return;
+      var t=c.currentTime,dur=7.6,peak=0.16*(0.75+Math.random()*0.4);
+      var s=c.createBufferSource();s.buffer=buf;s.loop=true;
+      var hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=280;
+      var bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.setValueAtTime(650,t);bp.frequency.linearRampToValueAtTime(1000,t+3);bp.Q.value=0.45;
+      var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1600;
+      var g=c.createGain();var e=t+3.6;
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(peak*0.5,t+1.35);
+      g.gain.linearRampToValueAtTime(peak,t+3);
+      g.gain.setValueAtTime(peak,e);
+      g.gain.linearRampToValueAtTime(peak*0.62,e+1.8);
+      g.gain.linearRampToValueAtTime(peak*0.32,e+3.12);
+      g.gain.linearRampToValueAtTime(0.0001,e+4);
+      s.connect(hp);hp.connect(bp);bp.connect(lp);lp.connect(g);g.connect(out);
+      s.start(t);s.stop(t+dur+0.05);
+      var sh=c.createBufferSource();sh.buffer=buf;sh.loop=true;
+      var shp=c.createBiquadFilter();shp.type='highpass';shp.frequency.value=3800;
+      var shg=c.createGain();var st=t+2.1;
+      shg.gain.setValueAtTime(0.0001,st);shg.gain.linearRampToValueAtTime(peak*0.06,st+0.5);shg.gain.linearRampToValueAtTime(0.0001,st+1.6);
+      sh.connect(shp);shp.connect(shg);shg.connect(out);sh.start(st);sh.stop(st+1.65);
+      var gap=7+Math.random()*5;
+      timer=setTimeout(wave,(dur+gap)*1000);
+    }
+    wave();
+    waveInst={stop:function(){stopped=true;if(timer)clearTimeout(timer);}};
+  }
+  function waveStop(){if(waveInst){waveInst.stop();waveInst=null;}}
+  var btn=null;
+  function paint(){if(!btn)return;btn.classList.toggle('on',waveOn);
+    btn.innerHTML='<span class="wave-dot"></span>海浪声 · '+(waveOn?'开':'关');}
+  function toggle(){
+    waveOn=!waveOn;
+    try{localStorage.setItem('game7_wave_on',waveOn?'1':'0');}catch(e){}
+    if(typeof TRACK==='function')TRACK(waveOn?'wave_on':'wave_off',{});
+    if(waveOn){waveStart();}else{waveStop();}
+    paint();
+  }
+  function init(){
+    btn=document.getElementById('waveBtn');
+    if(!btn)return;
+    btn.addEventListener('click',function(){ensure();toggle();});
+    try{waveOn=localStorage.getItem('game7_wave_on')==='1';}catch(e){}
+    restored=true;paint();
+    // 记忆为开：首次任意手势激活音频后自动续播
+    if(waveOn){
+      var resume=function(){
+        document.removeEventListener('pointerdown',resume);document.removeEventListener('touchstart',resume);
+        if(waveOn&&!waveInst){ensure();waveStart();}
+      };
+      document.addEventListener('pointerdown',resume);document.addEventListener('touchstart',resume);
+    }
+  }
+  /* 反馈音挂载：按钮=电影级btn，开盲盒=电影级open */
+  function bindFx(){
+    [['genBtn',fxBtn],['addPain',fxBtn],['copyBtn',fxBtn],['resetBtn',fxBtn],['footGzh',fxBtn]].forEach(function(p){
+      var el=document.getElementById(p[0]);if(el)el.addEventListener('click',function(){try{ensure();p[1]();}catch(e){}});
+    });
+    var pb=document.getElementById('pickBtn');
+    if(pb)pb.addEventListener('click',function(){try{ensure();fxOpen();}catch(e){}});
+    // 捡漂流瓶：瓶子浮起时触发
+    var ps=document.getElementById('pickStage');
+    if(ps&&window.MutationObserver){new MutationObserver(function(){
+      if(ps.classList.contains('up')){try{ensure();fxPick();}catch(e){}}
+    }).observe(ps,{attributes:true,attributeFilter:['class']});}
+  }
+  function boot(){init();bindFx();}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}else{boot();}
+  return {btn:fxBtn,pick:fxPick,open:fxOpen,toggle:toggle};
+})();
+
 </script>
 </body>
 </html>
