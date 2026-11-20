@@ -663,9 +663,9 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     var yEl=document.getElementById('whYear');
     var n=0,total=30;
     yEl.classList.add('rolling');
+    try{if(window.SND&&SND.roll)SND.roll();}catch(e){}
     var timer=setInterval(function(){
       yEl.textContent=ERAS[Math.floor(Math.random()*ERAS.length)].spin;
-      try{if(window.SND&&SND.tick)SND.tick(n);}catch(e){}
       n++;
       if(n>=total){
         clearInterval(timer);
@@ -948,8 +948,12 @@ var SND=(function(){
     if(!ctx){
       var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
       ctx=new AC();
-      master=ctx.createGain();master.gain.value=1;master.connect(ctx.destination);
-      sfx=ctx.createGain();sfx.gain.value=0.55;sfx.connect(master);
+      master=ctx.createGain();master.gain.value=1;
+      // 限幅保护：整体音量翻倍后多音效叠加不破音
+      var comp=ctx.createDynamicsCompressor();
+      comp.threshold.value=-8;comp.knee.value=14;comp.ratio.value=7;comp.attack.value=0.003;comp.release.value=0.2;
+      master.connect(comp);comp.connect(ctx.destination);
+      sfx=ctx.createGain();sfx.gain.value=1.0;sfx.connect(master);
       amb=ctx.createGain();amb.gain.value=1;amb.connect(master);
       rev=ctx.createGain();
       var cv=ctx.createConvolver(),rl=Math.floor(ctx.sampleRate*1.4),rb=ctx.createBuffer(2,rl,ctx.sampleRate);
@@ -983,13 +987,17 @@ var SND=(function(){
     var rg=c.createGain();rg.gain.value=o.rev==null?0.4:o.rev;g.connect(rg);rg.connect(rev);
     src.start(t);src.stop(t+dur+0.05);}
   /* 电影级揭晓三音效（用户定稿） */
-  function fxBtn(){var t=ensure().currentTime;tone(330,t,0.12,'triangle',0.4,{a:0.004,lp:1400,r:0.1,rev:0.3});}
+  /* 按钮/投进时光海：温润饱满的轻叩，起音柔、不刺不薄 */
+  function fxBtn(){var t=ensure().currentTime;
+    tone(294,t,0.16,'triangle',0.32,{a:0.01,lp:1600,r:0.12,rev:0.35});
+    tone(147,t,0.2,'sine',0.16,{a:0.012,r:0.16,rev:0.4});}
   function fxPick(){var t=ensure().currentTime;tone(70,t,0.7,'sine',0.72,{a:0.04,slide:170,r:0.55,rev:0.6});noise(t,0.6,0.36,300,'bandpass',{slide:2000,q:0.7,rev:0.6});tone(320,t+0.06,0.5,'triangle',0.32,{a:0.02,slide:920,lp:2600,r:0.4,rev:0.5});}
   function fxOpen(){var t=ensure().currentTime;tone(130.81,t,1.6,'sine',0.4,{a:0.08,r:1.4,rev:0.7});tone(196,t,1.6,'sine',0.22,{a:0.08,r:1.4,rev:0.7});[392,523.25,659.25,784,1046.5].forEach(function(f,i){tone(f,t+0.15+i*0.12,1.0,'sawtooth',0.16,{a:0.02,lp:2200,r:0.8,rev:0.8});});tone(2093,t+0.85,1.2,'sine',0.18,{a:0.03,r:1.1,rev:1});}
-  /* 时光海年份滚轮：低沉温润的轻扣，稳重不轻浮（不用高频叮声，避免老虎机感） */
-  function fxTick(i){var t=ensure().currentTime;var f=196+((i%5)-2)*7;
-    tone(f,t,0.12,'sine',0.06,{a:0.012,lp:700,r:0.07,rev:0.5});
-    tone(f*1.5,t,0.09,'triangle',0.028,{a:0.014,lp:900,r:0.06,rev:0.5});}
+  /* 年代滚轮：整段滚动期间一个稳重、连贯、高级的低鸣，随时间流转缓升缓落——不再逐格敲击 */
+  function fxRoll(){var c=ensure();if(!c)return;var t=c.currentTime;
+    tone(110,t,2.5,'sine',0.13,{a:0.35,d:0.2,s:1.4,r:0.6,slide:146.8,rev:0.6});
+    tone(164.8,t,2.5,'sine',0.08,{a:0.4,d:0.2,s:1.3,r:0.6,slide:196,rev:0.6});
+    tone(329.6,t,2.3,'sine',0.035,{a:0.5,d:0.3,s:1.1,r:0.5,rev:0.7});}
   /* 海浪环境音：24s 无缝循环真音频（CC0 · Joseph SARDIN / BigSoundBank）
      播放链（v5.3 改为原生 audio，解锁零等待）：ocean.mp3(已离线低通2600Hz) → <audio loop preload=auto> → 音量淡入/呼吸 → 首次手势即播 */
   var seaAudio=null,seaFade=null,seaBreath=null;
@@ -1005,15 +1013,15 @@ var SND=(function(){
   function waveStart(){
     var a=prepSea();if(!a)return;
     if(seaFade)clearInterval(seaFade);if(seaBreath)clearInterval(seaBreath);
-    var vol=0.22,phase=0;
-    try{a.volume=0.03;}catch(e){}
+    var vol=0.4,phase=0;
+    try{a.volume=0.05;}catch(e){}
     var p=a.play();if(p&&p.catch)p.catch(function(){});
     // 柔和淡入(0.9s) + 40s 呼吸±18%，用音量实现，首个手势后立即有极小声、很快浮起
     if(seaFade)clearInterval(seaFade);if(seaBreath)clearInterval(seaBreath);
     var t0=Date.now();
     seaFade=setInterval(function(){
       var el=Math.min(1,(Date.now()-t0)/900);
-      var base=0.03+(vol-0.03)*el;
+      var base=0.05+(vol-0.05)*el;
       var b=1+0.18*Math.sin(phase);
       try{a.volume=Math.max(0.001,Math.min(1,base*b));}catch(e){}
     },60);
@@ -1023,7 +1031,7 @@ var SND=(function(){
     if(seaFade){clearInterval(seaFade);seaFade=null;}
     if(seaBreath){clearInterval(seaBreath);seaBreath=null;}
     var a=seaAudio;
-    if(a){try{a.pause();}catch(e){}try{a.volume=0.22;}catch(e){}}
+    if(a){try{a.pause();}catch(e){}try{a.volume=0.4;}catch(e){}}
   }
   var btn=null;
   /* 按钮为「动作标识」：显示的字=点它之后的状态。
@@ -1068,7 +1076,7 @@ var SND=(function(){
   }
   function boot(){init();bindFx();prepSea();}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}else{boot();}
-  return {btn:fxBtn,pick:fxPick,open:fxOpen,tick:fxTick,toggle:toggle};
+  return {btn:fxBtn,pick:fxPick,open:fxOpen,roll:fxRoll,toggle:toggle};
 })();
 
 </script>
