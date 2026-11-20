@@ -944,7 +944,7 @@ var SND=(function(){
       ctx=new AC();
       master=ctx.createGain();master.gain.value=1;master.connect(ctx.destination);
       sfx=ctx.createGain();sfx.gain.value=0.55;sfx.connect(master);
-      amb=ctx.createGain();amb.gain.value=0.12;amb.connect(master);
+      amb=ctx.createGain();amb.gain.value=1;amb.connect(master);
       rev=ctx.createGain();
       var cv=ctx.createConvolver(),rl=Math.floor(ctx.sampleRate*1.4),rb=ctx.createBuffer(2,rl,ctx.sampleRate);
       for(var ch=0;ch<2;ch++){var rd=rb.getChannelData(ch);for(var i=0;i<rl;i++)rd[i]=(Math.random()*2-1)*Math.pow(1-i/rl,3);}
@@ -980,52 +980,29 @@ var SND=(function(){
   function fxBtn(){var t=ensure().currentTime;tone(330,t,0.12,'triangle',0.4,{a:0.004,lp:1400,r:0.1,rev:0.3});}
   function fxPick(){var t=ensure().currentTime;tone(70,t,0.6,'sine',0.5,{a:0.05,slide:150,r:0.5,rev:0.6});noise(t,0.5,0.18,300,'bandpass',{slide:1800,q:0.7,rev:0.6});}
   function fxOpen(){var t=ensure().currentTime;tone(130.81,t,1.6,'sine',0.4,{a:0.08,r:1.4,rev:0.7});tone(196,t,1.6,'sine',0.22,{a:0.08,r:1.4,rev:0.7});[392,523.25,659.25,784,1046.5].forEach(function(f,i){tone(f,t+0.15+i*0.12,1.0,'sawtooth',0.16,{a:0.02,lp:2200,r:0.8,rev:0.8});});tone(2093,t+0.85,1.2,'sine',0.18,{a:0.03,r:1.1,rev:1});}
-  /* 海浪环境音 B 档：柔和稀疏，涌-退-空档，静音占比约56% */
+  /* 海浪环境音：24s 无缝循环真音频（CC0 · Joseph SARDIN / BigSoundBank）
+     播放链：ocean.mp3 → 2600Hz 低通 → 0.22 基准音量（4s 淡入 + 40s 呼吸 ±20%）→ amb 总线 */
+  var oceanBuf=null;
   function waveStart(){
     var c=ensure();if(!c||waveInst)return;
-    var out=c.createGain();out.gain.value=1;out.connect(amb);
-    var len=Math.floor(c.sampleRate*3),buf=c.createBuffer(1,len,c.sampleRate),dd=buf.getChannelData(0);
-    var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-    for(var i=0;i<len;i++){var w=Math.random()*2-1;
-      b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.96900*b2+w*0.1538520;
-      b3=0.86650*b3+w*0.3104856;b4=0.55000*b4+w*0.5329522;b5=-0.7616*b5-w*0.0168980;
-      dd[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.6;b6=w*0.115926;}
-    var stopped=false,timer=null;
-    /* 底床：极轻的远海低鸣持续铺底，空档期不再完全静音（有连续性、不断气） */
-    var bed=c.createGain();bed.gain.value=0.028;bed.connect(out);
-    var bsrc=c.createBufferSource();bsrc.buffer=buf;bsrc.loop=true;
-    var blp=c.createBiquadFilter();blp.type='lowpass';blp.frequency.value=420;
-    bsrc.connect(blp);blp.connect(bed);
-    var lfo=c.createOscillator();lfo.type='sine';lfo.frequency.value=0.07;
-    var lg=c.createGain();lg.gain.value=0.010;lfo.connect(lg);lg.connect(bed.gain);
-    bsrc.start();lfo.start();
-    function wave(){
-      if(stopped)return;
-      var t=c.currentTime,dur=7.6,peak=0.16*(0.75+Math.random()*0.4);
-      var s=c.createBufferSource();s.buffer=buf;s.loop=true;
-      var hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=280;
-      var bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.setValueAtTime(650,t);bp.frequency.linearRampToValueAtTime(1000,t+3);bp.Q.value=0.45;
-      var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1600;
-      var g=c.createGain();var e=t+3.6;
-      g.gain.setValueAtTime(0.028,t);
-      g.gain.linearRampToValueAtTime(peak*0.5,t+1.35);
-      g.gain.linearRampToValueAtTime(peak,t+3);
-      g.gain.setValueAtTime(peak,e);
-      g.gain.linearRampToValueAtTime(peak*0.62,e+1.8);
-      g.gain.linearRampToValueAtTime(peak*0.32,e+3.12);
-      g.gain.linearRampToValueAtTime(0.028,e+4.6);
-      s.connect(hp);hp.connect(bp);bp.connect(lp);lp.connect(g);g.connect(out);
-      s.start(t);s.stop(e+4.8);
-      var sh=c.createBufferSource();sh.buffer=buf;sh.loop=true;
-      var shp=c.createBiquadFilter();shp.type='highpass';shp.frequency.value=3800;
-      var shg=c.createGain();var st=t+2.1;
-      shg.gain.setValueAtTime(0.0001,st);shg.gain.linearRampToValueAtTime(peak*0.06,st+0.5);shg.gain.linearRampToValueAtTime(0.0001,st+1.6);
-      sh.connect(shp);shp.connect(shg);shg.connect(out);sh.start(st);sh.stop(st+1.65);
-      var gap=7+Math.random()*5;
-      timer=setTimeout(wave,(dur+gap)*1000);
+    var inst={stop:function(){}};waveInst=inst;
+    amb.gain.value=1;
+    function build(buffer){
+      if(!waveInst||waveInst!==inst)return;
+      amb.gain.value=1;
+      var t=c.currentTime;
+      var src=c.createBufferSource();src.buffer=buffer;src.loop=true;
+      var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;lp.Q.value=0.5;
+      var g=c.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.22,t+4);
+      var br=c.createOscillator();br.frequency.value=1/40;
+      var bg=c.createGain();bg.gain.setValueAtTime(0,t);bg.gain.linearRampToValueAtTime(0.044,t+8);
+      br.connect(bg);bg.connect(g.gain);
+      src.connect(lp);lp.connect(g);g.connect(amb);
+      src.start(t);br.start(t);
+      inst.stop=function(){try{src.stop();br.stop();}catch(e){}};
     }
-    wave();
-    waveInst={stop:function(){stopped=true;if(timer)clearTimeout(timer);try{bsrc.stop();lfo.stop();}catch(e){}}};
+    if(oceanBuf){build(oceanBuf);return;}
+    fetch('ocean.mp3').then(function(r){return r.arrayBuffer();}).then(function(ab){return c.decodeAudioData(ab);}).then(function(buf){oceanBuf=buf;build(buf);}).catch(function(){waveInst=null;});
   }
   function waveStop(){if(waveInst){waveInst.stop();waveInst=null;}}
   var btn=null;
