@@ -994,12 +994,12 @@ var SND=(function(){
     tone(587,t,0.12,'sine',0.12,{a:0.006,lp:3200,r:0.1,rev:0.35});}
   function fxPick(){var t=ensure().currentTime;tone(70,t,0.7,'sine',0.72,{a:0.04,slide:170,r:0.55,rev:0.6});noise(t,0.6,0.36,300,'bandpass',{slide:2000,q:0.7,rev:0.6});tone(320,t+0.06,0.5,'triangle',0.32,{a:0.02,slide:920,lp:2600,r:0.4,rev:0.5});}
   function fxOpen(){var t=ensure().currentTime;tone(130.81,t,1.6,'sine',0.4,{a:0.08,r:1.4,rev:0.7});tone(196,t,1.6,'sine',0.22,{a:0.08,r:1.4,rev:0.7});[392,523.25,659.25,784,1046.5].forEach(function(f,i){tone(f,t+0.15+i*0.12,1.0,'sawtooth',0.16,{a:0.02,lp:2200,r:0.8,rev:0.8});});tone(2093,t+0.85,1.2,'sine',0.18,{a:0.03,r:1.1,rev:1});}
-  /* 年代滚轮：整段连贯的稳重低鸣——低频涌动(E2→A2) + 中频实体(E3→A3) + 八度微光(E4→A4) + 五度点缀(B4)，缓升缓落，不逐格敲击 */
+  /* 年代滚轮：稳重高级的中频和弦(A3→B3缓行 + E4纯五度 + A4三角质感 + C#5微光)，手机扬声器可清晰再现；整体音量较上版翻倍，无低频滑音不再有"噗"感 */
   function fxRoll(){var c=ensure();if(!c)return;var t=c.currentTime;
-    tone(82.4,t,2.7,'sine',0.55,{a:0.22,d:0.35,s:1.5,r:0.6,slide:110,rev:0.32});
-    tone(164.8,t,2.6,'triangle',0.3,{a:0.28,d:0.35,s:1.4,r:0.55,slide:220,rev:0.38});
-    tone(329.6,t,2.4,'sine',0.16,{a:0.4,d:0.4,s:1.1,r:0.5,slide:440,rev:0.45});
-    tone(493.9,t,2.3,'sine',0.08,{a:0.45,d:0.4,s:1.0,r:0.45,rev:0.5});}
+    tone(220,t,2.8,'sine',1.1,{a:0.5,d:0.4,s:1.3,r:0.6,slide:246.9,rev:0.22});
+    tone(329.6,t,2.7,'sine',0.6,{a:0.55,d:0.4,s:1.2,r:0.55,rev:0.26});
+    tone(440,t,2.5,'triangle',0.32,{a:0.6,d:0.4,s:1.0,r:0.5,rev:0.3});
+    tone(554.4,t,2.4,'sine',0.15,{a:0.65,d:0.4,s:0.9,r:0.45,rev:0.35});}
   /* 海浪环境音：24s 无缝循环真音频（CC0 · Joseph SARDIN / BigSoundBank）
      播放链（v5.3 改为原生 audio，解锁零等待）：ocean.mp3(已离线低通2600Hz) → <audio loop preload=auto> → 音量淡入/呼吸 → 首次手势即播 */
   var seaAudio=null,seaFade=null,seaBreath=null;
@@ -1010,23 +1010,26 @@ var SND=(function(){
     a.src='ocean.mp3';a.loop=true;a.preload='auto';a.setAttribute('playsinline','');
     a.style.display='none';(document.body||document.documentElement).appendChild(a);
     try{a.load();}catch(e){}
-    seaAudio=a;return a;
+    seaAudio=a;
+    // 加载即尝试自动播放：桌面/多数安卓可直接出声；iOS/微信被拦截则由首次手势兜底
+    try{var p=a.play();if(p&&p.catch)p.catch(function(){});}catch(e){}
+    return a;
   }
   function waveStart(){
     var a=prepSea();if(!a)return;
     if(seaFade)clearInterval(seaFade);if(seaBreath)clearInterval(seaBreath);
     var vol=0.4,phase=0;
-    try{a.volume=0.05;}catch(e){}
+    // 立即给到可听音量，0.22s 极短淡入：进入画面就有声，不再"等一会儿"
+    try{a.volume=0.26;}catch(e){}
     var p=a.play();if(p&&p.catch)p.catch(function(){});
-    // 柔和淡入(0.9s) + 40s 呼吸±18%，用音量实现，首个手势后立即有极小声、很快浮起
-    if(seaFade)clearInterval(seaFade);if(seaBreath)clearInterval(seaBreath);
     var t0=Date.now();
     seaFade=setInterval(function(){
-      var el=Math.min(1,(Date.now()-t0)/900);
-      var base=0.05+(vol-0.05)*el;
+      var el=Math.min(1,(Date.now()-t0)/220);
+      var base=0.26+(vol-0.26)*el;
       var b=1+0.18*Math.sin(phase);
       try{a.volume=Math.max(0.001,Math.min(1,base*b));}catch(e){}
-    },60);
+      if(el>=1){clearInterval(seaFade);seaFade=null;}
+    },40);
     seaBreath=setInterval(function(){phase+=2*Math.PI*0.06/10;},1000); // 40s 周期
   }
   function waveStop(){
@@ -1054,14 +1057,17 @@ var SND=(function(){
     btn.addEventListener('click',function(){ensure();toggle();});
     waveOn=true; // 默认开启海浪声，不读取上次关闭记忆
     restored=true;paint();
-    // 默认开启：首次任意手势激活音频后自动淡入（浏览器要求先有手势才能出声）
-    if(waveOn){
-      var resume=function(){
-        document.removeEventListener('pointerdown',resume);document.removeEventListener('touchstart',resume);
-        if(waveOn){ensure();waveStart();}
-      };
-      document.addEventListener('pointerdown',resume);document.addEventListener('touchstart',resume);
-    }
+    // 加载即启动：能自动播就立刻有声；被浏览器拦截则首次触摸立刻补上
+    waveStart();
+    var resume=function(){
+      document.removeEventListener('pointerdown',resume);document.removeEventListener('touchstart',resume);
+      document.removeEventListener('click',resume);
+      var a=seaAudio;
+      if(waveOn&&(!a||a.paused)){ensure();waveStart();}
+    };
+    document.addEventListener('pointerdown',resume);
+    document.addEventListener('touchstart',resume);
+    document.addEventListener('click',resume);
   }
   /* 反馈音挂载：按钮=电影级btn，开盲盒=电影级open */
   function bindFx(){
