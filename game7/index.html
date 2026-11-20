@@ -361,50 +361,34 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
         <circle cx="112" cy="100" r=".6"/><circle cx="244" cy="82" r=".6"/>
       </g>
 
-      <!-- 海浪拍岸：短促、断续、柔和漂移的碎浪（SMIL 动画，肉眼可见起伏） -->
-      <g stroke="#bcd4de" fill="none" stroke-linecap="round">
-        <path d="M56 118 q9 -3 18 0 t18 0" stroke-width="1.1" opacity=".55">
-          <animateTransform attributeName="transform" type="translate" values="0 0; 14 -2; 0 0" dur="4.2s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".18;.6;.18" dur="4.2s" repeatCount="indefinite"/>
+      <!-- 海面长波浪：贯穿整屏的连续水波线，整条随风缓缓流动 -->
+      <g fill="none" stroke-linecap="round">
+        <path d="M-40 108 q25 -3 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#bcd4de" stroke-width="1" opacity=".22">
+          <animateTransform attributeName="transform" type="translate" values="-18 0; 18 -1; -18 0" dur="9s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".14;.26;.14" dur="9s" repeatCount="indefinite"/>
         </path>
-        <path d="M62 126 q8 -2.5 16 0 t16 0" stroke-width="1" opacity=".4">
-          <animateTransform attributeName="transform" type="translate" values="0 0; -12 1.5; 0 0" dur="5.1s" begin="-1.4s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".12;.45;.12" dur="5.1s" begin="-1.4s" repeatCount="indefinite"/>
+        <path d="M-40 118 q25 -3.5 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#a9c8d2" stroke-width="1" opacity=".3">
+          <animateTransform attributeName="transform" type="translate" values="20 0; -20 1.2; 20 0" dur="7.4s" begin="-2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".18;.34;.18" dur="7.4s" begin="-2s" repeatCount="indefinite"/>
         </path>
-        <path d="M296 118 q9 -3 18 0 t18 0" stroke-width="1.1" opacity=".55">
-          <animateTransform attributeName="transform" type="translate" values="0 0; -14 -2; 0 0" dur="4.6s" begin="-0.8s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".18;.6;.18" dur="4.6s" begin="-0.8s" repeatCount="indefinite"/>
-        </path>
-        <path d="M292 126 q8 -2.5 16 0 t16 0" stroke-width="1" opacity=".4">
-          <animateTransform attributeName="transform" type="translate" values="0 0; 12 1.5; 0 0" dur="5.4s" begin="-2.2s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".12;.45;.12" dur="5.4s" begin="-2.2s" repeatCount="indefinite"/>
-        </path>
-        <path d="M158 120 q7 -2.5 14 0 t14 0" stroke-width=".9" opacity=".35">
-          <animateTransform attributeName="transform" type="translate" values="0 0; 10 -1.5; 0 0" dur="3.9s" begin="-1s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".1;.4;.1" dur="3.9s" begin="-1s" repeatCount="indefinite"/>
-        </path>
-        <path d="M232 124 q7 -2.5 14 0 t14 0" stroke-width=".9" opacity=".35">
-          <animateTransform attributeName="transform" type="translate" values="0 0; -10 1.5; 0 0" dur="4.8s" begin="-2.6s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".1;.4;.1" dur="4.8s" begin="-2.6s" repeatCount="indefinite"/>
+        <path d="M-40 127 q25 -4 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#9dbcc6" stroke-width="1" opacity=".3">
+          <animateTransform attributeName="transform" type="translate" values="-22 0; 22 -1.4; -22 0" dur="8.2s" begin="-4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".17;.33;.17" dur="8.2s" begin="-4s" repeatCount="indefinite"/>
         </path>
       </g>
 
       <!-- 雾锁孤礁 -->
       <ellipse cx="200" cy="114" rx="132" ry="12" fill="url(#mist)" opacity=".62"/>
 
-      <!-- 前景波纹：底部断续碎浪，缓缓横向漂移 -->
-      <g stroke="#7fa6ae" stroke-width="1" fill="none" stroke-linecap="round">
-        <path d="M16 136 q12 -3.5 24 0 t24 0" opacity=".3">
-          <animateTransform attributeName="transform" type="translate" values="0 0; 16 0; 0 0" dur="5.6s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".1;.34;.1" dur="5.6s" repeatCount="indefinite"/>
+      <!-- 前景长波浪：贯穿整屏的连续水波线，缓缓流动 -->
+      <g fill="none" stroke-linecap="round">
+        <path d="M-40 137 q25 -4.5 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#7fa6ae" stroke-width="1" opacity=".28">
+          <animateTransform attributeName="transform" type="translate" values="-24 0; 24 0; -24 0" dur="10s" begin="-1s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".18;.32;.18" dur="10s" begin="-1s" repeatCount="indefinite"/>
         </path>
-        <path d="M300 141 q12 -3.5 24 0 t24 0" opacity=".28">
-          <animateTransform attributeName="transform" type="translate" values="0 0; -16 0; 0 0" dur="6.2s" begin="-2s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".08;.3;.08" dur="6.2s" begin="-2s" repeatCount="indefinite"/>
-        </path>
-        <path d="M150 145 q10 -3 20 0 t20 0" opacity=".22">
-          <animateTransform attributeName="transform" type="translate" values="0 0; 12 0; 0 0" dur="5s" begin="-3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".07;.26;.07" dur="5s" begin="-3s" repeatCount="indefinite"/>
+        <path d="M-40 145 q25 -4 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#6f9aa4" stroke-width="1" opacity=".24">
+          <animateTransform attributeName="transform" type="translate" values="26 0; -26 1; 26 0" dur="8.8s" begin="-5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".14;.28;.14" dur="8.8s" begin="-5s" repeatCount="indefinite"/>
         </path>
       </g>
     </svg>
@@ -687,6 +671,7 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     yEl.classList.add('rolling');
     var timer=setInterval(function(){
       yEl.textContent=ERAS[Math.floor(Math.random()*ERAS.length)].spin;
+      try{if(window.SND&&SND.tick)SND.tick(n);}catch(e){}
       n++;
       if(n>=total){
         clearInterval(timer);
@@ -1010,9 +995,20 @@ var SND=(function(){
   function fxBtn(){var t=ensure().currentTime;tone(330,t,0.12,'triangle',0.4,{a:0.004,lp:1400,r:0.1,rev:0.3});}
   function fxPick(){var t=ensure().currentTime;tone(70,t,0.7,'sine',0.72,{a:0.04,slide:170,r:0.55,rev:0.6});noise(t,0.6,0.36,300,'bandpass',{slide:2000,q:0.7,rev:0.6});tone(320,t+0.06,0.5,'triangle',0.32,{a:0.02,slide:920,lp:2600,r:0.4,rev:0.5});}
   function fxOpen(){var t=ensure().currentTime;tone(130.81,t,1.6,'sine',0.4,{a:0.08,r:1.4,rev:0.7});tone(196,t,1.6,'sine',0.22,{a:0.08,r:1.4,rev:0.7});[392,523.25,659.25,784,1046.5].forEach(function(f,i){tone(f,t+0.15+i*0.12,1.0,'sawtooth',0.16,{a:0.02,lp:2200,r:0.8,rev:0.8});});tone(2093,t+0.85,1.2,'sine',0.18,{a:0.03,r:1.1,rev:1});}
+  /* 时光海年份滚轮：短促清脆的「叮嗒」，音高随翻动轻微起伏，音量压低避免30连响吵耳 */
+  function fxTick(i){var t=ensure().currentTime;var f=988+((i%8)-4)*55;
+    tone(f,t,0.05,'triangle',0.09,{a:0.001,lp:3600,r:0.03,rev:0.3});
+    tone(f*2,t,0.025,'sine',0.04,{a:0.001,lp:6000,r:0.02,rev:0.25});}
   /* 海浪环境音：24s 无缝循环真音频（CC0 · Joseph SARDIN / BigSoundBank）
      播放链：ocean.mp3 → 2600Hz 低通 → 0.22 基准音量（4s 淡入 + 40s 呼吸 ±20%）→ amb 总线 */
-  var oceanBuf=null;
+  var oceanBuf=null,oceanRaw=null;
+  /* 页面加载即预取+预解码音频：用户首次手势时零等待，立刻出声 */
+  function prefetch(){
+    try{
+      var p=fetch('ocean.mp3').then(function(r){return r.arrayBuffer();}).then(function(ab){oceanRaw=ab;return ensure()?ensure().decodeAudioData(ab):null;});
+      if(p&&p.then)p.then(function(buf){if(buf)oceanBuf=buf;}).catch(function(){});
+    }catch(e){}
+  }
   function waveStart(){
     var c=ensure();if(!c||waveInst)return;
     var inst={stop:function(){}};waveInst=inst;
@@ -1023,7 +1019,7 @@ var SND=(function(){
       var t=c.currentTime;
       var src=c.createBufferSource();src.buffer=buffer;src.loop=true;
       var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;lp.Q.value=0.5;
-      var g=c.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.22,t+4);
+      var g=c.createGain();g.gain.setValueAtTime(0.05,t);g.gain.linearRampToValueAtTime(0.22,t+1.1);
       var br=c.createOscillator();br.frequency.value=1/40;
       var bg=c.createGain();bg.gain.setValueAtTime(0,t);bg.gain.linearRampToValueAtTime(0.044,t+8);
       br.connect(bg);bg.connect(g.gain);
@@ -1032,7 +1028,10 @@ var SND=(function(){
       inst.stop=function(){try{src.stop();br.stop();}catch(e){}};
     }
     if(oceanBuf){build(oceanBuf);return;}
-    fetch('ocean.mp3').then(function(r){return r.arrayBuffer();}).then(function(ab){return c.decodeAudioData(ab);}).then(function(buf){oceanBuf=buf;build(buf);}).catch(function(){waveInst=null;});
+    var chain;
+    if(oceanRaw){chain=Promise.resolve(oceanRaw);}
+    else{chain=fetch('ocean.mp3').then(function(r){return r.arrayBuffer();});}
+    chain.then(function(ab){oceanRaw=ab;return c.decodeAudioData(ab);}).then(function(buf){oceanBuf=buf;if(waveInst===inst)build(buf);}).catch(function(){});
   }
   function waveStop(){if(waveInst){waveInst.stop();waveInst=null;}}
   var btn=null;
@@ -1076,9 +1075,9 @@ var SND=(function(){
       if(ps.classList.contains('up')){try{ensure();fxPick();}catch(e){}}
     }).observe(ps,{attributes:true,attributeFilter:['class']});}
   }
-  function boot(){init();bindFx();}
+  function boot(){init();bindFx();prefetch();}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}else{boot();}
-  return {btn:fxBtn,pick:fxPick,open:fxOpen,toggle:toggle};
+  return {btn:fxBtn,pick:fxPick,open:fxOpen,tick:fxTick,toggle:toggle};
 })();
 
 </script>
