@@ -622,17 +622,25 @@ opacity:0;pointer-events:none;transition:.25s;z-index:99;white-space:nowrap;bord
     // v4.6 四层光谱：royal 1.6% / 稀世(elite,sci,future) 2.8% / 殷实人家(prosper) 12% / 普通 83.6%
     var roll=Math.random(),want='normal';
     if(roll<0.016)want='royal';else if(roll<0.044)want='rare';else if(roll<0.164)want='prosper';
-    var pool=[];
+    // v5.9 穿越概率：先按稀有度分层(见上 want)，再在层内按时代档位加权
+    // 权重 古代:近代:未来 = 1 : 1.018855 : 0.561645 → 整体占比锁定 60% : 30% : 10%
+    // 只调时代分布，不动四层稀有度与稀世标签
+    var EW=[1,1.018855,0.561645]; // 时代档位：0-10 古代 / 11-16 近代 / 17-21 未来
+    var pool=[],cum=0;
     for(var _ei=0;_ei<ERAS.length;_ei++){
+      var _w=EW[_ei<=10?0:(_ei<=16?1:2)];
       var _rs=ERAS[_ei].roles;
       for(var _ri=0;_ri<_rs.length;_ri++){
         var _t=_rs[_ri].tier||'';
         var _ok=(want==='normal')?(_t===''):(want==='royal')?(_t==='royal'):(want==='prosper')?(_t==='prosper'):(_t!==''&&_t!=='royal'&&_t!=='prosper');
-        if(_ok)pool.push([_ei,_ri]);
+        if(_ok){cum+=_w;pool.push([_ei,_ri,cum]);}
       }
     }
-    do{var _p=pool[Math.floor(Math.random()*pool.length)];ei=_p[0];ri=_p[1];key=ei+'_'+ri;tries++;}
-      while(key===lastKey&&tries<12);
+    do{
+      var _r=Math.random()*cum,_lo=0,_hi=pool.length-1,_pick;
+      while(_lo<_hi){var _mid=(_lo+_hi)>>1;if(pool[_mid][2]<_r)_lo=_mid+1;else _hi=_mid;}
+      _pick=pool[_lo];ei=_pick[0];ri=_pick[1];key=ei+'_'+ri;tries++;
+    }while(key===lastKey&&tries<12);
     lastKey=key;
     pending={era:ERAS[ei],role:ERAS[ei].roles[ri]};
 
