@@ -65,21 +65,32 @@ body{min-height:100vh;background:
   letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between}
 .panel h2 .n{font-size:11px;color:var(--muted);font-weight:400}
 .transcript{background:var(--panel2);border:1px solid var(--border);
-  border-radius:14px;padding:13px 16px;min-height:62px;max-height:140px;overflow:auto;
-  font-size:16px;line-height:1.75}
+  border-radius:14px;padding:10px 14px;height:92px;overflow-y:scroll;overflow-x:hidden;
+  font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .transcript .interim{color:var(--muted);font-style:italic}
 .transcript .ph{color:#5c6f7a;font-size:13px}
 
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 @media(max-width:720px){.cards{grid-template-columns:1fr}}
 .card{background:var(--panel2);border:1px solid var(--border);border-radius:16px;
-  padding:16px 17px;min-height:136px;position:relative;overflow:hidden}
+  padding:14px 15px;height:148px;position:relative;overflow:hidden}
 .card .tag{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:10px;
   display:flex;align-items:center;gap:7px}
 .card .tag i{width:18px;height:18px;border-radius:6px;display:inline-flex;
   align-items:center;justify-content:center;font-style:normal;font-size:11px}
-.card .body{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+.card .body{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;
+  height:86px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
+  scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .card .empty{color:#5c6f7a;font-size:13px}
+.card .sbtns{margin-left:auto;display:flex;gap:3px;flex:none}
+.card .sbtns button{width:17px;height:17px;line-height:1;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:var(--muted);border-radius:5px;
+  font-size:9px;cursor:pointer;padding:0}
+.card .sbtns button:hover{color:var(--gold);border-color:var(--gold-dim)}
+.transcript::-webkit-scrollbar,.card .body::-webkit-scrollbar{width:7px}
+.transcript::-webkit-scrollbar-track,.card .body::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:6px}
+.transcript::-webkit-scrollbar-thumb,.card .body::-webkit-scrollbar-thumb{background:rgba(226,192,122,.42);border-radius:6px}
+.transcript::-webkit-scrollbar-thumb:hover,.card .body::-webkit-scrollbar-thumb:hover{background:rgba(226,192,122,.65)}
 .card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
 .card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
 .card.know.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
@@ -189,11 +200,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <h2>直播接力提示 <span class="n">从上到下＝先定义、再接话，两步照着说</span></h2>
     <div class="cards">
       <div class="card know first" id="cardKnow">
-        <div class="tag"><i>1</i>名词是啥（先把定义讲出来）</div>
+        <div class="tag"><i>1</i>名词是啥（先把定义讲出来）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
         <div class="body"><span class="empty">你或粉丝提到的名词，一两句话讲清是什么，让你当场接住不尴尬</span></div>
       </div>
       <div class="card say" id="cardSay">
-        <div class="tag"><i>2</i>接下来说啥（给几个能展开的话头）</div>
+        <div class="tag"><i>2</i>接下来说啥（给几个能展开的话头）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
         <div class="body"><span class="empty">讲完定义后，下一句该说什么，直接给你能说的话</span></div>
       </div>
     </div>
@@ -307,12 +318,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   var transcriptFinal='',transcriptInterim='';
   function renderTranscript(){
     var el=$('transcript');
+    var atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<32;
     if(!transcriptFinal&&!transcriptInterim){
       el.innerHTML='<span class="ph">启动后，这里实时显示你说的话……</span>';return;
     }
     el.innerHTML='<span class="final">'+esc(transcriptFinal)+'</span>'+
       (transcriptInterim?' <span class="interim">'+esc(transcriptInterim)+'</span>':'');
-    el.scrollTop=el.scrollHeight;
+    if(atBottom)el.scrollTop=el.scrollHeight;
   }
   function esc(s){return s.replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -448,7 +460,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     started=true;paused=false;pendingText='';failCount=0;
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
-      $(id).querySelector('.body').innerHTML='<span class="empty">听你说，马上生成……</span>';
+      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">听你说，马上生成……</span>';bd.scrollTop=0;
     });
     setControls('running');
     $('startInfo').innerHTML='<b>已启动，全程自动。</b>说话自动转文字、说完停一下提示卡就刷新；中途按「暂停」，播完按「结束」。';
@@ -482,7 +494,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     pcmChunks=[];pendingText='';transcriptFinal='';transcriptInterim='';failCount=0;
     renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
-      $(id).querySelector('.body').innerHTML='<span class="empty">已结束，点「启动」重新开始</span>';
+      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">已结束，点「启动」重新开始</span>';bd.scrollTop=0;
     });
     setControls('idle');
     setStatus('','已结束');
@@ -574,7 +586,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var v=p[1];
       if(Array.isArray(v))v=v.join('\n');
       if(v&&String(v).trim()){
-        $(p[0]).querySelector('.body').textContent=String(v).trim();got=true;
+        var bd=$(p[0]).querySelector('.body');bd.textContent=String(v).trim();bd.scrollTop=0;got=true;
         if(!CFG.quiet){var el=$(p[0]);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
       }
     });
@@ -597,6 +609,14 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   $('typeSend').addEventListener('click',sendTyped);
   $('typeInput').addEventListener('keydown',function(e){
     if(e.key==='Enter'){e.preventDefault();sendTyped();}
+  });
+
+  // 提示卡右上角 ▲▼：点一下在固定高度内翻一屏
+  Array.prototype.forEach.call(document.querySelectorAll('.sbtns button'),function(btn){
+    btn.addEventListener('click',function(){
+      var body=$(this.getAttribute('data-sc')).querySelector('.body');
+      body.scrollTop+=(this.getAttribute('data-dir')==='1'?1:-1)*Math.max(36,body.clientHeight*0.8);
+    });
   });
 
   load();fillForm();renderTranscript();setControls('idle');
