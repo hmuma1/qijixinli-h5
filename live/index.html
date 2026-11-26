@@ -136,17 +136,25 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(127,201,196,.3);
   border-top-color:var(--cyan);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.typebox{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:6px;
-  width:320px;padding:6px;background:var(--panel2);border:1px solid var(--border);
-  border-radius:13px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+.typebox{position:fixed;right:22px;bottom:64px;z-index:70;width:340px;
+  background:var(--panel2);border:1px solid rgba(226,192,122,.42);
+  border-radius:15px;box-shadow:0 18px 48px rgba(0,0,0,.55);backdrop-filter:blur(10px);
+  overflow:hidden}
+.typebox .tbhead{display:flex;align-items:center;gap:8px;padding:10px 14px;
+  font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;
+  background:rgba(226,192,122,.09);border-bottom:1px solid var(--border)}
+.typebox .tbhead .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 10px rgba(226,192,122,.8);flex:none}
+.typebox .tbhead .hint{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted)}
+.typebox .tbrow{display:flex;align-items:center;gap:7px;padding:9px 11px}
 .typebox input{flex:1;min-width:0;border:0;outline:none;background:transparent;color:var(--text);
-  font-family:inherit;font-size:13px;padding:7px 9px}
-.typebox input::placeholder{color:#5c6f7a}
+  font-family:inherit;font-size:13px;padding:6px 7px}
+.typebox input::placeholder{color:#718794}
 .typebox button{flex:none;border:0;border-radius:9px;background:var(--gold);color:#1a1206;
-  font-family:inherit;font-size:13px;font-weight:700;padding:7px 13px;cursor:pointer;white-space:nowrap}
+  font-family:inherit;font-size:13px;font-weight:700;padding:8px 15px;cursor:pointer;white-space:nowrap}
 .typebox button:hover:not(:disabled){background:#f0d39a}
 .typebox button:disabled{opacity:.45;cursor:not-allowed}
-@media(max-width:560px){.typebox{width:calc(100vw - 36px);bottom:12px}}
+@media(max-width:560px){.typebox{width:calc(100vw - 32px);right:16px;bottom:58px}}
 </style>
 </head>
 <body>
@@ -246,8 +254,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 </div>
 
 <div class="typebox" id="typeBox">
-  <input id="typeInput" type="text" placeholder="不方便说话？打字后回车发送" autocomplete="off">
-  <button id="typeSend" type="button">发送</button>
+  <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里</span></div>
+  <div class="tbrow">
+    <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
+    <button id="typeSend" type="button">发送</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
