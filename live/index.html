@@ -294,7 +294,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   /* 语音识别：启动后持续监听 */
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  var rec=null,started=false,charsSinceGen=0,lastGenAt=0;
+  var rec=null,started=false,pendingText='',lastGenAt=0,genTimer=null,failCount=0;
 
   function ensureRec(){
     if(rec)return rec;
@@ -306,14 +306,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var interim='';
       for(var i=e.resultIndex;i<e.results.length;i++){
         var r=e.results[i],t=r[0].transcript;
-        if(r.isFinal){transcriptFinal+=t;charsSinceGen+=t.length;}
+        if(r.isFinal){transcriptFinal+=t;pendingText+=t;}
         else{interim+=t;}
       }
       transcriptInterim=interim;
       renderTranscript();
-      // 自动节流生成：说够一段、且距上次生成有间隔，就自动生成
-      var now=Date.now();
-      if(charsSinceGen>=18 && now-lastGenAt>5000) generate();
+      // 说完就安排生成：不设字数门槛，停止说话约1.2秒即自动触发
+      scheduleGenerate();
     };
     rec.onerror=function(e){
       if(e.error==='no-speech')return;
@@ -338,7 +337,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       toast('当前浏览器不支持语音识别，请用电脑版 Chrome / Edge');return;
     }
     var r=ensureRec();
-    started=true;charsSinceGen=0;lastGenAt=0;
+    started=true;pendingText='';lastGenAt=0;failCount=0;
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardSay','cardIdea','cardKnow','cardSave'].forEach(function(id){
       $(id).querySelector('.body').innerHTML='<span class="empty">听你说，马上生成……</span>';
@@ -346,8 +345,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     this.classList.add('running');
     this.querySelector('svg').innerHTML='<circle cx="12" cy="12" r="5" fill="currentColor"/>';
     $('startLabel').textContent='运行中 · 全自动';
-    $('startInfo').innerHTML='<b>已启动，后续全程自动。</b>你正常直播说话即可，四张提示卡会随你说的话自动刷新。<span class="em">要停止，刷新页面即可。</span>';
-    try{r.start();toast('已启动，正常说话即可');}
+    $('startInfo').innerHTML='<b>已启动，后续全程自动。</b>你正常直播说话即可，<span class="em">说完停一下，四张提示卡就自动刷新</span>——不用再点任何东西。';
+    try{r.start();toast('已启动，说完一句话停一下就会自动生成');}
     catch(e){toast('启动失败，请刷新重试');}
   });
 
@@ -364,12 +363,26 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     '4) 只输出一个 JSON 对象，不要解释、不要代码块标记：\n'+
     '{"say":"...","idea":"1. ...\\n2. ...","know":"1. ...\\n2. ...","save":"..."}\n';
 
+  // 说完即触发：不设字数门槛。收到语音后重置计时，停说约1.2秒自动生成；
+  // 若一直不停地说，也用"距上次生成≥6秒"兜底，保证提示卡持续刷新。
+  function scheduleGenerate(){
+    if(!pendingText.trim())return;
+    if(genTimer){clearTimeout(genTimer);}
+    genTimer=setTimeout(function(){
+      genTimer=null;
+      generate();
+    },1200);
+  }
+
   var busy=false;
   function generate(){
     if(busy||!started)return;
-    var text=transcriptFinal.trim();
+    var text=pendingText.trim();
     if(!text)return;
-    busy=true;lastGenAt=Date.now();charsSinceGen=0;
+    // 兜底：即使没停下，距上次生成≥6秒也允许触发；首次立即触发
+    var now=Date.now();
+    if(lastGenAt && now-lastGenAt<6000){scheduleGenerate();return;}
+    busy=true;lastGenAt=Date.now();pendingText='';
     $('genState').innerHTML='<span class="spin"></span> 正在生成';
     var kb=CFG.knowledge?('\n\n【主播的领域背景，供参考】\n'+CFG.knowledge):'';
     var body={model:CFG.model,
@@ -381,20 +394,28 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     x.setRequestHeader('Content-Type','application/json');
     x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
     x.timeout=45000;
+    function fail(msg){
+      busy=false;$('genState').textContent='生成失败 · 自动重试中';
+      // 文本退回待生成队列，有限重试，避免死循环卡住
+      pendingText=text+pendingText;
+      if(failCount<3){failCount++;toast(msg+'，将自动重试');setTimeout(function(){scheduleGenerate();},2500);}
+      else{toast(msg+'，请检查设置里的接口/Key');$('genState').textContent='生成失败 · 请检查接口设置';failCount=0;}
+    }
     x.onreadystatechange=function(){
       if(x.readyState!==4)return;
-      busy=false;$('genState').textContent='启动后自动刷新提示';
-      if(x.status<200||x.status>=300){toast('生成失败（'+x.status+'），将自动重试');return;}
+      if(x.status<200||x.status>=300){fail('生成失败（'+x.status+'）');return;}
+      busy=false;failCount=0;
       try{
         var j=JSON.parse(x.responseText);
         var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
         if(!c)throw new Error('空返回');
         renderAI(c);
-      }catch(e){toast('解析失败，将自动重试');}
+        $('genState').textContent='已自动生成 · 继续说即可';
+      }catch(e){fail('解析失败');return;}
       // 裁剪字幕，避免无限增长
       if(transcriptFinal.length>1600)transcriptFinal=transcriptFinal.slice(-1200);
     };
-    x.ontimeout=function(){busy=false;$('genState').textContent='启动后自动刷新提示';};
+    x.ontimeout=function(){fail('请求超时');};
     x.send(JSON.stringify(body));
   }
 
