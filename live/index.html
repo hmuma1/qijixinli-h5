@@ -67,6 +67,9 @@ body{min-height:100vh;background:
 .transcript{background:var(--panel2);border:1px solid var(--border);
   border-radius:14px;padding:10px 14px;height:92px;overflow-y:scroll;overflow-x:hidden;
   font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
+.dirtag{color:var(--gold);background:rgba(226,192,122,.1);
+  border:1px solid rgba(226,192,122,.3);border-radius:8px;padding:1px 7px;
+  margin-right:8px;font-size:11px}
 .transcript .interim{color:var(--muted);font-style:italic}
 .transcript .ph{color:#5c6f7a;font-size:13px}
 
@@ -199,7 +202,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   <!-- 实时字幕 -->
   <div class="panel">
-    <h2>实时听见 <span class="n" id="genState">启动后自动刷新提示</span></h2>
+    <h2>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
     <div class="transcript" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
   </div>
 
@@ -470,7 +473,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       return;
     }
     if(started)return;
-    started=true;paused=false;pendingText='';failCount=0;
+    started=true;paused=false;pendingText='';failCount=0;liveDir='';lastTopic='';
+    $('dirTag').style.display='none';
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
       var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">听你说，马上生成……</span>';bd.scrollTop=0;
@@ -517,18 +521,20 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   });
 
   /* AI 生成：全自动，无按钮 */
-  var SYS='你是主播身边的实时直播助手。你不是灵感提示器，而是主播的“知道替身”：主播不知道的，你知道；粉丝问的，你能让主播当场答上来，绝不让他尬在直播间。\n'+
-    '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝在留言里提到、主播照着念出来的词（如“有人问 WorkBuddy”“粉丝说 API 是啥”）。\n'+
-    ' - 只要出现主播可能不了解的名词，就必须在 know 里先给出准确定义：先用标准术语说出它本来的专业含义，再用半句浅显话点明，让主播张嘴就能解释给粉丝听。宁可短，也不要自己编跟真实定义偏差大的类比或例子。哪怕主播没明说“这是啥”，只要这词有解释价值，就主动给。\n'+
-    ' - 例子：主播说“API”，know 写：“API（应用程序编程接口）：一套让不同软件按统一规则互相调用、交换数据的接口；通俗说就是软件之间按格式提请求、拿结果的窗口。”主播念“有人提 WorkBuddy”，know 写：“WorkBuddy 是一款能查资料、写文档、做表格、执行各类任务的 AI 工作助手；通俗说就是随身替你干活的 AI 同事。”say 写：“①用在哪：刷手机、点外卖、调地图，背后都在传 API。②冷知识：接口一换，App 不用重写，只改对接方式。③问观众：你最想让哪两个 App 打通？”\n'+
-    ' - 一次出现多个名词，挑最需要解释、最可能让主播卡住的那个讲。\n'+
+  var SYS='你是主播身边的实时直播助手，不是灵感提示器，而是主播的“知道替身”：主播不知道的你知道，粉丝问的你能让主播当场答上来，绝不让他尬在直播间。\n'+
+    '【一号=地基，二号=上层建筑】know 负责原则性、规则性、准确的定义与科普事实——稳、准、克制，这是地基；say 负责扩展性、延伸性、跳跃性、灵感性、幽默性——这是话题放大器和流量杠杆，决定这场直播好不好玩、有没有爆点、观众愿不愿意停留互动。两格定位不同，别把二号写成一号的重复。\n'+
+    '【二号必须跟随直播间风格动态调整】先判断当前直播间的流派与话题走向（幽默风趣/专业硬核/情绪共鸣/观点交锋/闲聊陪伴等），再决定 say 怎么展开：幽默场就给段子、调侃、机智反差、能自嘲的俏皮话，让主播能卖弄一下风趣、显得又懂又好玩；专业场就给行业门道、具体数字、深度延展、权威补充；情绪场就给共情话术和故事钩子。二号要主动制造话题爆点、引发弹幕，而不是平铺直叙。\n'+
+    '【打字=主播的暗中指挥权】主播打字输入时，往往是当面不好意思说、或想扭转直播间方向。如果输入是方向性指令（如“幽默一点”“往专业走”“反转一下”“聊回刚才那个”“别提这个了”“多抛梗”），就在 dir 字段用一句话写清新方向（如“更幽默、多抛梗、允许自嘲”），并且本轮 know/say 立刻按新方向走；方向一旦设定会被记住，持续影响后续所有输出，直到新指令覆盖。如果打字只是普通内容（想让你解释某个词或话题），dir 留空字符串。\n'+
+    '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝留言里提到、主播照着念出来的词（如“有人问 WorkBuddy”“粉丝说 API 是啥”）。\n'+
+    ' - 只要出现主播可能不了解的名词，就必须在 know 里给出准确定义：先用标准术语说出本来的专业含义，再用半句浅显话点明。宁可短，也不要编跟真实定义偏差大的类比。哪怕主播没明说“这是啥”，只要这词有解释价值就主动给。一次多个名词，挑最容易让主播卡住的那个讲。\n'+
+    ' - 例子：主播说“API”，know 写：“API（应用程序编程接口）：一套让不同软件按统一规则互相调用、交换数据的接口；通俗说就是软件之间按格式提请求、拿结果的窗口。”主播念“有人提 WorkBuddy”，know 写：“WorkBuddy 是一款能查资料、写文档、做表格、执行各类任务的 AI 工作助手；通俗说就是随身替你干活的 AI 同事。”\n'+
     '【名词纠错】语音识别常把名词听错（中英混说、缩写、谐音），如把 NPD 听成“MPD/NP的”。结合语境推断主播真正想说的词：听到“NPD是啥”要讲自恋型人格障碍，而不是小米快充。拿不准时用“你说的应该是X”点明，绝不讲错东西。\n'+
-    '只输出两块，全部是能直接照着说出口的完整句子，禁止“你可以聊聊X”“建议讲讲X”这类把问题抛回主播的空话：\n'+
-    ' - know（名词是啥）：先用标准术语给出准确定义——保留专业说法，别自己乱类比；再用半句浅显话让人秒懂；总共控制在 60 字以内、最多两句，主播张嘴就能说，别把卡片撑满。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
-    ' - say（接下来说啥）：不要重复第一格的定义。给 2-3 个能直接展开的话题点，每条一句话、用①②③标出，彼此角度必须不同——例如①它用在哪/身边的例子 ②一个冷知识或常见误区 ③抛给观众的一个问题。要让主播挑着说、说得下去，尤其要有一两个能引发观众回应、把话题聊起来的点；禁止“你可以聊聊X”这类空话；总共 80 字以内。\n'+
-    '【极简·提速】每块都要短、口语、像懂行的朋友把话递到耳边，绝不啰嗦；定义块 60 字内，接话块给 2-3 个话头、80 字内，都要一屏读完。\n'+
+    '两块内容都要是能直接照着说出口的完整句子，禁止“你可以聊聊X”“建议讲讲X”这类把问题抛回主播的空话：\n'+
+    ' - know（一号·名词是啥）：先用标准术语给准确定义，再用半句浅显话让人秒懂；60 字以内、最多两句，主播张嘴就能说。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
+    ' - say（二号·接下来说啥）：不要重复定义。给 2-3 个能直接展开、且贴合当前直播风格的话题点，每条一句话、用①②③标出，角度必须不同——例如①它用在哪/身边例子 ②一个冷知识或反差梗 ③抛给观众的问题。要有爆点、能引互动，尤其幽默场要能逗、专业场要够狠；80 字以内。\n'+
+    '【极简·提速】每块都要短、口语、像懂行的朋友把话递到耳边；定义块 60 字内，接话块 2-3 个话头、80 字内，都要一屏读完。\n'+
     '只输出一个 JSON 对象，不要解释、不要代码块标记：\n'+
-    '{"know":"...","say":"..."}\n';
+    '{"know":"...","say":"...","dir":""}\n';
 
   // 说完即触发：收到语音后重置计时，说完停约0.5秒（切段延时）立即生成，不设字数门槛、不加节流。
   function scheduleGenerate(manual){
@@ -542,7 +548,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     },manual?0:300);
   }
 
-  var busy=false;
+  var busy=false,liveDir='',lastTopic='';
   function generate(manual){
     if(busy)return;
     if(!manual&&(!started||paused))return;
@@ -551,8 +557,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     busy=true;pendingText='';
     $('genState').innerHTML='<span class="spin"></span> 正在生成';
     var kb=CFG.knowledge?('\n\n【主播的领域背景，供参考】\n'+CFG.knowledge):'';
+    var dirLine=liveDir?('\n\n【当前直播间方向风格，必须遵守】'+liveDir):'';
+    var userPrefix=manual?'【主播打字输入，可能是当面不好说、想扭转方向的指令】\n':'主播刚说：\n';
+    var topicLine=(manual&&lastTopic)?('\n【当前正在聊的话题，供参考】\n'+lastTopic):'';
     var body={model:CFG.model,
-      messages:[{role:'system',content:SYS+kb},{role:'user',content:'主播刚说：\n'+text.slice(-400)}],
+      messages:[{role:'system',content:SYS+kb+dirLine},{role:'user',content:userPrefix+text.slice(-400)+topicLine}],
       temperature:0.8,stream:false,max_tokens:260};
     var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
     var x=new XMLHttpRequest();
@@ -575,7 +584,16 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
         var j=JSON.parse(x.responseText);
         var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
         if(!c)throw new Error('空返回');
-        renderAI(c);
+        var data=renderAI(c);
+        var nd=data&&data.dir?String(data.dir).trim():'';
+        if(manual&&nd){
+          liveDir=nd.slice(0,120);
+          $('dirTag').textContent='当前风格：'+liveDir;
+          $('dirTag').style.display='inline-block';
+          toast('方向已调整：'+liveDir);
+        }else{
+          lastTopic=text.slice(0,120);
+        }
         $('genState').textContent='已自动生成 · 继续说即可';
       }catch(e){fail('解析失败');return;}
       // 裁剪字幕，避免无限增长
@@ -604,6 +622,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       }
     });
     if(!got)$('cardSay').querySelector('.body').textContent=cleaned;
+    return data;
   }
 
   // 右下角文字输入：不方便语音时打字回车，走同一套两块生成
