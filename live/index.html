@@ -102,7 +102,8 @@ body{min-height:100vh;background:
 @keyframes flash{0%{box-shadow:inset 0 0 0 1px var(--gold),inset 0 0 26px rgba(226,192,122,.22)}
   100%{box-shadow:inset 0 0 0 1px transparent,inset 0 0 26px rgba(226,192,122,0)}}
 
-details.settings{margin-top:4px;background:var(--panel);border:1px solid var(--border);
+.bottomrow{display:flex;gap:12px;align-items:flex-start;margin-top:4px}
+details.settings{flex:1;min-width:0;background:var(--panel);border:1px solid var(--border);
   border-radius:18px;padding:16px 20px}
 details.settings summary{cursor:pointer;list-style:none;display:flex;align-items:center;
   justify-content:space-between;font-size:12px;color:var(--muted)}
@@ -136,9 +137,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(127,201,196,.3);
   border-top-color:var(--cyan);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.typebox{position:fixed;right:22px;bottom:64px;z-index:70;width:340px;
-  background:var(--panel2);border:1px solid rgba(226,192,122,.42);
-  border-radius:15px;box-shadow:0 18px 48px rgba(0,0,0,.55);backdrop-filter:blur(10px);
+.typebox{flex:0 0 340px;background:var(--panel2);border:1px solid rgba(226,192,122,.42);
+  border-radius:15px;box-shadow:var(--shadow);backdrop-filter:blur(8px);
   overflow:hidden}
 .typebox .tbhead{display:flex;align-items:center;gap:8px;padding:10px 14px;
   font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;
@@ -154,7 +154,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   font-family:inherit;font-size:13px;font-weight:700;padding:8px 15px;cursor:pointer;white-space:nowrap}
 .typebox button:hover:not(:disabled){background:#f0d39a}
 .typebox button:disabled{opacity:.45;cursor:not-allowed}
-@media(max-width:560px){.typebox{width:calc(100vw - 32px);right:16px;bottom:58px}}
+@media(max-width:760px){.bottomrow{flex-direction:column}.typebox{flex:none;width:100%}}
 </style>
 </head>
 <body>
@@ -218,7 +218,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 一次性设置，直播前弄好即可 -->
+  <!-- 一次性设置 + 文字输入口，并排一行 -->
+  <div class="bottomrow">
   <details class="settings" id="settingsBox">
     <summary><span class="t">⚙ 开始前设置一次（API 与知识库）</span><span id="foldHint">展开 ▾</span></summary>
 
@@ -243,22 +244,23 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <label class="toggle"><input type="checkbox" id="quietChk"> 静默提醒（关掉卡片柔光，适合对话/录像场景）</label>
     <div class="note">
       <b>语音怎么来的：</b>点「启动」后浏览器会请求麦克风权限（地址栏点允许），录音在说完停顿约0.5秒后自动切成一段，发到硅基流动用 <b>SenseVoice</b> 转成文字——这是云端识别，不依赖浏览器自带识别，国内可用。上文的 API Key 同时用于语音识别和内容生成。<br>
-      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制；文本模型推荐 Qwen 系列（开源、有免费额度）。点「启动」全程自动；不方便说话时，右下角可直接打字回车发送。
+      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制；文本模型推荐 Qwen 系列（开源、有免费额度）。点「启动」全程自动；不方便说话时，用下方「文字输入口」打字回车发送。
     </div>
     <div class="privacy">
       <b>隐私：</b>配置与 API Key 只存当前浏览器本地，本站不保存；麦克风录的声音只发往硅基流动做转写，用于生成提示。<b>控制键只有三个</b>：启动 / 暂停（关麦克风省算力）/ 结束。
     </div>
   </details>
 
-  <div class="foot">直播灵感助手 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
-</div>
-
-<div class="typebox" id="typeBox">
-  <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里</span></div>
-  <div class="tbrow">
-    <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
-    <button id="typeSend" type="button">发送</button>
+  <div class="typebox" id="typeBox">
+    <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里</span></div>
+    <div class="tbrow">
+      <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
+      <button id="typeSend" type="button">发送</button>
+    </div>
   </div>
+  </div>
+
+  <div class="foot">直播灵感助手 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
 </div>
 
 <div class="toast" id="toast"></div>
