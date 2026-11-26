@@ -97,8 +97,9 @@ body{min-height:100vh;background:
   background:rgba(255,255,255,.03);color:var(--muted);border-radius:5px;
   font-size:9px;cursor:pointer;padding:0}
 .card .sbtns button:hover{color:var(--gold);border-color:var(--gold-dim)}
-.card .sbtns button.next{width:auto;padding:0 7px;font-size:10px;
-  color:var(--gold);border-color:rgba(226,192,122,.45)}
+.panel h2 .wnum,.typebox .tbhead .wnum{width:18px;height:18px;border-radius:6px;
+  display:inline-flex;align-items:center;justify-content:center;font-style:normal;
+  font-size:11px;background:rgba(226,192,122,.2);color:var(--gold);margin-right:2px;flex:none}
 .transcript::-webkit-scrollbar,.card .body::-webkit-scrollbar{width:7px}
 .transcript::-webkit-scrollbar-track,.card .body::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:6px}
 .transcript::-webkit-scrollbar-thumb,.card .body::-webkit-scrollbar-thumb{background:rgba(226,192,122,.42);border-radius:6px}
@@ -246,32 +247,32 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 实时听见 + 文字输入口：一左一右 -->
+  <!-- 提示卡：1号台词流 + 2号名词，放上方 -->
   <div class="panel">
-    <h2>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
-    <div class="hearrow">
-      <div class="transcript" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
-      <div class="typebox" id="typeBox">
-        <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里</span></div>
-        <div class="tbrow">
-          <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
-          <button id="typeSend" type="button">发送</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 提示卡 -->
-  <div class="panel">
-    <h2>直播接力提示 <span class="n">左边台词照着念 · 右边不懂时救场</span></h2>
+    <h2>直播提词 <span class="n">左边话头扫一眼自己展开 · 右边不懂时救场</span></h2>
     <div class="cards">
       <div class="card say first" id="cardSay">
-        <div class="tag"><i>1</i>台词流（照着念，念到快完自动续写）<span class="sbtns"><button type="button" class="next" id="scriptNext" title="跳过当前，直接下一组">下一步 ▸</button><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">启动后凭长期记忆自动生成主题与首批台词，念到哪亮到哪，快念完自动往下续写</span></div>
+        <div class="tag"><i>1</i>台词流（话头提示，往下滚自动生成）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">启动后凭长期记忆生成主题和首批话头；鼠标往下滚到接近底部，会自动续写下一批</span></div>
       </div>
       <div class="card know" id="cardKnow">
         <div class="tag"><i>2</i>名词是啥（不懂时看这里）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
         <div class="body"><span class="empty">专有名词、外语词、稀有词，这里给准确定义，及时救场</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 实时听见(3号) + 文字输入(4号)：放下方 -->
+  <div class="panel">
+    <h2><i class="wnum">3</i>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
+    <div class="hearrow">
+      <div class="transcript" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
+      <div class="typebox" id="typeBox">
+        <div class="tbhead"><i class="wnum">4</i>文字输入口<span class="hint">不方便说话时打这里</span></div>
+        <div class="tbrow">
+          <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
+          <button id="typeSend" type="button">发送</button>
+        </div>
       </div>
     </div>
   </div>
@@ -546,7 +547,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">'+(id==='cardSay'?'正在凭长期记忆生成台词流…':'听你说，马上生成……')+'</span>';bd.scrollTop=0;
     });
     setControls('running');
-    $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词流会自动开篇、念到快完自动续写；说话自动转文字刷新右边名词卡。中途按「暂停」，播完按「结束」。';
+    $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词流自动开篇，鼠标往下滚到接近底部就自动续写下一批；说话自动转文字刷新名词卡。中途按「暂停」，播完按「结束」。';
     toast('正在打开麦克风，请在浏览器弹窗点「允许」');
     openMic();
     // 台词流开篇：优先用留言口预置的主题，否则凭长期记忆自发一个
@@ -696,11 +697,12 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   var scriptQueue=[],scriptIdx=-1,scriptTopic='',batchStarts=[],scriptBusy=false;
 
   // 专门写台词流的提示词：主播本人原话、可自定主题、只输出 say + topic
-  var SAY_SYS='你是直播台词流的续写引擎。你写的每一句都是主播本人下一秒要原封不动念给观众听的原话、讲演稿、内容本体——你就是主播这个人，不是助手、不是军师、不是旁白、不是出主意的人。\n'+
-    '铁律：严禁任何指导性、建议性、框架性、说明性的话，严禁主客体切换。不许写"这时候该讲点什么""接下来可以聊聊X""抛个问题给观众""建议""主播可以说""作为助手"这类东西——主播直播时只会照着念，不会看指向。①②③后面直接就是能张嘴念的具体台词，口语、完整、角度不同、带爆点能引弹幕，每句25-40字。\n'+
-    '你每次写一组3条，顺着"当前主题"和"已经说过的最后几句"往下延伸，不重复、不掉头，永远给主播新的下一段，像活人在讲课、在跟观众聊天。\n'+
-    '【跟随直播间风格】幽默场写段子和调侃的原话（直接好笑，不是"讲个段子"）；专业场写有门道、有数字、够狠的原话；情绪场写共情的原话；观点场写犀利的原话。方向指令（如"更幽默""往专业走""反转"）必须遵守。\n'+
-    '【主题可自定】没给主题时，就凭主播长期记忆自发生成一个具体、新鲜、能展开的主题；主题错了也没关系，照写，主播会自己往下滚。\n'+
+  var SAY_SYS='你是直播提词流的续写引擎。你写的是给主播扫一眼看的"话头提示"，不是逐字念的台词——像缩略版台词、提示词，把要讲的意思点出来就行，主播会自己展开成口语。\n'+
+    '写法：短句、要点式、信息密度高，每条8-18字；不要寒暄、语气词、连接词（如"你好""那么""对吧""其实呢"），不要完整口语长句，不要文艺修饰。扫一眼明白要讲什么即可，别啰嗦。\n'+
+    '视角：这些话头就是主播本人要讲的内容，不是"建议主播讲什么"。禁止"可以讲""建议""接下来聊聊""作为助手"等指导语和主客体切换。①②③后面直接是话头本身。\n'+
+    '每次写一组3条，顺着"当前主题"和"最近说过的话头"往下延伸，不重复、角度不同，每条能撑起一小段发挥。\n'+
+    '【跟随直播间风格】幽默场给梗和调侃的话头（直接是笑点，不是"讲个段子"）；专业场给有门道、有数字、够狠的要点；情绪场给共情的话头；观点场给犀利的点。方向指令（如"更幽默""往专业走""反转"）必须遵守。\n'+
+    '【主题可自定】没给主题时，凭主播长期记忆自发生成一个具体、新鲜、能展开的主题；主题错了没关系，照写，主播会自己往下滚。\n'+
     '只输出一个 JSON 对象，不要解释、不要代码块：\n'+
     '{"topic":"本次主题（4-12字）","say":"①...②...③..."}\n';
 
@@ -727,18 +729,20 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var node=bd.querySelectorAll('.ln')[scriptIdx];
     if(node){var r=node.getBoundingClientRect(),br=bd.getBoundingClientRect();bd.scrollTop+=(r.top-br.top)-6;}
   }
-  function paintScript(){
+  function paintScript(follow){
     var el=$('cardSay');if(!el)return;
     var bd=el.querySelector('.body');
+    var oldTop=bd.scrollTop;
     if(!scriptQueue.length){bd.innerHTML='<span class="empty">正在生成台词…</span>';return;}
     bd.innerHTML=scriptQueue.map(function(ln,i){
       var cls='ln'+(i===scriptIdx?' reading':'')+(scriptIdx>=0&&i<scriptIdx?' dim':'');
       return '<div class="'+cls+'">'+esc(ln)+'</div>';
     }).join('');
-    if(scriptIdx>=0)scrollToCurrent();
+    if(follow===false)bd.scrollTop=oldTop; // 滚轮追加：保持用户当前视图，新内容接在下方
+    else if(scriptIdx>=0)scrollToCurrent();
   }
   // 追加一批台词，返回这批第一行的下标
-  function appendScript(raw,topic){
+  function appendScript(raw,topic,follow){
     var lines=splitScript(raw);
     if(!lines.length)return -1;
     if(topic)scriptTopic=String(topic).trim().slice(0,40)||scriptTopic;
@@ -752,13 +756,14 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       scriptIdx=scriptIdx>=0?Math.max(0,scriptIdx-drop):-1;
       batchStarts=batchStarts.map(function(x){return x-drop;}).filter(function(x){return x>=0;});
     }
-    paintScript();
+    paintScript(follow);
     return start;
   }
   // 续写一批台词：只写台词窗，绝不碰右边名词卡
-  function generateMoreScript(reason,seedTopic){
+  function generateMoreScript(reason,seedTopic,follow){
     if(scriptBusy)return;
     if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey))return;
+    if(follow===undefined)follow=(reason!=='scroll'); // 滚轮续写保持视图，其余跟随高亮
     scriptBusy=true;
     $('genState').textContent=reason==='start'?'正在生成开篇台词…':'正在续写下一批台词…';
     var kb=CFG.knowledge?('\n【主播领域背景】'+CFG.knowledge):'';
@@ -772,7 +777,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var body={model:CFG.model,
       messages:[{role:'system',content:SAY_SYS+kb+memLine+dirLine},
                 {role:'user',content:'请写出主播接下来要念的一组台词（3条）。'+lead+topicLine+seedLine+tailLine}],
-      temperature:0.9,stream:false,max_tokens:240};
+      temperature:0.9,stream:false,max_tokens:200};
     var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
     var x=new XMLHttpRequest();
     x.open('POST',url,true);
@@ -794,7 +799,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
         if(Array.isArray(say))say=say.join('');
         if(!String(say).trim())throw new Error('nosay');
         var newTopic=d&&d.topic?String(d.topic).trim():'';
-        var start=appendScript(say,newTopic);
+        var start=appendScript(say,newTopic,follow);
         if(reason==='start'){scriptIdx=start>=0?start:0;paintScript();}
         else if(reason==='next'&&start>=0){scriptIdx=start;paintScript();}
         $('genState').textContent=reason==='start'?('已开篇 · '+scriptTopic):('已续写 · 第 '+(scriptIdx+1)+' 条');
@@ -821,42 +826,28 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     }
     return false;
   }
-  // "下一步"：跳过当前组剩余台词，跳到下一组；没有下一组就立刻生成
-  function nextScript(){
-    if(!started){toast('先点启动');return;}
-    if(scriptBusy){toast('正在生成下一组，稍等');return;}
-    var nextStart=null,i;
-    for(i=0;i<batchStarts.length;i++){
-      if(batchStarts[i]>scriptIdx){nextStart=batchStarts[i];break;}
-    }
-    if(nextStart!==null){
-      scriptIdx=nextStart;paintScript();
-      $('genState').textContent='已跳到下一组 · 第 '+(scriptIdx+1)+' 条';
-      if(scriptQueue.length-scriptIdx<=2)generateMoreScript('near-end');
-    }else{
-      generateMoreScript('next');
-    }
-  }
-  if($('scriptNext'))$('scriptNext').addEventListener('click',nextScript);
+  // 滚轮往下滚到接近底部：自动生成下一批接上，形成无限滚动（取代"下一步"按钮）
+  (function(){
+    var bd=$('cardSay')&&$('cardSay').querySelector('.body');
+    if(!bd)return;
+    bd.addEventListener('scroll',function(){
+      if(!started||paused||scriptBusy||!scriptQueue.length)return;
+      var max=bd.scrollHeight-bd.clientHeight;
+      if(max>0&&bd.scrollTop>=max-28)generateMoreScript('scroll','',false);
+    });
+  })();
 
   /* AI 生成：全自动，无按钮 */
-  var SYS='你在为主播做实时直播提词。记住三条铁律，尤其第二条：\n'+
-    '【窗口分工】0号=实时听见（主播说的话，不用你管）；1号=台词本身，是主播本人要张嘴念出去的原话、讲演稿、内容本体，是最重要的窗口，放在左边；2号=知识盲区补充，围绕当下话题的关键词及周边，补主播可能不懂的定义、原则、理论、基础事实——专有名词的定义永远是第一位，及时救场，稳、准、克制，放在右边，只有遇到不懂的词才看它。\n'+
-    '【一号最重要·你就是主播本人】say 窗口不是助手、不是军师、不是旁白、不是提建议的人——它就是这个主播本人，是执行者本人，是内容本体、台词本身。你写的每一句，都是主播下一秒要原封不动说给观众听的话。严禁任何指导性、建议性、指向性语言，严禁切换主客体：不许写“这时候应该讲点什么”“应该抛出什么话题”“可以聊聊”“建议你”“主播可以说”“接下来你可以”“这里不妨”“作为一个助手我认为”这类废话——这些全都错，因为主播直播时根本不会去看内容的指向，他只会照着念台词。你要彻底代入主播这个人的身份，用他的口吻、他的语气，直接把该说的话写出来。say 就是讲演稿本身，不是关于讲演稿的说明。\n'+
-    '【一号台词必须跟随直播间风格】先判断直播间流派（幽默风趣/专业硬核/情绪共鸣/观点交锋/闲聊陪伴），再用主播本人的口吻把台词写出来：幽默场就写出段子和调侃的原话（直接好笑，不是“讲个段子”）；专业场就写出有门道、有数字、够狠的原话；情绪场就写出共情的原话。台词本身要带爆点、能引弹幕，但一律用“主播直接说出口的句子”呈现，不写任何关于这句话的点评或指引。\n'+
-    '【打字=主播的暗中指挥权】主播打字输入时，往往是当面不好意思说、或想扭转直播间方向。如果输入是方向性指令（如“幽默一点”“往专业走”“反转一下”“聊回刚才那个”“别提这个了”“多抛梗”），就在 dir 字段用一句话写清新方向（如“更幽默、多抛梗、允许自嘲”），并且本轮 know/say 立刻按新方向走；方向一旦设定会被记住，持续影响后续所有输出，直到新指令覆盖。如果打字只是普通内容（想让你解释某个词或话题），dir 留空字符串。\n'+
-    '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝留言里提到、主播照着念出来的词（如“有人问 WorkBuddy”“粉丝说 API 是啥”）。\n'+
-    ' - 只要出现主播可能不了解的名词，就必须在 know 里给出准确定义：先用标准术语说出本来的专业含义，再用半句浅显话点明。宁可短，也不要编跟真实定义偏差大的类比。哪怕主播没明说“这是啥”，只要这词有解释价值就主动给。一次多个名词，挑最容易让主播卡住的那个讲。\n'+
-    ' - 例子：主播说“API”，know 写：“API（应用程序编程接口）：一套让不同软件按统一规则互相调用、交换数据的接口；通俗说就是软件之间按格式提请求、拿结果的窗口。”主播念“有人提 WorkBuddy”，know 写：“WorkBuddy 是一款能查资料、写文档、做表格、执行各类任务的 AI 工作助手；通俗说就是随身替你干活的 AI 同事。”\n'+
-    '【名词纠错】语音识别常把名词听错（中英混说、缩写、谐音），如把 NPD 听成“MPD/NP的”。结合语境推断主播真正想说的词：听到“NPD是啥”要讲自恋型人格障碍，而不是小米快充。拿不准时用“你说的应该是X”点明，绝不讲错东西。\n'+
-    '两块内容性质完全不同，别写串：know 是“补充给主播的知识”，say 是“主播要说出口的台词本身”。\n'+
-    ' - know（2号·知识盲区补充，右边）：围绕当下话题关键词及周边，补主播可能不懂的定义和基础事实；专有名词定义放第一位——先用标准术语给准确含义，再用半句浅显话点明，宁可短也别编偏差大的类比；60 字以内、最多两句。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
-    ' - say（1号·台词本身，至关重要，左边）：直接写主播本人要念的台词原文，就像主播自己在讲课、在跟观众聊天，你就是他本人，不是在给他出主意。严禁说明性/概括性/框架性标签，严禁“这时候该讲点什么/该提个什么话题/可以聊聊X/建议/主播可以说/接下来你可以/这里不妨/作为助手”等任何指导和主客体切换——这些是一号最容易犯的错，一律不许出现。①②③后面直接就是能张嘴念的具体台词，每句完整、具体、角度不同；80 字以内。\n'+
-    ' - say 正例：主播说“API”，say 写：“①你每次点外卖、刷地图，背后都在偷偷调 API。②哪天接口一换，App 根本不用重写，只改个对接方式就行。③你们最烦哪两个 App 之间传不过数据？”——三句全是主播本人的台词，没有一个指导词。\n'+
-    ' - say 反例（禁止这样写）：“这时候可以讲讲 API 的用处”“建议抛出一个问题给观众”“作为助手我认为接下来该……”——这些是站在旁边指点，全错。\n'+
-    '【极简·提速】每块都要短、口语、一屏读完；know 60 字内，say 2-3 句台词、80 字内。\n'+
+  var SYS='你在给主播做实时直播提词。本轮你只负责两件事：右边的"名词解释"(know) 和 方向指令(dir)。台词流由另一套独立系统负责，本轮不要写台词。\n'+
+    '【窗口位置】1号=台词流（上方左，缩略版话头，不用你管）；2号=名词解释（上方右，你负责）；3号=实时听见（下方，主播说的话）；4号=文字输入口（下方，主播打字指挥）。\n'+
+    '【打字=主播的暗中指挥权】主播打字输入时，往往是当面不好意思说、或想扭转直播间方向。如果输入是方向性指令（如"幽默一点""往专业走""反转一下""聊回刚才那个""别提这个了""多抛梗"），就在 dir 字段用一句话写清新方向（如"更幽默、多抛梗、允许自嘲"），并且本轮 know 立刻按新方向走；方向一旦设定会被记住，持续影响后续所有输出，直到新指令覆盖。如果打字只是普通内容（想让你解释某个词或话题），dir 留空字符串。\n'+
+    '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝留言里提到、主播照着念出来的词（如"有人问 WorkBuddy""粉丝说 API 是啥"）。\n'+
+    ' - 只要出现主播可能不了解的名词，就必须在 know 里给出准确定义：先用标准术语说出本来的专业含义，再用半句浅显话点明。宁可短，也不要编跟真实定义偏差大的类比。哪怕主播没明说"这是啥"，只要这词有解释价值就主动给。一次多个名词，挑最容易让主播卡住的那个讲。\n'+
+    ' - 例子：主播说"API"，know 写："API（应用程序编程接口）：一套让不同软件按统一规则互相调用、交换数据的接口；通俗说就是软件之间按格式提请求、拿结果的窗口。"主播念"有人提 WorkBuddy"，know 写："WorkBuddy 是一款能查资料、写文档、做表格、执行各类任务的 AI 工作助手；通俗说就是随身替你干活的 AI 同事。"\n'+
+    '【名词纠错】语音识别常把名词听错（中英混说、缩写、谐音），如把 NPD 听成"MPD/NP的"。结合语境推断主播真正想说的词：听到"NPD是啥"要讲自恋型人格障碍，而不是小米快充。拿不准时用"你说的应该是X"点明，绝不讲错东西。\n'+
+    '【know 格式】围绕当下话题关键词及周边，补主播可能不懂的定义和基础事实；专有名词定义第一位——先标准术语给准确含义，再半句浅显话点明，宁可短也别编偏差大的类比；60 字以内、最多两句。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
     '只输出一个 JSON 对象，不要解释、不要代码块标记：\n'+
-    '{"know":"...","say":"...","dir":""}\n';
+    '{"know":"...","dir":""}\n';
 
   // 说完即触发：收到语音后重置计时，说完停约0.5秒（切段延时）立即生成，不设字数门槛、不加节流。
   function scheduleGenerate(manual){
