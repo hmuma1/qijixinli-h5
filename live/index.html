@@ -83,6 +83,10 @@ body{min-height:100vh;background:
 .card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
 .card.idea .tag{color:var(--cyan)} .card.idea .tag i{background:rgba(127,201,196,.16)}
 .card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
+.card.know.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
+  box-shadow:inset 0 0 30px rgba(226,192,122,.04)}
+.card.know.first .tag{color:var(--gold)}
+.card.know.first .tag i{background:rgba(226,192,122,.2);color:var(--gold)}
 .card.save .tag{color:#c9a7e0} .card.save .tag i{background:rgba(201,167,224,.16)}
 .card.flash::after{content:"";position:absolute;inset:0;pointer-events:none;
   border-radius:16px;animation:flash 1.4s ease-out forwards}
@@ -173,23 +177,23 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   <!-- 提示卡 -->
   <div class="panel">
-    <h2>实时提示 <span class="n">听到即生成，没有固定台词</span></h2>
+    <h2>实时提示 <span class="n">直接照着说的内容，不是让你自己填的灵感</span></h2>
     <div class="cards">
+      <div class="card know first" id="cardKnow">
+        <div class="tag"><i>知</i>知识点 · 名词是啥（最重要，直接讲）</div>
+        <div class="body"><span class="empty">你说的名词，这里用大白话直接讲清楚是什么，照着说就行</span></div>
+      </div>
       <div class="card say" id="cardSay">
-        <div class="tag"><i>续</i>顺着说 · 接住这句</div>
-        <div class="body"><span class="empty">启动后自动生成</span></div>
+        <div class="tag"><i>续</i>顺着说 · 直接接下去讲</div>
+        <div class="body"><span class="empty">接住这句，给你下一句能直接说出口的话</span></div>
       </div>
       <div class="card idea" id="cardIdea">
-        <div class="tag"><i>脑</i>延展脑洞 · 新角度</div>
-        <div class="body"><span class="empty">会从你说的话里长出新内容</span></div>
-      </div>
-      <div class="card know" id="cardKnow">
-        <div class="tag"><i>知</i>知识点 · 可能你也没注意</div>
-        <div class="body"><span class="empty">聊到具体事物时补上干货</span></div>
+        <div class="tag"><i>反</i>反着说 · 换个角度讲</div>
+        <div class="body"><span class="empty">同一件事的反面、另一面、不同观点，直接给你说法</span></div>
       </div>
       <div class="card save" id="cardSave">
-        <div class="tag"><i>救</i>卡壳救场 · 过渡句</div>
-        <div class="body"><span class="empty">没话说时给个自然转折</span></div>
+        <div class="tag"><i>展</i>知识扩展 · 多讲一层</div>
+        <div class="body"><span class="empty">围绕这个名词再补一层有趣的内容、背景、具体数字</span></div>
       </div>
     </div>
   </div>
@@ -423,17 +427,20 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   });
 
   /* AI 生成：全自动，无按钮 */
-  var SYS='你是直播时的实时灵感助手，坐在主播耳边小声提醒。主播会把它刚说的一段话发给你，你要立刻顺着这段话，给出四样东西，帮主播把话接下去、讲得更丰富、不冷场。\n'+
-    '严格要求：\n'+
-    '1) 全部用中文，口语化、接地气，像朋友在旁边提醒，不要书面腔、不要啰嗦，每条尽量短。\n'+
-    '2) 严格根据主播这句话的内容来生成，不要套空话、不要固定模板，每次都要贴着当下的话。\n'+
-    '3) 四块内容：\n'+
-    '   - say（顺着说）：接住这句，给主播下一句可以直接说的话，1-2句，自然。\n'+
-    '   - idea（延展脑洞）：由这话往外长出的新角度、新话题、新玩法，2-3条，短。\n'+
-    '   - know（知识点）：与这话相关的具体知识、数据、背景、品牌、冷知识，2-3条，具体有用；主播可能不知道，你替他先想到。若提到某样东西（芯片、手机等），补上关键参数、主流品牌、当下趋势等干货。没有可靠内容就写"这句偏感受，可聊背后的故事"。\n'+
-    '   - save（卡壳救场）：一个自然的过渡句或转折，没话说时能用，1句。\n'+
-    '4) 只输出一个 JSON 对象，不要解释、不要代码块标记：\n'+
-    '{"say":"...","idea":"1. ...\\n2. ...","know":"1. ...\\n2. ...","save":"..."}\n';
+  var SYS='你是主播身边的实时全能直播助手，不是灵感提示器。你的职责是：主播不知道的，你知道；粉丝问的，你能让主播立刻答上来。主播会把他刚说的话发给你，你要基于这句话给出四块"能直接开口说出口"的内容。\n'+
+    '最高原则：给内容，不给灵感。禁止出现"你可以聊聊X""建议讲讲X""从X角度展开"这类把问题抛回给主播的句子——主播自己啥都不知道，他需要的是你把话直接写好递到嘴边。每一条都必须是主播张嘴就能照着念的完整内容。\n'+
+    '【名词纠错，极其重要】语音识别经常把名词听错，尤其中英文混说、缩写、生僻词，例如把 NPD 听成"MPD/NP的"、把某个专业词听成谐音。你必须结合直播语境推断主播真正想说的词：\n'+
+    ' - 一旦主播提到或粉丝问到某个名词、缩写、术语、品牌、概念（比如 NPD、某芯片、某心理学术语），就在 know 里直接用大白话讲清"这是什么"，让主播能马上回答粉丝"X是啥"。\n'+
+    ' - 例子：听到"NPD是啥"，要判断主播说的是自恋型人格障碍(Narcissistic Personality Disorder)，know 写："NPD 是自恋型人格障碍，一种以过度自我膨胀、极度需要被崇拜、缺乏共情为特征的心理状态，日常说“很自恋”的程度远不到这个诊断。”而不是去讲“小米快充MPD”。\n'+
+    ' - 拿不准时，选语境里最可能的那个词来解释，并在开头用"你说的应该是X"点明，绝不假装听懂却讲错东西。\n'+
+    '四块内容（全部是能直接说出口的话，不是要点罗列、不是灵感）：\n'+
+    ' - know（知识点·最重要，放最上面）：主播刚说/粉丝刚问的名词是什么，用普通人一听就懂的大白话直接下定义、讲明白，1-3句，让主播照着就能回答。没有明确名词时，就给这句话涉及的关键事实或一个反常识的冷知识，同样要具体、能直接讲。\n'+
+    ' - say（顺着说）：接住主播这句，写好他下一句可以直接说的话，1-2句，口语、自然。\n'+
+    ' - idea（反着说）：同一件事的反面、另一面、或一个不同/相反的观点，写成主播能直接讲出来的话，1-2句。\n'+
+    ' - save（知识扩展）：围绕这个名词或话题再补一层主播能直接讲的内容——背景、由来、具体数字、常见误区、有趣细节，1-3句，具体有用。\n'+
+    '语气：中文、口语、像懂行的朋友凑耳边把话写好了递过来，简短有力。不要书面腔、不要分析语气、不要出现"建议/可以/不如"这类词。\n'+
+    '只输出一个 JSON 对象，不要解释、不要代码块标记：\n'+
+    '{"know":"...","say":"...","idea":"...","save":"..."}\n';
 
   // 说完即触发：不设字数门槛。收到语音后重置计时，停说约1.2秒自动生成；
   // 若一直不停地说，也用"距上次生成≥6秒"兜底，保证提示卡持续刷新。
@@ -499,13 +506,14 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var m=cleaned.match(/\{[\s\S]*\}/);
       if(m){try{data=JSON.parse(m[0]);}catch(e2){}}
     }
-    var map=[['cardSay',data&&data.say],['cardIdea',data&&(data.idea||data.ideas)],
-      ['cardKnow',data&&(data.know||data.knowledge||data.points)],
-      ['cardSave',data&&(data.save||data.rescue)]];
+    var map=[['cardKnow',data&&(data.know||data.knowledge||data.point||data.points)],
+      ['cardSay',data&&(data.say||data.follow)],
+      ['cardIdea',data&&(data.idea||data.ideas||data.reverse)],
+      ['cardSave',data&&(data.save||data.rescue||data.expand||data.extend)]];
     var got=false;
     map.forEach(function(p){
       var v=p[1];
-      if(Array.isArray(v))v=v.map(function(x,i){return (i+1)+'. '+x;}).join('\n');
+      if(Array.isArray(v))v=v.join('\n');
       if(v&&String(v).trim()){
         $(p[0]).querySelector('.body').textContent=String(v).trim();got=true;
         if(!CFG.quiet){var el=$(p[0]);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
