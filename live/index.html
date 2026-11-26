@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>直播灵感助手 · 一键启动 全程自动</title>
-<meta name="description" content="点一次启动，之后实时听、实时生成延展与知识点的私密直播助手">
+<title>话到嘴边 · 一键启动 全程自动</title>
+<meta name="description" content="点一次启动，实时听、实时生成台词流与知识点提醒的私密直播助手">
 <style>
 :root{
   --bg:#07121d; --bg2:#0b1b2b; --panel:rgba(18,36,52,.78);
@@ -88,13 +88,17 @@ body{min-height:100vh;background:
   height:100px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
   scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .card .empty{color:#5c6f7a;font-size:13px}
-.card .body .reading{background:rgba(226,192,122,.24);border-radius:5px;
-  padding:1px 4px;color:#fff;box-shadow:inset 0 0 0 1px rgba(226,192,122,.45)}
+.card .body .ln{padding:1px 5px;margin:0 0 4px;border-radius:5px}
+.card .body .ln.dim{opacity:.6}
+.card .body .ln.reading{background:rgba(226,192,122,.24);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(226,192,122,.45)}
 .card .sbtns{margin-left:auto;display:flex;gap:3px;flex:none}
 .card .sbtns button{width:17px;height:17px;line-height:1;border:1px solid var(--border);
   background:rgba(255,255,255,.03);color:var(--muted);border-radius:5px;
   font-size:9px;cursor:pointer;padding:0}
 .card .sbtns button:hover{color:var(--gold);border-color:var(--gold-dim)}
+.card .sbtns button.next{width:auto;padding:0 7px;font-size:10px;
+  color:var(--gold);border-color:rgba(226,192,122,.45)}
 .transcript::-webkit-scrollbar,.card .body::-webkit-scrollbar{width:7px}
 .transcript::-webkit-scrollbar-track,.card .body::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:6px}
 .transcript::-webkit-scrollbar-thumb,.card .body::-webkit-scrollbar-thumb{background:rgba(226,192,122,.42);border-radius:6px}
@@ -206,7 +210,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   <div class="top">
     <div class="brand">
-      <span class="dot"></span><h1>直播<span>灵感助手</h1>
+      <span class="dot"></span><h1>话到<span>嘴边</h1>
       <p>一键启动 · 全程自动听、自动写，直播中无需任何操作</p>
     </div>
   </div>
@@ -262,8 +266,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <h2>直播接力提示 <span class="n">左边台词照着念 · 右边不懂时救场</span></h2>
     <div class="cards">
       <div class="card say first" id="cardSay">
-        <div class="tag"><i>1</i>台词（直接照着念，读到哪高亮到哪）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">主播本人的台词，念到哪亮到哪，念完整组自动换下一组</span></div>
+        <div class="tag"><i>1</i>台词流（照着念，念到快完自动续写）<span class="sbtns"><button type="button" class="next" id="scriptNext" title="跳过当前，直接下一组">下一步 ▸</button><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">启动后凭长期记忆自动生成主题与首批台词，念到哪亮到哪，快念完自动往下续写</span></div>
       </div>
       <div class="card know" id="cardKnow">
         <div class="tag"><i>2</i>名词是啥（不懂时看这里）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
@@ -304,7 +308,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </details>
 
-  <div class="foot">直播灵感助手 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
+  <div class="foot">话到嘴边 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -535,16 +539,20 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     }
     if(started)return;
     started=true;paused=false;pendingText='';failCount=0;liveDir='';lastTopic='';
-    disarmGuard();
+    resetScript();
     $('dirTag').style.display='none';
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
-      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">听你说，马上生成……</span>';bd.scrollTop=0;
+      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">'+(id==='cardSay'?'正在凭长期记忆生成台词流…':'听你说，马上生成……')+'</span>';bd.scrollTop=0;
     });
     setControls('running');
-    $('startInfo').innerHTML='<b>已启动，全程自动。</b>说话自动转文字、说完停一下提示卡就刷新；中途按「暂停」，播完按「结束」。';
+    $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词流会自动开篇、念到快完自动续写；说话自动转文字刷新右边名词卡。中途按「暂停」，播完按「结束」。';
     toast('正在打开麦克风，请在浏览器弹窗点「允许」');
     openMic();
+    // 台词流开篇：优先用留言口预置的主题，否则凭长期记忆自发一个
+    var seed=$('typeInput')?$('typeInput').value.trim():'';
+    if(seed)$('typeInput').value='';
+    generateMoreScript('start',seed);
   });
 
   // 暂停 / 继续（pauseBtn）
@@ -568,7 +576,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   // 结束（stopBtn）
   $('stopBtn').addEventListener('click',function(){
     var justSaid=(transcriptFinal||'').trim();
-    started=false;paused=false;disarmGuard();
+    started=false;paused=false;resetScript();
     if(genTimer){clearTimeout(genTimer);genTimer=null;}
     closeMic();
     pcmChunks=[];pendingText='';transcriptFinal='';transcriptInterim='';failCount=0;
@@ -682,55 +690,154 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};saveMem();renderMem();toast('长期记忆已清空');
   });
 
-  /* ===== 跟读保护主播台词：念台词时麦克风听到的是台词本身，不该触发生成把自己冲掉 ===== */
-  var guardOn=false,guardLines=[],guardRaw='',guardIdx=-1;
+  /* ===== 一号台词窗：无限滚动台词流 =====
+     队列只增不减（念到快完自动续写下一批），当前行高亮、可回看可预览，
+     "下一步"跳过不想念的当前组；不撑高页面，固定高度内部滚动。 */
+  var scriptQueue=[],scriptIdx=-1,scriptTopic='',batchStarts=[],scriptBusy=false;
+
+  // 专门写台词流的提示词：主播本人原话、可自定主题、只输出 say + topic
+  var SAY_SYS='你是直播台词流的续写引擎。你写的每一句都是主播本人下一秒要原封不动念给观众听的原话、讲演稿、内容本体——你就是主播这个人，不是助手、不是军师、不是旁白、不是出主意的人。\n'+
+    '铁律：严禁任何指导性、建议性、框架性、说明性的话，严禁主客体切换。不许写"这时候该讲点什么""接下来可以聊聊X""抛个问题给观众""建议""主播可以说""作为助手"这类东西——主播直播时只会照着念，不会看指向。①②③后面直接就是能张嘴念的具体台词，口语、完整、角度不同、带爆点能引弹幕，每句25-40字。\n'+
+    '你每次写一组3条，顺着"当前主题"和"已经说过的最后几句"往下延伸，不重复、不掉头，永远给主播新的下一段，像活人在讲课、在跟观众聊天。\n'+
+    '【跟随直播间风格】幽默场写段子和调侃的原话（直接好笑，不是"讲个段子"）；专业场写有门道、有数字、够狠的原话；情绪场写共情的原话；观点场写犀利的原话。方向指令（如"更幽默""往专业走""反转"）必须遵守。\n'+
+    '【主题可自定】没给主题时，就凭主播长期记忆自发生成一个具体、新鲜、能展开的主题；主题错了也没关系，照写，主播会自己往下滚。\n'+
+    '只输出一个 JSON 对象，不要解释、不要代码块：\n'+
+    '{"topic":"本次主题（4-12字）","say":"①...②...③..."}\n';
+
   function normTxt(x){return String(x||'').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g,'').toLowerCase();}
   function coverRatio(a,b){ // a 的字符有多大比例能在 b 里找到（按计数，防重复字虚高）
     var pool=b.split(''),hit=0,i,k;
     for(i=0;i<a.length;i++){k=pool.indexOf(a.charAt(i));if(k>=0){hit++;pool.splice(k,1);}}
     return a.length?hit/a.length:0;
   }
-  function splitLines(raw){
+  function splitScript(raw){
     var parts=String(raw||'').split(/(?=[①②③④⑤⑥⑦⑧⑨⑩])/).map(function(x){return x.trim();}).filter(Boolean);
-    return parts.length?parts:[String(raw||'')];
+    if(parts.length<2){ // 没用圈号时按换行拆
+      parts=String(raw||'').split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);
+    }
+    return parts;
   }
-  function paintGuard(){
+  function resetScript(){
+    scriptQueue=[];scriptIdx=-1;scriptTopic='';batchStarts=[];scriptBusy=false;
+    var el=$('cardSay');
+    if(el)el.querySelector('.body').innerHTML='<span class="empty">启动后凭长期记忆自动生成主题与首批台词，念到哪亮到哪，快念完自动往下续写</span>';
+  }
+  function scrollToCurrent(){
+    var bd=$('cardSay')&&$('cardSay').querySelector('.body');if(!bd)return;
+    var node=bd.querySelectorAll('.ln')[scriptIdx];
+    if(node){var r=node.getBoundingClientRect(),br=bd.getBoundingClientRect();bd.scrollTop+=(r.top-br.top)-6;}
+  }
+  function paintScript(){
     var el=$('cardSay');if(!el)return;
     var bd=el.querySelector('.body');
-    if(!guardOn){bd.textContent=guardRaw||'';return;}
-    bd.innerHTML=guardLines.map(function(ln,i){
-      return '<span'+(i===guardIdx?' class="reading"':'')+'>'+esc(ln)+'</span>';
-    }).join('\n');
+    if(!scriptQueue.length){bd.innerHTML='<span class="empty">正在生成台词…</span>';return;}
+    bd.innerHTML=scriptQueue.map(function(ln,i){
+      var cls='ln'+(i===scriptIdx?' reading':'')+(scriptIdx>=0&&i<scriptIdx?' dim':'');
+      return '<div class="'+cls+'">'+esc(ln)+'</div>';
+    }).join('');
+    if(scriptIdx>=0)scrollToCurrent();
   }
-  function armGuard(raw){
-    guardRaw=String(raw||'').trim();
-    guardLines=splitLines(guardRaw);guardIdx=-1;
-    guardOn=guardLines.length>0&&guardRaw.length>0;
-    paintGuard();
+  // 追加一批台词，返回这批第一行的下标
+  function appendScript(raw,topic){
+    var lines=splitScript(raw);
+    if(!lines.length)return -1;
+    if(topic)scriptTopic=String(topic).trim().slice(0,40)||scriptTopic;
+    var start=scriptQueue.length;
+    batchStarts.push(start);
+    lines.forEach(function(ln){scriptQueue.push(ln);});
+    // 防止队列无限膨胀：只留最近 60 条，同步修正高亮下标与批次起点
+    if(scriptQueue.length>60){
+      var drop=scriptQueue.length-60;
+      scriptQueue=scriptQueue.slice(drop);
+      scriptIdx=scriptIdx>=0?Math.max(0,scriptIdx-drop):-1;
+      batchStarts=batchStarts.map(function(x){return x-drop;}).filter(function(x){return x>=0;});
+    }
+    paintScript();
+    return start;
   }
-  function disarmGuard(){guardOn=false;guardIdx=-1;guardRaw='';guardLines=[];}
-  // ASR 文本进来：返回 true=正在念台词(抑制生成)；false=新内容(放行生成)
+  // 续写一批台词：只写台词窗，绝不碰右边名词卡
+  function generateMoreScript(reason,seedTopic){
+    if(scriptBusy)return;
+    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey))return;
+    scriptBusy=true;
+    $('genState').textContent=reason==='start'?'正在生成开篇台词…':'正在续写下一批台词…';
+    var kb=CFG.knowledge?('\n【主播领域背景】'+CFG.knowledge):'';
+    var memLine=MEM.profile?('\n【关于这位主播（自然沿用，别生硬复述）】'+MEM.profile):'';
+    var dirLine=liveDir?('\n【当前方向，必须遵守】'+liveDir):'';
+    var topicLine=scriptTopic?('\n【当前台词主题，沿着它继续往下延伸】'+scriptTopic):'';
+    var tail=scriptQueue.slice(-3).join(' ');
+    var tailLine=tail?('\n【已经说过的最后几句，接着往下写，别重复】'+tail):'';
+    var seedLine=seedTopic?('\n【本次指定主题，优先用它开篇】'+seedTopic):'';
+    var lead=reason==='start'?'这是开场。':(reason==='next'?'跳过当前这组，换个角度往下写。':'接着主题和上面的台词继续往下延伸。');
+    var body={model:CFG.model,
+      messages:[{role:'system',content:SAY_SYS+kb+memLine+dirLine},
+                {role:'user',content:'请写出主播接下来要念的一组台词（3条）。'+lead+topicLine+seedLine+tailLine}],
+      temperature:0.9,stream:false,max_tokens:240};
+    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
+    var x=new XMLHttpRequest();
+    x.open('POST',url,true);
+    x.setRequestHeader('Content-Type','application/json');
+    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
+    x.timeout=45000;
+    x.onreadystatechange=function(){
+      if(x.readyState!==4)return;
+      scriptBusy=false;
+      if(x.status<200||x.status>=300){$('genState').textContent='台词续写失败 · 等下句再续';return;}
+      try{
+        var j=JSON.parse(x.responseText);
+        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+        if(!c)throw new Error('empty');
+        var cl=c.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+        var d=null;
+        try{d=JSON.parse(cl);}catch(e){var m=cl.match(/\{[\s\S]*\}/);if(m){try{d=JSON.parse(m[0]);}catch(e2){}}}
+        var say=d&&(d.say||d.lines||d.script)||'';
+        if(Array.isArray(say))say=say.join('');
+        if(!String(say).trim())throw new Error('nosay');
+        var newTopic=d&&d.topic?String(d.topic).trim():'';
+        var start=appendScript(say,newTopic);
+        if(reason==='start'){scriptIdx=start>=0?start:0;paintScript();}
+        else if(reason==='next'&&start>=0){scriptIdx=start;paintScript();}
+        $('genState').textContent=reason==='start'?('已开篇 · '+scriptTopic):('已续写 · 第 '+(scriptIdx+1)+' 条');
+      }catch(e){$('genState').textContent='台词续写失败 · 等下句再续';}
+    };
+    x.ontimeout=function(){scriptBusy=false;$('genState').textContent='台词续写超时 · 等下句再续';};
+    x.send(JSON.stringify(body));
+  }
+  // ASR 文本进来：念台词→只推进高亮+临近末尾自动续写，返回 true 抑制生成；新话题返回 false 放行
   function onGuardText(t){
-    if(!guardOn)return false;
+    if(!scriptQueue.length)return false;
     var a=normTxt(t);
-    if(a.length<2)return true; // 过短的识别片段，忽略
+    if(a.length<2)return true;
     var best=-1,bestScore=0,i,L,sc;
-    for(i=0;i<guardLines.length;i++){
-      L=normTxt(guardLines[i]);if(!L)continue;
+    for(i=0;i<scriptQueue.length;i++){
+      L=normTxt(scriptQueue[i]);if(!L)continue;
       sc=Math.max(coverRatio(a,L),coverRatio(L,a)*0.85);
       if(sc>bestScore){bestScore=sc;best=i;}
     }
-    if(bestScore>=0.45){ // 判定为在念稿：只推进高亮，不生成
-      if(best!==guardIdx){
-        guardIdx=best;paintGuard();
-        var bd=$('cardSay').querySelector('.body');bd.scrollTop=0;
-        $('genState').textContent='跟读中 · 第 '+(guardIdx+1)+' 条';
-      }
+    if(bestScore>=0.45){
+      if(best!==scriptIdx){scriptIdx=best;paintScript();$('genState').textContent='跟读中 · 第 '+(scriptIdx+1)+' 条';}
+      if(scriptQueue.length-scriptIdx<=2)generateMoreScript('near-end'); // 快念完→自动预生成下一批接上
       return true;
     }
-    disarmGuard(); // 不是台词内容，是新话题 → 解除保护、放行生成
     return false;
   }
+  // "下一步"：跳过当前组剩余台词，跳到下一组；没有下一组就立刻生成
+  function nextScript(){
+    if(!started){toast('先点启动');return;}
+    if(scriptBusy){toast('正在生成下一组，稍等');return;}
+    var nextStart=null,i;
+    for(i=0;i<batchStarts.length;i++){
+      if(batchStarts[i]>scriptIdx){nextStart=batchStarts[i];break;}
+    }
+    if(nextStart!==null){
+      scriptIdx=nextStart;paintScript();
+      $('genState').textContent='已跳到下一组 · 第 '+(scriptIdx+1)+' 条';
+      if(scriptQueue.length-scriptIdx<=2)generateMoreScript('near-end');
+    }else{
+      generateMoreScript('next');
+    }
+  }
+  if($('scriptNext'))$('scriptNext').addEventListener('click',nextScript);
 
   /* AI 生成：全自动，无按钮 */
   var SYS='你在为主播做实时直播提词。记住三条铁律，尤其第二条：\n'+
@@ -807,6 +914,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
           $('dirTag').textContent='当前风格：'+liveDir;
           $('dirTag').style.display='inline-block';
           toast('方向已调整：'+liveDir);
+          generateMoreScript('next'); // 打字暗中指挥：台词流也立刻按新方向续写
         }else{
           lastTopic=text.slice(0,120);
         }
@@ -826,19 +934,15 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var m=cleaned.match(/\{[\s\S]*\}/);
       if(m){try{data=JSON.parse(m[0]);}catch(e2){}}
     }
-    var map=[['cardKnow',data&&(data.know||data.knowledge||data.point||data.points)],
-      ['cardSay',data&&(data.say||data.follow)]];
+    // 一号台词窗已升级为独立无限滚动台词流，这里只负责右边二号名词卡，绝不再覆盖台词
+    var v=data&&(data.know||data.knowledge||data.point||data.points);
+    if(Array.isArray(v))v=v.join('\n');
     var got=false;
-    map.forEach(function(p){
-      var v=p[1];
-      if(Array.isArray(v))v=v.join('\n');
-      if(v&&String(v).trim()){
-        var bd=$(p[0]).querySelector('.body');bd.textContent=String(v).trim();bd.scrollTop=0;got=true;
-        if(p[0]==='cardSay')armGuard(String(v).trim()); // 台词就绪，进入跟读保护
-        if(!CFG.quiet){var el=$(p[0]);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
-      }
-    });
-    if(!got){$('cardSay').querySelector('.body').textContent=cleaned;disarmGuard();}
+    if(v&&String(v).trim()){
+      var bd=$('cardKnow').querySelector('.body');bd.textContent=String(v).trim();bd.scrollTop=0;got=true;
+      if(!CFG.quiet){var el=$('cardKnow');el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+    }
+    if(!got){$('cardKnow').querySelector('.body').textContent=cleaned;}
     return data;
   }
 
@@ -850,7 +954,6 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       toast('请先在设置里填 API Key');$('settingsBox').open=true;return;
     }
     if(busy){toast('正在生成，稍等一下');return;}
-    disarmGuard(); // 打字=主播暗中指挥，立刻覆盖念稿状态
     pendingText=t;
     $('typeInput').value='';
     generate(true);
@@ -862,7 +965,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   });
 
   // 提示卡右上角 ▲▼：点一下在固定高度内翻一屏
-  Array.prototype.forEach.call(document.querySelectorAll('.sbtns button'),function(btn){
+  Array.prototype.forEach.call(document.querySelectorAll('.sbtns button[data-sc]'),function(btn){
     btn.addEventListener('click',function(){
       var body=$(this.getAttribute('data-sc')).querySelector('.body');
       body.scrollTop+=(this.getAttribute('data-dir')==='1'?1:-1)*Math.max(36,body.clientHeight*0.8);
