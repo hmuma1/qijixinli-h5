@@ -41,15 +41,19 @@ body{min-height:100vh;background:
 .startrow{display:flex;align-items:center;gap:18px;background:var(--panel);
   border:1px solid var(--border);border-radius:20px;padding:18px 22px;margin-bottom:16px;
   box-shadow:var(--shadow);flex-wrap:wrap}
-.startbtn{flex:none;display:inline-flex;align-items:center;gap:11px;
-  background:linear-gradient(135deg,#b9985a,#e2c07a);color:#1a1206;border:none;
-  border-radius:16px;padding:15px 26px;font-size:16px;font-weight:700;cursor:pointer;
-  transition:.2s;box-shadow:0 8px 24px rgba(226,192,122,.22)}
-.startbtn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(226,192,122,.3)}
-.startbtn svg{width:22px;height:22px}
-.startbtn.running{background:rgba(127,201,196,.14);color:var(--cyan);
-  border:1px solid var(--cyan);cursor:default;box-shadow:none;transform:none}
-.startbtn.running svg{animation:breathe 2s infinite}
+.keys{flex:none;display:flex;gap:10px;flex-wrap:wrap}
+.kbtn{display:inline-flex;align-items:center;gap:8px;border-radius:14px;
+  padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;
+  border:1px solid transparent;white-space:nowrap}
+.kbtn svg{width:19px;height:19px}
+.kbtn.start{background:linear-gradient(135deg,#b9985a,#e2c07a);color:#1a1206;
+  box-shadow:0 8px 24px rgba(226,192,122,.2)}
+.kbtn.start:hover:not(:disabled){transform:translateY(-2px)}
+.kbtn.pause{background:rgba(127,201,196,.13);color:var(--cyan);border-color:rgba(127,201,196,.5)}
+.kbtn.pause:hover:not(:disabled){background:rgba(127,201,196,.22)}
+.kbtn.stop{background:rgba(224,160,106,.1);color:var(--warn);border-color:rgba(224,160,106,.45)}
+.kbtn.stop:hover:not(:disabled){background:rgba(224,160,106,.18)}
+.kbtn:disabled{opacity:.34;cursor:not-allowed;box-shadow:none;transform:none}
 .startinfo{flex:1;min-width:220px;font-size:13px;color:var(--muted);line-height:1.75}
 .startinfo b{color:var(--text);font-weight:600}
 .startinfo .em{color:var(--gold)}
@@ -138,16 +142,26 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <span id="apiState">AI 未配置</span>
   </div>
 
-  <!-- 唯一起动键 -->
+  <!-- 三个控制键：启动/暂停/结束 -->
   <div class="startrow">
-    <button class="startbtn" id="startBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>
-      </svg>
-      <span id="startLabel">一键启动</span>
-    </button>
+    <div class="keys">
+      <button class="kbtn start" id="startBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>
+        </svg>
+        <span id="startLabel">启动</span>
+      </button>
+      <button class="kbtn pause" id="pauseBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+        <span id="pauseLabel">暂停</span>
+      </button>
+      <button class="kbtn stop" id="stopBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        <span>结束</span>
+      </button>
+    </div>
     <div class="startinfo" id="startInfo">
-      <b>直播中只需点这一次。</b>之后助手会<span class="em">持续听你说话</span>，你说一段它就自动在下面生出提示——<b>顺着说 / 延展脑洞 / 知识点 / 卡壳救场</b>，全程不用再碰任何按钮。
+      <b>点「启动」后全自动</b>——持续听你说话，说完停一下就自动刷新提示卡。<span class="em">中途不用就按「暂停」省算力，再按「继续」恢复；播完按「结束」。</span>
     </div>
   </div>
 
@@ -292,16 +306,16 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   function esc(s){return s.replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-  /* 语音识别：启动后持续监听 */
+  /* 语音识别：三态控制 启动/暂停/结束 */
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  var rec=null,started=false,pendingText='',lastGenAt=0,genTimer=null,failCount=0;
+  var rec=null,started=false,paused=false,pendingText='',lastGenAt=0,genTimer=null,failCount=0;
 
   function ensureRec(){
     if(rec)return rec;
     if(!SR)return null;
     rec=new SR();
     rec.continuous=true;rec.interimResults=true;rec.lang='zh-CN';
-    rec.onstart=function(){setStatus('live','聆听中 · 提示自动生成，无需操作');};
+    rec.onstart=function(){setStatus('live','聆听中 · 说完停一下自动出提示');};
     rec.onresult=function(e){
       var interim='';
       for(var i=e.resultIndex;i<e.results.length;i++){
@@ -315,21 +329,39 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       scheduleGenerate();
     };
     rec.onerror=function(e){
-      if(e.error==='no-speech')return;
+      if(e.error==='no-speech'||e.error==='aborted')return;
       toast('语音识别中断：'+e.error+'（会尝试自动恢复）');
     };
     rec.onend=function(){
-      // 持续监听：意外断开则自动重连，全程无需再点
-      if(started){try{rec.start();}catch(err){}}
-      else setStatus('','已停止');
+      // 仅"运行中"自动重连；暂停/结束时停止识别，不再占用算力
+      if(started&&!paused){try{rec.start();}catch(err){}}
+      else if(started&&paused){setStatus('','已暂停 · 不占用识别');}
+      else setStatus('','已结束');
     };
     return rec;
   }
 
-  $('startBtn').addEventListener('click',function(){
-    if(started){
-      toast('已在运行中，直播中无需任何操作');return;
+  // 三键状态同步
+  function setControls(mode){
+    // mode: 'idle' | 'running' | 'paused'
+    var sb=$('startBtn'),pb=$('pauseBtn'),xb=$('stopBtn');
+    if(mode==='idle'){
+      sb.disabled=false;$('startLabel').textContent='启动';
+      pb.disabled=true;$('pauseLabel').textContent='暂停';
+      xb.disabled=true;
+    }else if(mode==='running'){
+      sb.disabled=true;$('startLabel').textContent='运行中';
+      pb.disabled=false;$('pauseLabel').textContent='暂停';
+      xb.disabled=false;
+    }else if(mode==='paused'){
+      sb.disabled=false;$('startLabel').textContent='继续';
+      pb.disabled=false;$('pauseLabel').textContent='继续';
+      xb.disabled=false;
     }
+  }
+
+  // 启动 / 继续（startBtn）
+  $('startBtn').addEventListener('click',function(){
     if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
       toast('请先在下方「开始前设置一次」里填 API Key');$('settingsBox').open=true;return;
     }
@@ -337,17 +369,57 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       toast('当前浏览器不支持语音识别，请用电脑版 Chrome / Edge');return;
     }
     var r=ensureRec();
-    started=true;pendingText='';lastGenAt=0;failCount=0;
+    if(paused){
+      // 从暂停恢复
+      paused=false;setControls('running');
+      $('startInfo').innerHTML='<b>已继续，全程自动。</b>说完停一下提示卡就刷新；中途不用按「暂停」，播完按「结束」。';
+      try{r.start();toast('已继续');}catch(e){toast('恢复失败，请按结束再启动');}
+      return;
+    }
+    if(started)return;
+    started=true;paused=false;pendingText='';lastGenAt=0;failCount=0;
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardSay','cardIdea','cardKnow','cardSave'].forEach(function(id){
       $(id).querySelector('.body').innerHTML='<span class="empty">听你说，马上生成……</span>';
     });
-    this.classList.add('running');
-    this.querySelector('svg').innerHTML='<circle cx="12" cy="12" r="5" fill="currentColor"/>';
-    $('startLabel').textContent='运行中 · 全自动';
-    $('startInfo').innerHTML='<b>已启动，后续全程自动。</b>你正常直播说话即可，<span class="em">说完停一下，四张提示卡就自动刷新</span>——不用再点任何东西。';
+    setControls('running');
+    $('startInfo').innerHTML='<b>已启动，全程自动。</b>说完停一下提示卡就刷新；中途不用按「暂停」，播完按「结束」。';
     try{r.start();toast('已启动，说完一句话停一下就会自动生成');}
-    catch(e){toast('启动失败，请刷新重试');}
+    catch(e){toast('启动失败，请重试');}
+  });
+
+  // 暂停 / 继续（pauseBtn）
+  $('pauseBtn').addEventListener('click',function(){
+    if(!started)return;
+    if(!paused){
+      paused=true;
+      if(genTimer){clearTimeout(genTimer);genTimer=null;} // 取消待生成的提示，省算力
+      if(rec)try{rec.abort();}catch(e){} // 立即停止识别（abort 不触发自动重连逻辑由 onend 的 paused 判断保证）
+      setControls('paused');
+      setStatus('','已暂停 · 不占用识别');
+      $('genState').textContent='已暂停';
+      toast('已暂停，识别与生成都停了；按「继续」恢复');
+    }else{
+      // pauseBtn 也可作继续
+      $('startBtn').click();
+    }
+  });
+
+  // 结束（stopBtn）
+  $('stopBtn').addEventListener('click',function(){
+    started=false;paused=false;
+    if(genTimer){clearTimeout(genTimer);genTimer=null;}
+    if(rec)try{rec.abort();}catch(e){}
+    pendingText='';transcriptFinal='';transcriptInterim='';lastGenAt=0;failCount=0;
+    renderTranscript();
+    ['cardSay','cardIdea','cardKnow','cardSave'].forEach(function(id){
+      $(id).querySelector('.body').innerHTML='<span class="empty">已结束，点「启动」重新开始</span>';
+    });
+    setControls('idle');
+    setStatus('','已结束');
+    $('genState').textContent='启动后自动刷新提示';
+    $('startInfo').innerHTML='<b>点「启动」后全自动</b>——持续听你说话，说完停一下就自动刷新提示卡。<span class="em">中途不用就按「暂停」省算力，再按「继续」恢复；播完按「结束」。</span>';
+    toast('已结束');
   });
 
   /* AI 生成：全自动，无按钮 */
@@ -366,17 +438,18 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   // 说完即触发：不设字数门槛。收到语音后重置计时，停说约1.2秒自动生成；
   // 若一直不停地说，也用"距上次生成≥6秒"兜底，保证提示卡持续刷新。
   function scheduleGenerate(){
-    if(!pendingText.trim())return;
+    if(!started||paused||!pendingText.trim())return;
     if(genTimer){clearTimeout(genTimer);}
     genTimer=setTimeout(function(){
       genTimer=null;
+      if(!started||paused)return; // 暂停/结束后不再生成
       generate();
     },1200);
   }
 
   var busy=false;
   function generate(){
-    if(busy||!started)return;
+    if(busy||!started||paused)return;
     var text=pendingText.trim();
     if(!text)return;
     // 兜底：即使没停下，距上次生成≥6秒也允许触发；首次立即触发
@@ -441,7 +514,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     if(!got)$('cardSay').querySelector('.body').textContent=cleaned;
   }
 
-  load();fillForm();renderTranscript();
+  load();fillForm();renderTranscript();setControls('idle');
 })();
 </script>
 </body>
