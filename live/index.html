@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>直播灵感助手 · 实时提词脑洞</title>
+<meta name="description" content="边播边听、实时生成延展与知识点的私密直播助手">
+<style>
+:root{
+  --bg:#07121d; --bg2:#0b1b2b; --panel:rgba(18,36,52,.78);
+  --panel2:rgba(14,28,42,.9); --border:rgba(160,200,210,.16);
+  --gold:#e2c07a; --gold-dim:#b9985a; --text:#dce8ee; --muted:#8aa0ad;
+  --cyan:#7fc9c4; --warn:#e0a06a; --shadow:0 18px 50px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:
+  radial-gradient(1000px 600px at 50% -12%,rgba(226,192,122,.07),transparent 62%),
+  radial-gradient(800px 500px at 90% 100%,rgba(127,201,196,.05),transparent 60%),
+  linear-gradient(180deg,var(--bg2),var(--bg) 70%);}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 70px}
+
+/* 顶部 */
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .dot{width:11px;height:11px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 18px rgba(226,192,122,.7)}
+.brand h1{font-size:19px;margin:0;font-weight:600;letter-spacing:.5px}
+.brand h1 span{color:var(--gold)}
+.brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.topbtns{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{background:var(--panel);border:1px solid var(--border);color:var(--text);
+  padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:.2s}
+.tbtn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.tbtn.on{background:linear-gradient(135deg,#b9985a,#e2c07a);color:#1a1206;border-color:transparent;font-weight:600}
+
+/* 状态条 */
+.status{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  padding:10px 14px;margin-bottom:18px;flex-wrap:wrap}
+.status .led{width:8px;height:8px;border-radius:50%;background:#556;transition:.3s}
+.status.live .led{background:var(--cyan);box-shadow:0 0 12px var(--cyan);animation:breathe 2s infinite}
+.status.ok .led{background:#6cc98a;box-shadow:0 0 10px #6cc98a}
+.status .sep{opacity:.35}
+@keyframes breathe{50%{opacity:.4}}
+
+/* 面板 */
+.panel{background:var(--panel);border:1px solid var(--border);
+  border-radius:20px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px;
+  backdrop-filter:blur(8px)}
+.panel h2{font-size:14px;margin:0 0 14px;font-weight:600;color:var(--gold);
+  letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.panel h2 .n{font-size:11px;color:var(--muted);font-weight:400}
+
+/* 聆听区 */
+.microw{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.micbtn{flex:none;width:76px;height:76px;border-radius:50%;border:1px solid var(--gold-dim);
+  background:radial-gradient(circle at 35% 30%,rgba(226,192,122,.25),rgba(226,192,122,.05));
+  color:var(--gold);cursor:pointer;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;transition:.25s;box-shadow:0 0 0 0 rgba(226,192,122,.4)}
+.micbtn:hover{transform:translateY(-2px)}
+.micbtn svg{width:26px;height:26px}
+.micbtn small{font-size:10px;opacity:.9}
+.micbtn.listening{border-color:var(--cyan);color:var(--cyan);
+  background:radial-gradient(circle at 35% 30%,rgba(127,201,196,.3),rgba(127,201,196,.06));
+  animation:pulse-ring 1.8s infinite}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(127,201,196,.45)}70%{box-shadow:0 0 0 22px rgba(127,201,196,0)}100%{box-shadow:0 0 0 0 rgba(127,201,196,0)}}
+.micinfo{flex:1;min-width:200px}
+.micinfo .hint{font-size:12px;color:var(--muted)}
+.micinfo .hint b{color:var(--text);font-weight:500}
+.transcript{margin-top:14px;background:var(--panel2);border:1px solid var(--border);
+  border-radius:14px;padding:14px 16px;min-height:74px;max-height:170px;overflow:auto;
+  font-size:16px;line-height:1.75}
+.transcript .final{color:var(--text)}
+.transcript .interim{color:var(--muted);font-style:italic}
+.transcript .ph{color:#5c6f7a;font-size:13px}
+.manualrow{display:flex;gap:8px;margin-top:12px}
+.manualrow input{flex:1;background:var(--panel2);border:1px solid var(--border);
+  border-radius:12px;padding:11px 14px;color:var(--text);font-size:14px;outline:none}
+.manualrow input:focus{border-color:var(--gold-dim)}
+.manualrow button{flex:none;background:linear-gradient(135deg,#b9985a,#e2c07a);
+  color:#1a1206;border:none;border-radius:12px;padding:0 18px;font-weight:600;
+  cursor:pointer;font-size:14px}
+.mini{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.7}
+
+/* 提示卡片 */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.cards{grid-template-columns:1fr}}
+.card{background:var(--panel2);border:1px solid var(--border);border-radius:16px;
+  padding:16px 17px;min-height:140px;position:relative;overflow:hidden}
+.card .tag{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:10px;
+  display:flex;align-items:center;gap:7px}
+.card .tag i{width:18px;height:18px;border-radius:6px;display:inline-flex;
+  align-items:center;justify-content:center;font-style:normal;font-size:11px}
+.card .body{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+.card .body .empty{color:#5c6f7a;font-size:13px}
+.card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
+.card.idea .tag{color:var(--cyan)} .card.idea .tag i{background:rgba(127,201,196,.16)}
+.card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
+.card.save .tag{color:#c9a7e0} .card.save .tag i{background:rgba(201,167,224,.16)}
+.card.flash::after{content:"";position:absolute;inset:0;pointer-events:none;
+  border-radius:16px;animation:flash 1.4s ease-out forwards}
+@keyframes flash{0%{box-shadow:inset 0 0 0 1px var(--gold),inset 0 0 26px rgba(226,192,122,.22)}
+  100%{box-shadow:inset 0 0 0 1px transparent,inset 0 0 26px rgba(226,192,122,0)}}
+.card.quiet .body::after{content:""}
+
+/* 生成条 */
+.genrow{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+.genrow .auto{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer}
+.genrow .auto input{accent-color:var(--gold);width:16px;height:16px}
+.gobtn{margin-left:auto;background:transparent;border:1px solid var(--gold-dim);
+  color:var(--gold);border-radius:12px;padding:9px 18px;cursor:pointer;font-size:13px;transition:.2s}
+.gobtn:hover{background:rgba(226,192,122,.1)}
+.gobtn:disabled{opacity:.45;cursor:not-allowed}
+
+/* 设置 */
+details.settings summary{cursor:pointer;list-style:none;display:flex;align-items:center;
+  justify-content:space-between;font-size:13px;color:var(--muted)}
+details.settings summary::-webkit-details-marker{display:none}
+details.settings summary span{color:var(--gold)}
+.field{margin-top:14px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:var(--panel2);
+  border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);
+  font-size:13px;outline:none;font-family:inherit}
+.field textarea{resize:vertical;min-height:76px;line-height:1.6}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold-dim)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.8;
+  background:rgba(127,201,196,.05);border-left:2px solid var(--cyan);
+  padding:10px 12px;border-radius:0 10px 10px 0}
+.note b{color:var(--cyan)}
+.privacy{font-size:12px;color:var(--muted);margin-top:14px;padding-top:14px;
+  border-top:1px dashed var(--border);line-height:1.8}
+.privacy b{color:var(--gold-dim)}
+.foot{text-align:center;font-size:11px;color:#4d606c;margin-top:30px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
+  background:#16303f;border:1px solid var(--border);color:var(--text);
+  padding:11px 20px;border-radius:24px;font-size:13px;opacity:0;pointer-events:none;
+  transition:.3s;z-index:99;box-shadow:var(--shadow);max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(226,192,122,.3);
+  border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <h1>直播<span>灵感助手</span></h1>
+        <p>边播边听 · 实时延展 · 知识点与救场提醒</p>
+      </div>
+    </div>
+    <div class="topbtns">
+      <button class="tbtn" id="quietBtn" title="静默模式：关闭提醒动效，只安静辅助">静默模式</button>
+      <button class="tbtn" id="clearBtn">清空记录</button>
+    </div>
+  </div>
+
+  <div class="status" id="statusBar">
+    <span class="led"></span>
+    <span id="statusText">未开始聆听</span>
+    <span class="sep">·</span>
+    <span id="apiState">AI 未配置</span>
+  </div>
+
+  <!-- 聆听 -->
+  <div class="panel">
+    <h2>① 让助手听见你 <span class="n">麦克风实时听，或手动输入兜底</span></h2>
+    <div class="microw">
+      <button class="micbtn" id="micBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="9" y="3" width="6" height="11" rx="3"/>
+          <path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/>
+        </svg>
+        <small id="micLabel">开始聆听</small>
+      </button>
+      <div class="micinfo">
+        <div class="hint" id="micHint">点一下开始，正常说话即可。<b>助手会顺着你刚说的话，实时生成下面的提示。</b></div>
+        <div class="transcript" id="transcript"><span class="ph">这里会实时显示你说的话……</span></div>
+      </div>
+    </div>
+    <div class="manualrow">
+      <input id="manualInput" placeholder="不方便开麦？把刚说的话打在这里，同样能实时生成提示" />
+      <button id="manualBtn">就这句展开</button>
+    </div>
+    <div class="mini">提示：语音识别推荐用电脑版 Chrome / Edge，且需联网。微信内置浏览器不支持语音识别时，请用上方手动输入。识别与生成都在你点“开始”后进行，随时可停。</div>
+  </div>
+
+  <!-- 提示卡 -->
+  <div class="panel">
+    <h2>② 实时提示 <span class="n">听到即生成，没有固定台词</span></h2>
+    <div class="cards">
+      <div class="card say" id="cardSay">
+        <div class="tag"><i>续</i>顺着说 · 接住这句</div>
+        <div class="body"><span class="empty">等待你说第一句……</span></div>
+      </div>
+      <div class="card idea" id="cardIdea">
+        <div class="tag"><i>脑</i>延展脑洞 · 新角度</div>
+        <div class="body"><span class="empty">会从你的话里往外长出新内容</span></div>
+      </div>
+      <div class="card know" id="cardKnow">
+        <div class="tag"><i>知</i>知识点 · 可能你也没注意</div>
+        <div class="body"><span class="empty">聊到具体事物时，补上背景与干货</span></div>
+      </div>
+      <div class="card save" id="cardSave">
+        <div class="tag"><i>救</i>卡壳救场 · 过渡句</div>
+        <div class="body"><span class="empty">没话说时，给你一个自然的转折</span></div>
+      </div>
+    </div>
+    <div class="genrow">
+      <label class="auto"><input type="checkbox" id="autoChk" checked>自动：听到一段就生成</label>
+      <button class="gobtn" id="goBtn">就当前内容再生成一次</button>
+    </div>
+  </div>
+
+  <!-- 设置 -->
+  <div class="panel">
+    <details class="settings" id="settingsBox">
+      <summary><span>⚙ AI 接口与知识库设置</span><span id="foldHint">展开 ▾</span></summary>
+
+      <div class="field">
+        <label>接口预设（选一个，下面会自动填好）</label>
+        <select id="preset">
+          <option value="siliconflow">硅基流动 · 开源模型 Qwen（推荐，注册送额度）</option>
+          <option value="deepseek">DeepSeek · deepseek-chat</option>
+          <option value="ollama">本地 Ollama（电脑上自己跑开源模型）</option>
+          <option value="custom">自定义（OpenAI 兼容接口）</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>接口地址（Base URL）</label><input id="baseUrl" placeholder="https://api.siliconflow.cn/v1"></div>
+        <div class="field"><label>模型名</label><input id="model" placeholder="Qwen/Qwen2.5-7B-Instruct"></div>
+      </div>
+      <div class="field"><label>API Key（只存在你这台设备，不上传）</label><input id="apiKey" type="password" placeholder="sk-..."></div>
+      <div class="field">
+        <label>你的知识库 / 直播间背景（可选，注入给 AI 当背景，让它更懂你的领域）</label>
+        <textarea id="knowledge" placeholder="例：我播的是数码赛道，主打芯片和手机。重点关注：算力、制程、主流品牌（高通/联发科/苹果/英伟达）、当下新品。说话风格亲切、接地气。"></textarea>
+      </div>
+
+      <div class="note">
+        <b>怎么拿到 Key：</b>硅基流动 siliconflow.cn 注册后在「API 密钥」里复制，模型选 Qwen 系列（开源、便宜/有免费额度）；填进上面就能用。DeepSeek 同理。<br>
+        本地 Ollama：地址填 <b>http://localhost:11434/v1</b>，模型填你拉的模型名；首次使用需在浏览器允许跨域（Ollama 设 OLLAMA_ORIGINS=*）。
+      </div>
+      <div class="privacy">
+        <b>隐私说明：</b>所有配置、API Key、对话记录都只存在你当前浏览器的本地存储里，本助手不上传、不联网保存任何内容。语音识别由浏览器厂商的识别服务处理（开启时）；若介意，请用手动输入。<b>静默模式</b>会关闭所有提醒动效，只安静生成，适合对话/录像场景。
+      </div>
+    </details>
+  </div>
+
+  <div class="foot">直播灵感助手 · 静态单页 · 数据仅存本机</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id);};
+  var KEY='live_muse_cfg_v1';
+  var CFG={preset:'siliconflow',baseUrl:'',model:'',apiKey:'',knowledge:'',auto:true,quiet:false};
+  var PRESETS={
+    siliconflow:{baseUrl:'https://api.siliconflow.cn/v1',model:'Qwen/Qwen2.5-7B-Instruct'},
+    deepseek:{baseUrl:'https://api.deepseek.com/v1',model:'deepseek-chat'},
+    ollama:{baseUrl:'http://localhost:11434/v1',model:'qwen2.5:7b'},
+    custom:{baseUrl:'',model:''}
+  };
+
+  /* ---------- 配置 ---------- */
+  function load(){
+    try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);for(var k in CFG)if(k in o)CFG[k]=o[k];}}catch(e){}
+  }
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(CFG));}catch(e){}}
+  function fillForm(){
+    $('preset').value=CFG.preset;
+    $('baseUrl').value=CFG.baseUrl||PRESETS[CFG.preset].baseUrl;
+    $('model').value=CFG.model||PRESETS[CFG.preset].model;
+    $('apiKey').value=CFG.apiKey||'';
+    $('knowledge').value=CFG.knowledge||'';
+    $('autoChk').checked=CFG.auto;
+    $('quietBtn').classList.toggle('on',CFG.quiet);
+    applyQuiet();
+    refreshState();
+  }
+  function readForm(){
+    CFG.preset=$('preset').value;
+    CFG.baseUrl=$('baseUrl').value.trim();
+    CFG.model=$('model').value.trim();
+    CFG.apiKey=$('apiKey').value.trim();
+    CFG.knowledge=$('knowledge').value.trim();
+    CFG.auto=$('autoChk').checked;
+    save();refreshState();
+  }
+  function refreshState(){
+    var ok=!!(CFG.baseUrl&&CFG.model&&CFG.apiKey);
+    $('apiState').textContent=ok?('AI 已就绪 · '+CFG.model):'AI 未配置（展开设置填 Key）';
+    setStatus(ok?'ok':'', ok?'AI 就绪，可以开始':'');
+  }
+  $('preset').addEventListener('change',function(){
+    var p=PRESETS[this.value];
+    $('baseUrl').value=p.baseUrl;$('model').value=p.model;readForm();
+    toast('已切换到：'+this.options[this.selectedIndex].text.split('·')[0].trim());
+  });
+  ['baseUrl','model','apiKey','knowledge'].forEach(function(id){$(id).addEventListener('change',readForm);});
+  $('autoChk').addEventListener('change',readForm);
+  document.querySelector('.settings').addEventListener('toggle',function(){
+    $('foldHint').textContent=this.open?'收起 ▴':'展开 ▾';
+  });
+
+  /* ---------- 状态 / toast ---------- */
+  function setStatus(cls,text){
+    var b=$('statusBar');
+    b.className='status'+(cls?' '+cls:'');
+    if(text)$('statusText').textContent=text;
+  }
+  var toastTimer;
+  function toast(msg,ms){
+    var t=$('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},ms||2600);
+  }
+  function applyQuiet(){
+    ['cardSay','cardIdea','cardKnow','cardSave'].forEach(function(id){
+      $(id).classList.toggle('quiet',CFG.quiet);
+    });
+  }
+  $('quietBtn').addEventListener('click',function(){
+    CFG.quiet=!CFG.quiet;save();
+    this.classList.toggle('on',CFG.quiet);
+    applyQuiet();
+    toast(CFG.quiet?'已开静默模式：只安静生成，不闪提醒':'已关静默模式：恢复柔和提醒');
+  });
+  $('clearBtn').addEventListener('click',function(){
+    transcriptFinal='';transcriptInterim='';
+    ['cardSay','cardIdea','cardKnow','cardSave'].forEach(function(id){
+      $(id).querySelector('.body').innerHTML='<span class="empty">已清空，开口说吧……</span>';
+    });
+    renderTranscript();toast('已清空当前记录');
+  });
+
+  /* ---------- 语音识别 ---------- */
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  var rec=null,listening=false,transcriptFinal='',transcriptInterim='';
+  var lastGenAt=0, charsSinceGen=0;
+
+  function renderTranscript(){
+    var el=$('transcript');
+    var all=transcriptFinal+(transcriptInterim?' <span class="interim">'+esc(transcriptInterim)+'</span>':'');
+    if(!all){el.innerHTML='<span class="ph">这里会实时显示你说的话……</span>';return;}
+    el.innerHTML='<span class="final">'+esc(transcriptFinal)+'</span>'+
+      (transcriptInterim?' <span class="interim">'+esc(transcriptInterim)+'</span>':'');
+    el.scrollTop=el.scrollHeight;
+  }
+  function esc(s){return s.replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function ensureRec(){
+    if(rec)return rec;
+    if(!SR)return null;
+    rec=new SR();
+    rec.continuous=true;
+    rec.interimResults=true;
+    rec.lang='zh-CN';
+    rec.onstart=function(){setStatus('live','正在聆听…');};
+    rec.onresult=function(e){
+      var interim='';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        var r=e.results[i],t=r[0].transcript;
+        if(r.isFinal){transcriptFinal+=(transcriptFinal?'':'')+t;charsSinceGen+=t.length;}
+        else{interim+=t;}
+      }
+      transcriptInterim=interim;
+      renderTranscript();
+      maybeAuto();
+    };
+    rec.onerror=function(e){
+      if(e.error==='no-speech')return;
+      toast('语音识别出错：'+e.error+'（可改用手动输入）');
+    };
+    rec.onend=function(){
+      if(listening){try{rec.start();}catch(err){}}
+      else setStatus('','已停止聆听');
+    };
+    return rec;
+  }
+
+  $('micBtn').addEventListener('click',function(){
+    if(listening){
+      listening=false;
+      if(rec)try{rec.stop();}catch(e){}
+      $('micBtn').classList.remove('listening');
+      $('micLabel').textContent='开始聆听';
+      setStatus('','已停止聆听');
+      return;
+    }
+    if(!SR){
+      toast('当前浏览器不支持语音识别，请用下方手动输入');
+      $('manualInput').focus();return;
+    }
+    var r=ensureRec();
+    listening=true;
+    $('micBtn').classList.add('listening');
+    $('micLabel').textContent='停止聆听';
+    try{r.start();toast('开始聆听，正常说话即可');}
+    catch(e){toast('启动失败，请重试或手动输入');}
+  });
+
+  $('manualBtn').addEventListener('click',function(){
+    var v=$('manualInput').value.trim();
+    if(!v){toast('先写一句你刚说的话');return;}
+    transcriptFinal=v;charsSinceGen=v.length;renderTranscript();
+    generate(true);
+  });
+  $('manualInput').addEventListener('keydown',function(e){if(e.key==='Enter')$('manualBtn').click();});
+  $('goBtn').addEventListener('click',function(){generate(true);});
+
+  function maybeAuto(){
+    if(!CFG.auto)return;
+    var now=Date.now();
+    if(charsSinceGen>=24 && now-lastGenAt>6000) generate(false);
+  }
+
+  /* ---------- AI 生成 ---------- */
+  var SYS='你是直播时的实时灵感助手，坐在主播耳边小声提醒。主播会把它刚说的一段话发给你，你要立刻顺着这段话，给出四样东西，帮主播把话接下去、讲得更丰富、不冷场。\n'+
+    '严格要求：\n'+
+    '1) 全部用中文，口语化、接地气，像朋友在旁边提醒，不要书面腔、不要啰嗦。\n'+
+    '2) 严格根据主播这句话的内容来生成，不要套空话、不要固定模板，每次都要贴着当下的话。\n'+
+    '3) 四块内容：\n'+
+    '   - say（顺着说）：接住这句，给主播下一句可以直接说的话，1-2句，自然。\n'+
+    '   - idea（延展脑洞）：由这话往外长出的新角度、新话题、新玩法，2-3条，短。\n'+
+    '   - know（知识点）：与这话相关的具体知识、数据、背景、品牌、冷知识等，2-3条，要具体有用；主播可能不知道，你替他先想到。若主播提到某样东西（如芯片、手机），就补上它的关键参数、主流品牌、当下趋势等干货。没有可靠内容就写"这句偏感受，可聊背后的故事"。\n'+
+    '   - save（卡壳救场）：一个自然的过渡句或转折，主播没话说时能用，1句。\n'+
+    '4) 只输出一个 JSON 对象，不要任何解释、不要代码块标记，格式：\n'+
+    '{"say":"...","idea":"1. ...\\n2. ...","know":"1. ...\\n2. ...","save":"..."}\n';
+
+  var busy=false;
+  function generate(force){
+    if(busy)return;
+    var text=transcriptFinal.trim();
+    if(!text){toast('还没有内容，先说一句或手动输入');return;}
+    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
+      toast('请先在「设置」里填接口地址和 API Key');$('settingsBox').open=true;return;
+    }
+    busy=true;lastGenAt=Date.now();charsSinceGen=0;
+    $('goBtn').disabled=true;
+    $('goBtn').innerHTML='<span class="spin"></span> 生成中';
+    var kb=CFG.knowledge?('\n\n【主播的领域背景，供你参考】\n'+CFG.knowledge):'';
+    var body={
+      model:CFG.model,
+      messages:[
+        {role:'system',content:SYS+kb},
+        {role:'user',content:'主播刚说：\n'+text.slice(-600)}
+      ],
+      temperature:0.9,
+      stream:false
+    };
+    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
+    var ctl=new XMLHttpRequest();
+    ctl.open('POST',url,true);
+    ctl.setRequestHeader('Content-Type','application/json');
+    ctl.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
+    ctl.timeout=45000;
+    ctl.onreadystatechange=function(){
+      if(ctl.readyState!==4)return;
+      busy=false;$('goBtn').disabled=false;$('goBtn').textContent='就当前内容再生成一次';
+      if(ctl.status<200||ctl.status>=300){
+        toast('生成失败（'+ctl.status+'）：'+brief(ctl.responseText));return;
+      }
+      try{
+        var j=JSON.parse(ctl.responseText);
+        var content=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+        if(!content)throw new Error('空返回');
+        renderAI(content);
+      }catch(e){toast('解析失败：'+e.message);}
+    };
+    ctl.ontimeout=function(){busy=false;$('goBtn').disabled=false;
+      $('goBtn').textContent='就当前内容再生成一次';toast('请求超时，检查网络或接口地址');};
+    ctl.send(JSON.stringify(body));
+  }
+  function brief(s){try{return s.slice(0,120);}catch(e){return '未知错误';}}
+
+  function renderAI(content){
+    var data=null;
+    var cleaned=content.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+    try{data=JSON.parse(cleaned);}catch(e){
+      var m=cleaned.match(/\{[\s\S]*\}/);
+      if(m){try{data=JSON.parse(m[0]);}catch(e2){}}
+    }
+    var map=[
+      ['cardSay',data&&data.say],
+      ['cardIdea',data&&(data.idea||data.ideas)],
+      ['cardKnow',data&&(data.know||data.knowledge||data.points)],
+      ['cardSave',data&&(data.save||data.rescue)]
+    ];
+    var got=false;
+    map.forEach(function(pair){
+      var v=pair[1];
+      if(Array.isArray(v))v=v.map(function(x,i){return (i+1)+'. '+x;}).join('\n');
+      var el=$(pair[0]);var body=el.querySelector('.body');
+      if(v&&String(v).trim()){
+        body.textContent=String(v).trim();got=true;
+        if(!CFG.quiet){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+      }
+    });
+    if(!got){$('cardSay').querySelector('.body').textContent=cleaned;}
+  }
+
+  /* ---------- init ---------- */
+  load();fillForm();renderTranscript();
+})();
+</script>
+</body>
+</html>
