@@ -724,7 +724,9 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   // 台词流提示词：网状节点式（碎片/跳跃/可回跳/可重复），每条是可直接念的完整短句，只输出 say + topic
   var SAY_SYS='你是直播逐节展开的台词引擎。给你一个话题和"已经讲过哪些角度"，你要讲一个**还没讲过的具体角度**，把它展开成主播能直接念的实在话。\n'+
     '【第一铁律·必须往前推进，绝不原地复述话题名】话题是"情绪管理"，你绝不能反复写"情绪管理是什么""情绪调节方法""压力应对策略"这种把话题换个说法的标题——那是目录，不是台词，粉丝什么也学不到。每次必须讲一个具体的、没讲过的新角度。\n'+
-    '【怎么展开一个角度】angle 用8-14字写清这一节讲的具体方面（如"情绪是身体的警报信号""被领导批评时的6秒暂停法""为什么越压抑越反弹"），不要只写话题名。say 用3条完整陈述句（每条15-35字）把这个角度讲透：给事实、给机制、给步骤、给场景、给例子、给数字或给观点，念出来观众能听懂、能学到东西。\n'+
+    '【怎么展开一个角度】angle 用8-14字写清这一节讲的具体方面（如"情绪是身体的警报信号""被领导批评时的6秒暂停法""为什么越压抑越反弹"），不要只写话题名。say 用3条完整陈述句把这个角度讲透：给真实场景、给具体动作、给细节、给例子或数字，念出来观众脑子里能有画面。\n'+
+    '【台词长什么样·照这个水平写，这是用户亲口给的标准】话题"情绪管理"，好台词是："我们生完气经常后悔，其实生气那一刻拿个本子，把这件事的来龙去脉写下来——谁惹的、为什么气、值不值得，写完你会发现气消了一大半。" 要点：有真实场景(生完气)、有具体动作(拿本子写)、有细节(来龙去脉/谁惹的/值不值)。每条都要像这样能想象出画面，不许写成抽象概括。\n'+
+    '【严禁·这些一句都不许出现，写了会被系统整句删掉】"情绪管理有哪些方法""有哪些技巧""情绪管理的节奏""情绪管理的重要性""情绪管理是什么"——这些是目录不是台词。\n'+
     '【严禁·血泪教训】用户截图里真实翻车的反例，绝对不许再出现："情绪管理的重要性"（标题）、"如何在压力大的时候保持冷静？"（设问）、"情绪管理有哪些方法"（提纲）。这些一句都不能写。\n'+
     '【严禁】标题式短语（"情绪调节方法""认知行为疗法""X的重要性""X有哪些方法"）；设问句（"情绪是什么呢？""你知道吗？""如何…？"）；空泛铺垫（"那么""接下来聊聊""这个话题很重要"）；把话题名本身当台词。\n'+
     '【绝不重复已讲角度】会给你一份"已讲过的角度"清单，里面每个方面都讲过了——必须避开，讲新的一个方面；常见方面都讲过后，就换角度深挖（更细的场景、反面、误区、真实案例、争议），或跳回之前某点换说法重讲。\n'+
@@ -790,7 +792,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     // 纯标签式短语：很短、无标点、无动词实义（如"情绪管理""压力应对""方法与技巧"）
     var plain=x.replace(/[的与和及、\s]/g,'');
     if(x.length<=12&&!/[，,。；;：:！!]/.test(x)&&!/[0-9]/.test(x)
-       &&/(管理|方法|技巧|策略|应对|调节|控制|重要|意义|作用|影响|平衡|概述|介绍)$/.test(x))return true;
+       &&/(管理|方法|技巧|策略|应对|调节|控制|重要|意义|作用|影响|平衡|概述|介绍|节奏|原则|步骤|要点|关键|误区|建议|方式|内涵|本质|定义|特点|优势|好处|问题|现状)$/.test(x))return true;
     return false;
   }
   function splitScript(raw){
@@ -883,7 +885,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var body={model:CFG.model,
       messages:[{role:'system',content:SAY_SYS+kb+memLine+dirLine},
                 {role:'user',content:'请展开主播接下来要念的一节（angle + 3条能念的具体台词）。'+lead+topicLine+seedLine+saidLine}],
-      temperature:0.65,stream:false,max_tokens:260};
+      temperature:0.7,stream:false,max_tokens:330};
     var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
     var x=new XMLHttpRequest();
     x.open('POST',url,true);
@@ -1040,10 +1042,33 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     x.send(JSON.stringify(body));
   }
 
-  // 滚轮往下滚到接近底部：自动生成下一批接上，形成无限滚动（取代"下一步"按钮）
+  // 一行台词的高度（含行间距），用于精准逐行滚动
+  function rowHeight(){
+    var bd=$('cardSay')&&$('cardSay').querySelector('.body');
+    if(!bd)return 30;
+    var ln=bd.querySelector('.ln');
+    if(!ln)return 30;
+    var cs=window.getComputedStyle(ln);
+    return (ln.offsetHeight||24)+(parseFloat(cs.marginBottom)||0);
+  }
+  // 精准滚轮：一次滚动=一行台词（上下都是），带冷却防止惯性连跳。直播时不会一滑跳过好几行。
   (function(){
     var bd=$('cardSay')&&$('cardSay').querySelector('.body');
     if(!bd)return;
+    var acc=0,lockUntil=0;
+    bd.addEventListener('wheel',function(e){
+      e.preventDefault(); // 接管台词窗滚动，浏览器默认一次跳100px≈4行，太快
+      var now=Date.now();
+      if(now<lockUntil)return; // 冷却期内忽略，防止触控板/惯性一次连跳多行
+      acc+=e.deltaY;
+      var thr=20; // 累积阈值：普通鼠标一格deltaY≈100，触控板小步累积
+      if(Math.abs(acc)>=thr){
+        bd.scrollTop+=(acc>0?1:-1)*rowHeight();
+        acc=0;
+        lockUntil=now+70; // 70ms冷却：一格滚轮只走一行
+      }
+    },{passive:false});
+    // 滚到接近底部：自动生成下一批接上（逐行滚到底同样触发）
     bd.addEventListener('scroll',function(){
       if(!started||paused||scriptBusy||!scriptQueue.length)return;
       var max=bd.scrollHeight-bd.clientHeight;
@@ -1171,8 +1196,10 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   // 提示卡右上角 ▲▼：点一下在固定高度内翻一屏
   Array.prototype.forEach.call(document.querySelectorAll('.sbtns button[data-sc]'),function(btn){
     btn.addEventListener('click',function(){
-      var body=$(this.getAttribute('data-sc')).querySelector('.body');
-      body.scrollTop+=(this.getAttribute('data-dir')==='1'?1:-1)*Math.max(36,body.clientHeight*0.8);
+      var id=this.getAttribute('data-sc');
+      var body=$(id).querySelector('.body');
+      var step=(id==='cardSay')?rowHeight():Math.max(36,body.clientHeight*0.8); // 台词窗一次一行
+      body.scrollTop+=(this.getAttribute('data-dir')==='1'?1:-1)*step;
     });
   });
 
