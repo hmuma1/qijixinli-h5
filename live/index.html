@@ -125,6 +125,17 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(127,201,196,.3);
   border-top-color:var(--cyan);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
+.typebox{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:6px;
+  width:320px;padding:6px;background:var(--panel2);border:1px solid var(--border);
+  border-radius:13px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+.typebox input{flex:1;min-width:0;border:0;outline:none;background:transparent;color:var(--text);
+  font-family:inherit;font-size:13px;padding:7px 9px}
+.typebox input::placeholder{color:#5c6f7a}
+.typebox button{flex:none;border:0;border-radius:9px;background:var(--gold);color:#1a1206;
+  font-family:inherit;font-size:13px;font-weight:700;padding:7px 13px;cursor:pointer;white-space:nowrap}
+.typebox button:hover:not(:disabled){background:#f0d39a}
+.typebox button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:560px){.typebox{width:calc(100vw - 36px);bottom:12px}}
 </style>
 </head>
 <body>
@@ -213,7 +224,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <label class="toggle"><input type="checkbox" id="quietChk"> 静默提醒（关掉卡片柔光，适合对话/录像场景）</label>
     <div class="note">
       <b>语音怎么来的：</b>点「启动」后浏览器会请求麦克风权限（地址栏点允许），录音在说完停顿约0.5秒后自动切成一段，发到硅基流动用 <b>SenseVoice</b> 转成文字——这是云端识别，不依赖浏览器自带识别，国内可用。上文的 API Key 同时用于语音识别和内容生成。<br>
-      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制；文本模型推荐 Qwen 系列（开源、有免费额度）。点「启动」全程自动。
+      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制；文本模型推荐 Qwen 系列（开源、有免费额度）。点「启动」全程自动；不方便说话时，右下角可直接打字回车发送。
     </div>
     <div class="privacy">
       <b>隐私：</b>配置与 API Key 只存当前浏览器本地，本站不保存；麦克风录的声音只发往硅基流动做转写，用于生成提示。<b>控制键只有三个</b>：启动 / 暂停（关麦克风省算力）/ 结束。
@@ -221,6 +232,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   </details>
 
   <div class="foot">直播灵感助手 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
+</div>
+
+<div class="typebox" id="typeBox">
+  <input id="typeInput" type="text" placeholder="不方便说话？打字后回车发送" autocomplete="off">
+  <button id="typeSend" type="button">发送</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -490,19 +506,21 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     '{"know":"...","say":"..."}\n';
 
   // 说完即触发：收到语音后重置计时，说完停约0.5秒（切段延时）立即生成，不设字数门槛、不加节流。
-  function scheduleGenerate(){
-    if(!started||paused||!pendingText.trim())return;
+  function scheduleGenerate(manual){
+    if(!pendingText.trim())return;
+    if(!manual&&(!started||paused))return;
     if(genTimer){clearTimeout(genTimer);}
     genTimer=setTimeout(function(){
       genTimer=null;
-      if(!started||paused)return; // 暂停/结束后不再生成
-      generate();
-    },300);
+      if(!manual&&(!started||paused))return; // 语音暂停/结束后不再生成
+      generate(manual);
+    },manual?0:300);
   }
 
   var busy=false;
-  function generate(){
-    if(busy||!started||paused)return;
+  function generate(manual){
+    if(busy)return;
+    if(!manual&&(!started||paused))return;
     var text=pendingText.trim();
     if(!text)return;
     busy=true;pendingText='';
@@ -521,7 +539,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       busy=false;$('genState').textContent='生成失败 · 自动重试中';
       // 文本退回待生成队列，有限重试，避免死循环卡住
       pendingText=text+pendingText;
-      if(failCount<3){failCount++;toast(msg+'，将自动重试');setTimeout(function(){scheduleGenerate();},2500);}
+      if(failCount<3){failCount++;toast(msg+'，将自动重试');setTimeout(function(){scheduleGenerate(manual);},2500);}
       else{toast(msg+'，请检查设置里的接口/Key');$('genState').textContent='生成失败 · 请检查接口设置';failCount=0;}
     }
     x.onreadystatechange=function(){
@@ -562,6 +580,24 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     });
     if(!got)$('cardSay').querySelector('.body').textContent=cleaned;
   }
+
+  // 右下角文字输入：不方便语音时打字回车，走同一套两块生成
+  function sendTyped(){
+    var t=$('typeInput').value.trim();
+    if(!t){toast('先输入文字');return;}
+    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
+      toast('请先在设置里填 API Key');$('settingsBox').open=true;return;
+    }
+    if(busy){toast('正在生成，稍等一下');return;}
+    pendingText=t;
+    $('typeInput').value='';
+    generate(true);
+    toast('已发送，正在生成');
+  }
+  $('typeSend').addEventListener('click',sendTyped);
+  $('typeInput').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();sendTyped();}
+  });
 
   load();fillForm();renderTranscript();setControls('idle');
 })();
