@@ -67,6 +67,9 @@ body{min-height:100vh;background:
 .transcript{background:var(--panel2);border:1px solid var(--border);
   border-radius:14px;padding:10px 14px;height:92px;overflow-y:scroll;overflow-x:hidden;
   font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
+.hearrow{display:flex;gap:12px;align-items:stretch}
+.hearrow .transcript{flex:1;min-width:0}
+@media(max-width:760px){.hearrow{flex-direction:column}}
 .dirtag{color:var(--gold);background:rgba(226,192,122,.1);
   border:1px solid rgba(226,192,122,.3);border-radius:8px;padding:1px 7px;
   margin-right:8px;font-size:11px}
@@ -140,9 +143,10 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(127,201,196,.3);
   border-top-color:var(--cyan);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.typebox{flex:0 0 340px;background:var(--panel2);border:1px solid rgba(226,192,122,.42);
+.typebox{flex:0 0 300px;min-width:0;background:var(--panel2);border:1px solid rgba(226,192,122,.42);
   border-radius:15px;box-shadow:var(--shadow);backdrop-filter:blur(8px);
-  overflow:hidden}
+  overflow:hidden;display:flex;flex-direction:column}
+.typebox .tbrow{flex:1;min-height:0}
 .typebox .tbhead{display:flex;align-items:center;gap:8px;padding:10px 14px;
   font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;
   background:rgba(226,192,122,.09);border-bottom:1px solid var(--border)}
@@ -157,7 +161,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   font-family:inherit;font-size:13px;font-weight:700;padding:8px 15px;cursor:pointer;white-space:nowrap}
 .typebox button:hover:not(:disabled){background:#f0d39a}
 .typebox button:disabled{opacity:.45;cursor:not-allowed}
-@media(max-width:760px){.bottomrow{flex-direction:column}.typebox{flex:none;width:100%}}
+@media(max-width:760px){.typebox{flex:none;width:100%}}
 </style>
 </head>
 <body>
@@ -200,10 +204,19 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 实时字幕 -->
+  <!-- 实时听见 + 文字输入口：一左一右 -->
   <div class="panel">
     <h2>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
-    <div class="transcript" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
+    <div class="hearrow">
+      <div class="transcript" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
+      <div class="typebox" id="typeBox">
+        <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里</span></div>
+        <div class="tbrow">
+          <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
+          <button id="typeSend" type="button">发送</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 提示卡 -->
@@ -221,8 +234,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 一次性设置 + 文字输入口，并排一行 -->
-  <div class="bottomrow">
+  <!-- 一次性设置：默认收起的一条横线 -->
   <details class="settings" id="settingsBox">
     <summary><span class="t">⚙ 开始前设置一次（API 与知识库）</span><span id="foldHint">展开 ▾</span></summary>
 
@@ -253,15 +265,6 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       <b>隐私：</b>配置与 API Key 只存当前浏览器本地，本站不保存；麦克风录的声音只发往硅基流动做转写，用于生成提示。<b>控制键只有三个</b>：启动 / 暂停（关麦克风省算力）/ 结束。
     </div>
   </details>
-
-  <div class="typebox" id="typeBox">
-    <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里</span></div>
-    <div class="tbrow">
-      <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
-      <button id="typeSend" type="button">发送</button>
-    </div>
-  </div>
-  </div>
 
   <div class="foot">直播灵感助手 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
 </div>
