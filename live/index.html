@@ -691,17 +691,21 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};saveMem();renderMem();toast('长期记忆已清空');
   });
 
-  /* ===== 一号台词窗：无限滚动台词流 =====
+  /* ===== 一号台词窗：无限滚动台词流（网状节点式） =====
      队列只增不减（念到快完自动续写下一批），当前行高亮、可回看可预览，
-     "下一步"跳过不想念的当前组；不撑高页面，固定高度内部滚动。 */
+     滚轮下滑自动生成；内容是网状节点式——碎片、跳跃、可回跳、可重复，
+     绝不按"阶梯/讲演稿"一二三往下走；不撑高页面，固定高度内部滚动。 */
   var scriptQueue=[],scriptIdx=-1,scriptTopic='',batchStarts=[],scriptBusy=false;
+  var scriptNodes=[],nodeCursor=0; // 网状节点池：去重累积说过的话头，供后续跳跃/回跳/换角度重说
 
   // 专门写台词流的提示词：主播本人原话、可自定主题、只输出 say + topic
-  var SAY_SYS='你是直播提词流的续写引擎。你写的是给主播扫一眼看的"话头提示"，不是逐字念的台词——像缩略版台词、提示词，把要讲的意思点出来就行，主播会自己展开成口语。\n'+
+  // 台词流提示词：网状节点式（碎片/跳跃/可回跳/可重复），缩略版话头，只输出 say + topic
+  var SAY_SYS='你是直播提词流的续写引擎。你写的不是讲演稿，是直播现场那种碎片化、跳着说的话头提示——给主播扫一眼看的，像缩略版台词，把意思点出来就行，主播会自己展开成口语。\n'+
+    '【最核心·网状节点式，绝不是阶梯/讲演稿】禁止把内容写成一二三四五六七八九十一条接一条连贯递进的台阶，也不要一大段只绕一个话题。直播是现场的、碎片式讨论：围绕一个话题点，散出它周围三五个相关联的点；说两三句就跳到另一个点，从那个点又散出新的三五个点；说过的话题点随时可以再跳回去、可以重复说、可以换个角度重说。点和点之间要有真实关联（像网状，不像楼梯），但顺序是跳的、可以回头的，不是一条直线往下摞。宁可跳、宁可散、宁可回，也不要层层递进写小论文。\n'+
+    '【每批给3条】3条是3个可独立弹出的节点：有的从当前点散出的关联点里挑，有的从"已有节点池"里跳回去重说或换角度，有的跳到相关的新点。允许和之前说过的话有重合/重复——现场本来就会反复拎回同一个点。三条之间不必顺接，不必是"第一第二第三"的关系。\n'+
     '写法：短句、要点式、信息密度高，每条8-18字；不要寒暄、语气词、连接词（如"你好""那么""对吧""其实呢"），不要完整口语长句，不要文艺修饰。扫一眼明白要讲什么即可，别啰嗦。\n'+
-    '视角：这些话头就是主播本人要讲的内容，不是"建议主播讲什么"。禁止"可以讲""建议""接下来聊聊""作为助手"等指导语和主客体切换。①②③后面直接是话头本身。\n'+
-    '每次写一组3条，顺着"当前主题"和"最近说过的话头"往下延伸，不重复、角度不同，每条能撑起一小段发挥。\n'+
-    '【跟随直播间风格】幽默场给梗和调侃的话头（直接是笑点，不是"讲个段子"）；专业场给有门道、有数字、够狠的要点；情绪场给共情的话头；观点场给犀利的点。方向指令（如"更幽默""往专业走""反转"）必须遵守。\n'+
+    '视角：这些话头就是主播本人要讲的内容，不是"建议主播讲什么"。禁止"可以讲""建议""接下来聊聊""作为助手""下面说第二点"等指导语和阶梯词。①②③后面直接是话头本身。\n'+
+    '【跟随直播间风格】幽默场给梗和调侃的话头（直接是笑点）；专业场给有门道、有数字、够狠的要点；情绪场给共情的话头；观点场给犀利的点。方向指令（如"更幽默""往专业走""反转"）必须遵守。\n'+
     '【主题可自定】没给主题时，凭主播长期记忆自发生成一个具体、新鲜、能展开的主题；主题错了没关系，照写，主播会自己往下滚。\n'+
     '只输出一个 JSON 对象，不要解释、不要代码块：\n'+
     '{"topic":"本次主题（4-12字）","say":"①...②...③..."}\n';
@@ -721,6 +725,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   }
   function resetScript(){
     scriptQueue=[];scriptIdx=-1;scriptTopic='';batchStarts=[];scriptBusy=false;
+    scriptNodes=[];nodeCursor=0;
     var el=$('cardSay');
     if(el)el.querySelector('.body').innerHTML='<span class="empty">启动后凭长期记忆自动生成主题与首批台词，念到哪亮到哪，快念完自动往下续写</span>';
   }
@@ -748,7 +753,12 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     if(topic)scriptTopic=String(topic).trim().slice(0,40)||scriptTopic;
     var start=scriptQueue.length;
     batchStarts.push(start);
-    lines.forEach(function(ln){scriptQueue.push(ln);});
+    lines.forEach(function(ln){
+      scriptQueue.push(ln);
+      var tag=String(ln).replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'').trim().slice(0,24);
+      if(tag&&scriptNodes.indexOf(tag)<0)scriptNodes.push(tag);
+    });
+    if(scriptNodes.length>45){scriptNodes=scriptNodes.slice(-45);nodeCursor=nodeCursor%scriptNodes.length;}
     // 防止队列无限膨胀：只留最近 60 条，同步修正高亮下标与批次起点
     if(scriptQueue.length>60){
       var drop=scriptQueue.length-60;
@@ -769,14 +779,25 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var kb=CFG.knowledge?('\n【主播领域背景】'+CFG.knowledge):'';
     var memLine=MEM.profile?('\n【关于这位主播（自然沿用，别生硬复述）】'+MEM.profile):'';
     var dirLine=liveDir?('\n【当前方向，必须遵守】'+liveDir):'';
-    var topicLine=scriptTopic?('\n【当前台词主题，沿着它继续往下延伸】'+scriptTopic):'';
+    var topicLine=scriptTopic?('\n【当前话题基调（只是基调，可随时跳走、也可跳回来）】'+scriptTopic):'';
     var tail=scriptQueue.slice(-3).join(' ');
-    var tailLine=tail?('\n【已经说过的最后几句，接着往下写，别重复】'+tail):'';
+    var tailLine=tail?('\n【刚刚冒出的几句（只是现场碎片，不必接它往下，可跳走或跳回）】'+tail):'';
     var seedLine=seedTopic?('\n【本次指定主题，优先用它开篇】'+seedTopic):'';
-    var lead=reason==='start'?'这是开场。':(reason==='next'?'跳过当前这组，换个角度往下写。':'接着主题和上面的台词继续往下延伸。');
+    // 网状节点池取样：最近几颗 + 轮转取早期几颗，让 AI 能跳回很早说过的点
+    var nodeSample=[],nodeLine='',q;
+    if(scriptNodes.length){
+      var recent=scriptNodes.slice(-4),early=scriptNodes.slice(0,-4),pick=[];
+      for(q=0;q<6&&early.length;q++)pick.push(early[(nodeCursor+q)%early.length]);
+      nodeCursor+=3;
+      var seen={},uniq=[];
+      recent.concat(pick).forEach(function(n){if(n&&!seen[n]){seen[n]=1;uniq.push(n);}});
+      if(uniq.length)nodeLine='\n【聊过的话题节点池——从中挑1-2颗跳回去重说/换角度，再带出1-2颗新关联点；别顺一条线往下走】\n'+
+        uniq.map(function(n,i){return (i+1)+'. '+n;}).join('\n');
+    }
+    var lead=reason==='start'?'这是开场，先抛一个话题点。':(reason==='next'?'换个角度、跳到有关联的点上重开。':'别顺着往下——从节点池挑点跳回去重说或换角度，也跳到相关的新点，碎片式给3颗。');
     var body={model:CFG.model,
       messages:[{role:'system',content:SAY_SYS+kb+memLine+dirLine},
-                {role:'user',content:'请写出主播接下来要念的一组台词（3条）。'+lead+topicLine+seedLine+tailLine}],
+                {role:'user',content:'请写出主播接下来要念的一组话头（3条，网状节点式，不是连贯讲演稿）。'+lead+topicLine+seedLine+nodeLine+tailLine}],
       temperature:0.9,stream:false,max_tokens:200};
     var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
     var x=new XMLHttpRequest();
