@@ -556,7 +556,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">'+(id==='cardSay'?'正在凭长期记忆生成台词流…':'听你说，马上生成……')+'</span>';bd.scrollTop=0;
     });
     setControls('running');
-    $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词流自动开篇，鼠标往下滚到接近底部就自动续写下一批；说话自动转文字刷新名词卡。中途按「暂停」，播完按「结束」。';
+    $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词自动开篇、快念完自动续写；说新话题（如"聊聊情绪管理"）会自动清空换成新话题的台词；说话自动转文字刷新名词卡。中途按「暂停」，播完按「结束」。';
     toast('正在打开麦克风，请在浏览器弹窗点「允许」');
     openMic();
     // 台词流开篇：优先用留言口预置的主题，否则凭长期记忆自发一个
@@ -722,6 +722,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   // 录入联动引擎提示词：一次产出 1号网状节点 + 2号知识，省一次往返、压低延迟
   var LINK_SYS='你是直播现场的"双窗联动引擎"。主播说了或打了一段话，你一次算出两样东西：给1号窗口的网状话头节点，给2号窗口的知识补充。\n'+
+    '【新话题开场·最高优先级】若主播明确开场新话题（如"今天聊聊X""要不说说X""换个话题""今天想谈X"），topic 必须精确就是那个新话题本身（例：说"情绪管理"→topic="情绪管理"，绝不能沿用上一个话题"时间管理"），nodes 必须全部围绕这个新话题展开，并置 replace:true 表示清空旧台词重开；非开场则 replace:false。\n'+
     '【2号知识 know——只认真专有名词】只有出现真正的专有名词/概念才写know：人名、历史人物、地名、机构、品牌、产品、技术术语、缩写、外语词、学科概念（理化生政史经）、专业词汇。要做"深度补充"：这人/概念是谁、什么背景、关联人物、朝代职务、领域归属、为什么重要——像一张迷你知识卡，60-90字。例：提到"司马光"→"司马光：北宋史学家，《资治通鉴》主编，砸缸典故主人公；与王安石变法立场相左，属旧党。父亲司马池，谥号文正。"\n'+
     '【2号知识——普通词一律不解释】普通日常词、动词短语、语气词（如"当中被骂""然后呢""这个东西""聊聊天"）不是专有名词，know 必须返回空字符串 ""，绝不要硬解释——把大白话当知识解释很低级。宁可空着。没有就给 ""。\n'+
     '【语音纠错】识别常听错（中英混说/谐音/缩写），结合语境纠正：听到"NPD是啥"讲自恋型人格障碍，不是小米快充；拿不准用"你说的应该是X"。\n'+
@@ -730,7 +731,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     ' - 靠关联性跳回：若新话题跟某个旧点共用某个节点，就让那个旧点重新冒出来——这是内容关联触发，不是随机、不是按概率。\n'+
     ' - 碎片、可跳、可重复、不是连贯讲演稿；每节点独立弹出，主播扫一眼自己展开成口语。\n'+
     '【方向指令 dir】打字若含方向指令（幽默点/往专业走/反转/别聊这个/多抛梗/换风格），写进dir；否则空。\n'+
-    '只输出JSON：{"know":"...或空","topic":"...","nodes":"①...②...③...","dir":""}\n';
+    '只输出JSON：{"know":"...或空","topic":"...","nodes":"①...②...③...","replace":false,"dir":""}\n';
 
   // 话题图：网状关联，靠"共用节点"跳回旧话题（不是概率）
   var topicGraph={},topicHistory=[];
@@ -815,6 +816,15 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     paintScript(follow);
     return start;
   }
+  // 话题切换：清空旧台词，围绕新话题重开（用户明确要求"清空"，不是追加淹没）
+  function replaceScript(raw,topic){
+    var lines=splitScript(raw);
+    if(!lines.length)return -1;
+    scriptQueue=[];batchStarts=[];scriptNodes=[];nodeCursor=0;scriptIdx=-1;
+    appendScript(raw,topic,false);
+    scriptIdx=0;paintScript();
+    return 0;
+  }
   // 续写一批台词：只写台词窗，绝不碰右边名词卡
   function generateMoreScript(reason,seedTopic,follow){
     if(scriptBusy)return;
@@ -870,41 +880,60 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
         if(reason==='start'){scriptIdx=start>=0?start:0;paintScript();}
         else if(reason==='next'&&start>=0){scriptIdx=start;paintScript();}
         $('genState').textContent=reason==='start'?('已开篇 · '+scriptTopic):('已续写 · 第 '+(scriptIdx+1)+' 条');
+        // 队列太短就自动补足，保证"下面永远有台词"，不只靠滚轮
+        if(reason!=='scroll'&&scriptQueue.length<8)generateMoreScript('near-end');
       }catch(e){$('genState').textContent='台词续写失败 · 等下句再续';}
     };
     x.ontimeout=function(){scriptBusy=false;$('genState').textContent='台词续写超时 · 等下句再续';};
     x.send(JSON.stringify(body));
   }
-  // ASR 文本进来：念台词→只推进高亮+临近末尾自动续写，返回 true 抑制生成；新话题返回 false 放行
+  // 念台词判定：只有"台词连续出现在语音里"或"整句双向高度一致"才算念台词，
+  // 绝不因共享几个字（长语音散字命中）就把新话题误判成念台词——那会让整个联动瘫痪。
   function onGuardText(t){
     if(!scriptQueue.length)return false;
     var a=normTxt(t);
-    if(a.length<2)return true;
-    var best=-1,bestScore=0,i,L,sc;
+    if(a.length<2)return false;
+    var best=-1,bestScore=0,i,L,core,sc;
     for(i=0;i<scriptQueue.length;i++){
-      L=normTxt(scriptQueue[i]);if(!L)continue;
-      sc=Math.max(coverRatio(a,L),coverRatio(L,a)*0.85);
+      L=normTxt(scriptQueue[i]);if(L.length<2)continue;
+      core=L.replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/,'');
+      sc=0;
+      // 主判据：台词核心连续出现在语音里（逐字照读）
+      if((core.length>=3&&a.indexOf(core)>=0)||(L.length>=3&&a.indexOf(L)>=0))sc=1;
+      // 次判据：语音长度接近台词时，才用双向字符覆盖率（短句念读）
+      else if(a.length<=L.length*2.2)sc=Math.min(coverRatio(a,L),coverRatio(L,a));
       if(sc>bestScore){bestScore=sc;best=i;}
     }
-    if(bestScore>=0.45){
+    if(bestScore>=0.78){
       if(best!==scriptIdx){scriptIdx=best;paintScript();$('genState').textContent='跟读中 · 第 '+(scriptIdx+1)+' 条';}
-      if(scriptQueue.length-scriptIdx<=2)generateMoreScript('near-end'); // 快念完→自动预生成下一批接上
+      if(scriptQueue.length-scriptIdx<=3)generateMoreScript('near-end'); // 剩≤3条→自动续写，不断档
       return true;
     }
     return false;
   }
 
+  // 识别"开场新话题"：用户明确要聊某话题时，必须清空旧台词重开，绝不能被念台词保护吞掉
+  function isNewTopicStart(t){
+    var s=String(t||'').trim();
+    if(!s)return false;
+    if(/(聊聊|聊一聊|说一说|说说|讲讲|谈谈|谈一谈|来聊|来讲|来说|来谈)/.test(s))return true;
+    if(/(今天|咱们|我们|这期|这次|这场|接下来|下面).{0,14}(话题|聊|说|讲|谈)/.test(s))return true;
+    if(/(这个话题|换个话题|换一个话题|新话题|下一个话题|主题是|话题是|主题就)/.test(s))return true;
+    if(/(要不|不如|我想|想跟|准备|打算).{0,12}(聊|说|讲|谈)/.test(s))return true;
+    return false;
+  }
   // 统一联动入口：3号语音、4号打字都进这里。念台词只推进高亮，新话题/指挥触发联动
   var linkBusy=false,linkPending=null;
   function routeInput(text,source){
     var t=String(text||'').trim();
     if(!t)return;
-    if(source==='voice'&&onGuardText(t))return; // 念台词→只高亮，不跳转（保护正在念的话）
-    if(linkBusy){linkPending={t:t,s:source};return;}
-    linkGenerate(t,source);
+    var newTopic=isNewTopicStart(t); // 新话题开场：强制走联动，跳过念台词保护
+    if(source==='voice'&&!newTopic&&onGuardText(t))return; // 念台词→只高亮，不跳转
+    if(linkBusy){linkPending={t:t,s:source,n:newTopic};return;}
+    linkGenerate(t,source,newTopic);
   }
   // 一次调用同时喂饱 1号网状节点 + 2号知识 + 方向
-  function linkGenerate(text,source){
+  function linkGenerate(text,source,forceReplace){
     if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey))return;
     linkBusy=true;
     $('genState').innerHTML='<span class="spin"></span> 正在联动';
@@ -914,7 +943,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var graphLine=topicGraphContext();
     var body={model:CFG.model,
       messages:[{role:'system',content:LINK_SYS+kb+dirLine+memLine},
-                {role:'user',content:(source==='type'?'主播打字输入：\n':'主播刚说：\n')+text.slice(-300)+graphLine}],
+                {role:'user',content:(forceReplace?'【主播明确开场新话题·请清空旧台词重开，topic精确用新话题本身】\n':'')+(source==='type'?'主播打字输入：\n':'主播刚说：\n')+text.slice(-300)+graphLine}],
       temperature:0.8,stream:false,max_tokens:360};
     var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
     var x=new XMLHttpRequest();
@@ -939,10 +968,16 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
         if(Array.isArray(nodes))nodes=nodes.join('');
         var topic=String(d.topic||'').trim().slice(0,40);
         if(String(nodes).trim()){
-          var start=appendScript(String(nodes).trim(),topic,true);
-          if(start>=0){scriptIdx=start;paintScript();}
-          topicGraphAdd(topic,String(nodes));
-          $('genState').textContent='话题联动 · '+(topic||'新节点');
+          var doReplace=!!forceReplace||d.replace===true||d.replace==='true';
+          if(doReplace){
+            replaceScript(String(nodes).trim(),topic||'新话题');
+            if(scriptQueue.length<8)generateMoreScript('near-end'); // 新话题补足，保证下方一直有内容
+          }else{
+            var start=appendScript(String(nodes).trim(),topic,true);
+            if(start>=0){scriptIdx=start;paintScript();}
+          }
+          topicGraphAdd(topic||'新话题',String(nodes));
+          $('genState').textContent=(doReplace?'话题切换 · ':'话题联动 · ')+(topic||'新节点');
         }
         // 2号：只有真专有名词才写；普通词返回空，给个轻提示而不是硬解释
         var know=String(d.know||'').trim();
