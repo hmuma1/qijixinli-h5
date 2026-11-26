@@ -162,6 +162,41 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .typebox button:hover:not(:disabled){background:#f0d39a}
 .typebox button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:760px){.typebox{flex:none;width:100%}}
+.membtn{margin-left:auto;border:1px solid rgba(226,192,122,.4);background:rgba(226,192,122,.08);
+  color:var(--gold);border-radius:10px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.membtn:hover{background:rgba(226,192,122,.18)}
+.memmask{position:fixed;inset:0;background:rgba(3,10,16,.72);backdrop-filter:blur(5px);
+  z-index:120;display:none;align-items:center;justify-content:center;padding:20px}
+.memcard{width:min(620px,94vw);max-height:88vh;overflow-y:auto;background:var(--panel2);
+  border:1px solid rgba(226,192,122,.35);border-radius:20px;box-shadow:var(--shadow);padding:22px 24px;
+  scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
+.memhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.memtitle{font-size:16px;font-weight:700;color:var(--gold);letter-spacing:.5px}
+.memhead button{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);
+  border-radius:9px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+.memhead button:hover{color:var(--gold);border-color:var(--gold-dim)}
+.memstat{font-size:12px;color:var(--muted);background:rgba(226,192,122,.06);
+  border:1px solid var(--border);border-radius:11px;padding:9px 12px;margin-bottom:14px}
+.memstat b{color:var(--gold);font-weight:700}
+.memkeys{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;min-height:20px}
+.mkw{font-size:11px;color:var(--cyan);background:rgba(127,201,196,.1);
+  border:1px solid rgba(127,201,196,.3);border-radius:20px;padding:3px 10px}
+.memsechead{font-size:12px;color:var(--gold-dim);font-weight:600;margin:14px 0 7px;letter-spacing:.5px}
+.membody,.membrief{font-size:13px;line-height:1.8;color:var(--text);background:var(--panel);
+  border:1px solid var(--border);border-radius:12px;padding:12px 14px;white-space:pre-wrap}
+.membrief{color:var(--muted);font-size:12px}
+.memtext{width:100%;min-height:74px;background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:13px;
+  line-height:1.6;resize:vertical;outline:none}
+.memtext:focus{border-color:var(--gold-dim)}
+.memtext::placeholder{color:#718794}
+.memfoot{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.memfoot button{border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.memprimary{border:0;background:var(--gold);color:#1a1206}
+.memprimary:hover{background:#f0d39a}
+.memghost{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted)}
+.memghost:hover{color:var(--warn);border-color:var(--warn)}
+.muted{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -179,6 +214,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <span id="statusText">未启动</span>
     <span class="sep">·</span>
     <span id="apiState">AI 未配置</span>
+    <button class="membtn" id="memBtn" type="button">长期记忆 · 0场</button>
   </div>
 
   <!-- 三个控制键：启动/暂停/结束 -->
@@ -270,6 +306,25 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 长期记忆浮层：固定定位，不占文档流、不撑高页面 -->
+<div class="memmask" id="memMask">
+  <div class="memcard" role="dialog" aria-label="长期记忆">
+    <div class="memhead"><span class="memtitle">长期记忆库 · 提炼不堆积</span><button id="memClose" type="button">关闭 ✕</button></div>
+    <div class="memstat" id="memStat"></div>
+    <div class="memkeys" id="memKeys"></div>
+    <div class="memsechead">主播画像（每次和旧记忆合并重压后的结论）</div>
+    <div class="membody" id="memBody"></div>
+    <div class="memsechead">本场新增 / 变化</div>
+    <div class="membrief" id="memBrief"></div>
+    <div class="memsechead">想立刻看效果？手动喂一段内容来提炼（可选）</div>
+    <textarea class="memtext" id="memText" placeholder="粘贴一段直播里说过的话，点下面的「立即提炼」看看效果…"></textarea>
+    <div class="memfoot">
+      <button class="memprimary" id="memDigest" type="button">立即提炼</button>
+      <button class="memghost" id="memClear" type="button">清空记忆</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -508,6 +563,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   // 结束（stopBtn）
   $('stopBtn').addEventListener('click',function(){
+    var justSaid=(transcriptFinal||'').trim();
     started=false;paused=false;
     if(genTimer){clearTimeout(genTimer);genTimer=null;}
     closeMic();
@@ -521,6 +577,105 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     $('genState').textContent='启动后自动刷新提示';
     $('startInfo').innerHTML='<b>点「启动」后全自动</b>——持续听你说话，说完停一下就自动刷新提示卡。<span class="em">中途不用就按「暂停」省算力，再按「继续」恢复；播完按「结束」。</span>';
     toast('已结束');
+    if(justSaid.length>=10)setTimeout(function(){digestMemory(justSaid);},500);
+  });
+
+  /* ===== 长期记忆：提炼式记忆库（跨场次持久化，不堆积原文） ===== */
+  var MEM_KEY='live_muse_memory_v1';
+  var MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};
+  var memBusy=false;
+  function loadMem(){
+    try{var raw=localStorage.getItem(MEM_KEY);if(!raw)return;var o=JSON.parse(raw);
+      if(o&&typeof o==='object'){
+        MEM.profile=typeof o.profile==='string'?o.profile:'';
+        MEM.keywords=Array.isArray(o.keywords)?o.keywords:[];
+        MEM.sessions=Number(o.sessions)||0;
+        MEM.updated=o.updated||'';MEM.brief=o.brief||'';
+      }
+    }catch(e){}
+  }
+  function saveMem(){try{localStorage.setItem(MEM_KEY,JSON.stringify(MEM));}catch(e){}}
+  function renderMem(){
+    var chars=MEM.profile.length;
+    if($('memBtn'))$('memBtn').textContent=memBusy?'提炼中…':('长期记忆 · '+MEM.sessions+'场');
+    if($('memStat'))$('memStat').innerHTML='已累计 <b>'+MEM.sessions+'</b> 场 · 画像仅 <b>'+chars+'</b> 字 · 关键词 <b>'+MEM.keywords.length+'</b> 个'+(MEM.updated?(' · 更新于 '+MEM.updated):'');
+    if($('memKeys'))$('memKeys').innerHTML=MEM.keywords.length?MEM.keywords.map(function(k){return '<span class="mkw">'+esc(k)+'</span>';}).join(''):'<span class="muted">还没有关键词，播完一场点「结束」自动提炼</span>';
+    if($('memBody'))$('memBody').textContent=MEM.profile||'还没有记忆。播完一场点「结束」，AI 会把本场压缩成几句话存下来；之后每场都和旧记忆合并重压，始终只留几百字，不会越堆越多。';
+    if($('memBrief'))$('memBrief').textContent=MEM.brief||'—';
+  }
+  function openMem(on){
+    var m=$('memMask');if(!m)return;
+    m.style.display=on?'flex':'none';
+    if(on)renderMem();
+  }
+  var MEM_SYS='你是主播的长期记忆提炼器。把“已有画像”和“本场直播记录”合并成一份新画像——不是追加，是重写压缩。\n'+
+    '①只保留长期有用的：主播的说话风格、关注领域、常聊话题、需求习惯、禁忌偏好、口头禅；丢掉一次性新闻、某句原话、临时话题。\n'+
+    '②新画像比旧画像更精炼或等量，总长不超过 400 字，用几条短句写清，不写流水账。\n'+
+    '③keywords 给 6-12 个最能代表这位主播的关键词，去重、按重要度排序。\n'+
+    '④brief 用一句话说清本场新增或强化了什么。\n'+
+    '只输出 JSON：{"profile":"...","keywords":["..."],"brief":"..."}';
+  function digestMemory(auto){
+    if(memBusy)return;
+    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
+      if(!auto){toast('请先在设置里填 API Key');$('settingsBox').open=true;openMem(false);}
+      return;
+    }
+    var mt=$('memText')?$('memText').value.trim():'';
+    var src=mt||((typeof auto==='string')?auto:(transcriptFinal||''));
+    if(mt)$('memText').value='';
+    if(!src||!src.trim()){
+      if(!auto)toast('还没有可提炼的内容，先说几句或在上面粘贴一段');
+      return;
+    }
+    memBusy=true;renderMem();
+    var kb=CFG.knowledge?('\n主播自述背景：'+CFG.knowledge):'';
+    var body={model:CFG.model,
+      messages:[{role:'system',content:MEM_SYS+kb},
+                {role:'user',content:'已有画像：\n'+(MEM.profile||'（空）')+'\n\n本场记录：\n'+src.slice(-1600)}],
+      temperature:0.5,stream:false,max_tokens:760};
+    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
+    var x=new XMLHttpRequest();
+    x.open('POST',url,true);
+    x.setRequestHeader('Content-Type','application/json');
+    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
+    x.timeout=45000;
+    function done(msg,ok){
+      memBusy=false;renderMem();
+      if(msg)toast(msg);
+      return ok;
+    }
+    x.onreadystatechange=function(){
+      if(x.readyState!==4)return;
+      if(x.status<200||x.status>=300){done('提炼失败（'+x.status+'）',false);return;}
+      try{
+        var j=JSON.parse(x.responseText);
+        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+        if(!c)throw new Error('empty');
+        var cl=c.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+        var d=null;
+        try{d=JSON.parse(cl);}catch(e){var m=cl.match(/\{[\s\S]*\}/);if(m){try{d=JSON.parse(m[0]);}catch(e2){}}}
+        if(!d)throw new Error('parse');
+        var p=String(d.profile||'').trim().slice(0,400);
+        if(!p)throw new Error('nop');
+        MEM.profile=p;
+        MEM.keywords=Array.isArray(d.keywords)?d.keywords.slice(0,12).map(function(k){return String(k).trim().slice(0,20);}).filter(Boolean):[];
+        MEM.brief=String(d.brief||'').trim().slice(0,120);
+        MEM.sessions=MEM.sessions+1;
+        MEM.updated=new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+        saveMem();
+        done('已提炼进长期记忆（第 '+MEM.sessions+' 场，画像 '+MEM.profile.length+' 字）',true);
+      }catch(e){done('提炼返回解析失败',false);}
+    };
+    x.ontimeout=function(){done('提炼超时',false);};
+    x.send(JSON.stringify(body));
+  }
+  if($('memBtn'))$('memBtn').addEventListener('click',function(){openMem(true);});
+  if($('memClose'))$('memClose').addEventListener('click',function(){openMem(false);});
+  if($('memMask'))$('memMask').addEventListener('click',function(e){if(e.target===this)openMem(false);});
+  if($('memDigest'))$('memDigest').addEventListener('click',function(){digestMemory(false);});
+  if($('memClear'))$('memClear').addEventListener('click',function(){
+    if(!confirm('确定清空长期记忆？此操作不可恢复。'))return;
+    MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};saveMem();renderMem();toast('长期记忆已清空');
   });
 
   /* AI 生成：全自动，无按钮 */
@@ -561,10 +716,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     $('genState').innerHTML='<span class="spin"></span> 正在生成';
     var kb=CFG.knowledge?('\n\n【主播的领域背景，供参考】\n'+CFG.knowledge):'';
     var dirLine=liveDir?('\n\n【当前直播间方向风格，必须遵守】'+liveDir):'';
+    var memLine=MEM.profile?('\n\n【关于这位主播的长期记忆（跨场次累积，自然贴合，别生硬复述）】\n'+MEM.profile):'';
     var userPrefix=manual?'【主播打字输入，可能是当面不好说、想扭转方向的指令】\n':'主播刚说：\n';
     var topicLine=(manual&&lastTopic)?('\n【当前正在聊的话题，供参考】\n'+lastTopic):'';
     var body={model:CFG.model,
-      messages:[{role:'system',content:SYS+kb+dirLine},{role:'user',content:userPrefix+text.slice(-400)+topicLine}],
+      messages:[{role:'system',content:SYS+kb+dirLine+memLine},{role:'user',content:userPrefix+text.slice(-400)+topicLine}],
       temperature:0.8,stream:false,max_tokens:260};
     var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
     var x=new XMLHttpRequest();
@@ -654,7 +810,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     });
   });
 
-  load();fillForm();renderTranscript();setControls('idle');
+  load();loadMem();fillForm();renderTranscript();setControls('idle');renderMem();
 })();
 </script>
 </body>
