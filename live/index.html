@@ -106,6 +106,12 @@ body{min-height:100vh;background:
 .transcript::-webkit-scrollbar-thumb:hover,.card .body::-webkit-scrollbar-thumb:hover{background:rgba(226,192,122,.65)}
 .card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
 .card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
+/* v5.1：3号听见在上方大卡（青色系强调） */
+.card.heard .tag{color:var(--cyan)} .card.heard .tag i{background:rgba(127,201,196,.16);color:var(--cyan)}
+.card.heard.first{border-color:rgba(127,201,196,.5);background:rgba(127,201,196,.04)}
+/* v5.1：1号台词在下方 hearrow 里 flex 宽、尺寸压到接近原听见的条高 */
+.hearrow .card.say{flex:1;min-width:0;height:96px}
+.hearrow .card.say .body{height:50px}
 .card.say.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
   box-shadow:inset 0 0 30px rgba(226,192,122,.04)}
 .card.say.first .tag{color:var(--gold)}
@@ -247,13 +253,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 提示卡：1号台词流 + 2号名词，放上方 -->
+  <!-- 3号听见(大卡) + 2号知识(小卡)：放上方 -->
   <div class="panel">
-    <h2>直播提词 <span class="n">左边话头扫一眼自己展开 · 右边不懂时救场</span></h2>
+    <h2><i class="wnum">3</i>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
     <div class="cards">
-      <div class="card say first" id="cardSay">
-        <div class="tag"><i>1</i>话头流（网状节点 · 听你说话随时跳点，往下滚自动续）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">启动后凭长期记忆生成网状话头；你说到新话题会自动跳点，鼠标往下滚自动续写</span></div>
+      <div class="card heard first" id="cardTranscript">
+        <div class="tag"><i>3</i>实时听见（声音录入 · 听你说的话实时进这里）</div>
+        <div class="body" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
       </div>
       <div class="card know" id="cardKnow">
         <div class="tag"><i>2</i>知识点（专有名词/难词深度补充）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
@@ -262,11 +268,14 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 实时听见(3号) + 文字输入(4号)：放下方 -->
+  <!-- 1号话头流(flex宽) + 4号文字输入：放下方 -->
   <div class="panel">
-    <h2><i class="wnum">3</i>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
+    <h2><i class="wnum">1</i>话头流 <span class="n">网状节点 · 听你说话随时跳点，往下滚自动续</span></h2>
     <div class="hearrow">
-      <div class="transcript" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
+      <div class="card say first" id="cardSay">
+        <div class="tag"><i>1</i>话头流（网状节点 · 听你说话随时跳点，往下滚自动续）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">启动后凭长期记忆生成网状话头；你说到新话题会自动跳点，鼠标往下滚自动续写</span></div>
+      </div>
       <div class="typebox" id="typeBox">
         <div class="tbhead"><i class="wnum">4</i>文字输入口<span class="hint">不方便说话时打这里</span></div>
         <div class="tbrow">
