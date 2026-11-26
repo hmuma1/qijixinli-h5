@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>话到嘴边 · 一键启动 全程自动</title>
-<meta name="description" content="点一次启动，实时听、实时生成台词流与知识点提醒的私密直播助手">
+<meta name="description" content="点一次启动，实时听、实时生成对话流与知识点提醒的私密直播助手">
 <style>
 :root{
   --bg:#07121d; --bg2:#0b1b2b; --panel:rgba(18,36,52,.78);
@@ -62,8 +62,8 @@ body{min-height:100vh;background:
   border-radius:18px;box-shadow:var(--shadow);padding:10px 16px;margin-bottom:10px;
   backdrop-filter:blur(8px)}
 .panel h2{font-size:13px;margin:0 0 7px;font-weight:600;color:var(--gold);
-  letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between}
-.panel h2 .n{font-size:11px;color:var(--muted);font-weight:400}
+  letter-spacing:.5px;display:flex;align-items:center;justify-content:flex-start}
+.panel h2 .n{font-size:11px;color:var(--muted);font-weight:400;margin-left:auto}
 .transcript{background:var(--panel2);border:1px solid var(--border);
   border-radius:12px;padding:6px 12px;height:80px;overflow-y:scroll;overflow-x:hidden;
   font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
@@ -111,7 +111,7 @@ body{min-height:100vh;background:
 .cards .card .body{height:46px}
 .card.heard .tag{color:var(--cyan)} .card.heard .tag i{background:rgba(127,201,196,.16);color:var(--cyan)}
 .card.heard.first{border-color:rgba(127,201,196,.5);background:rgba(127,201,196,.04)}
-/* v5.1：1号台词在下方 hearrow 里 flex 宽、尺寸压到接近原听见的条高 */
+/* 3号台词在下方 hearrow 里 flex 宽、尺寸压到接近原听见的条高 */
 .hearrow .card.say{flex:1;min-width:0;height:172px}
 .hearrow .card.say .body{height:126px}
 .card.say.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
@@ -255,12 +255,12 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 3号听见(大卡) + 2号知识(小卡)：放上方 -->
+  <!-- 1号听见(大卡) + 2号知识(小卡)：放上方 -->
   <div class="panel">
-    <h2><i class="wnum">3</i>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
+    <h2><i class="wnum">1</i>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
     <div class="cards">
       <div class="card heard first" id="cardTranscript">
-        <div class="tag"><i>3</i>实时听见（声音录入 · 听你说的话实时进这里）</div>
+        <div class="tag"><i>1</i>实时听见（声音录入 · 听你说的话实时进这里）</div>
         <div class="body" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
       </div>
       <div class="card know" id="cardKnow">
@@ -270,13 +270,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
   </div>
 
-  <!-- 1号话头流(flex宽) + 4号文字输入：放下方 -->
+  <!-- 3号对话流(flex宽) + 4号文字输入：放下方 -->
   <div class="panel">
-    <h2><i class="wnum">1</i>话头流 <span class="n">网状节点 · 听你说话随时跳点，往下滚自动续</span></h2>
+    <h2><i class="wnum">3</i>对话流 <span class="n">网状节点 · 听你说话随时跳点，往下滚自动续</span></h2>
     <div class="hearrow">
       <div class="card say first" id="cardSay">
-        <div class="tag"><i>1</i>话头流（网状节点 · 听你说话随时跳点，往下滚自动续）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">启动后凭长期记忆生成网状话头；你说到新话题会自动跳点，鼠标往下滚自动续写</span></div>
+        <div class="tag"><i>3</i>对话流（网状节点 · 听你说话随时跳点，往下滚自动续）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">启动后凭长期记忆生成网状对话；你说到新话题会自动跳点，鼠标往下滚自动续写</span></div>
       </div>
       <div class="typebox" id="typeBox">
         <div class="tbhead"><i class="wnum">4</i>文字输入口<span class="hint">不方便说话时打这里</span></div>
@@ -564,13 +564,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     $('dirTag').style.display='none';
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
-      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">'+(id==='cardSay'?'正在凭长期记忆生成台词流…':'听你说，马上生成……')+'</span>';bd.scrollTop=0;
+      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">'+(id==='cardSay'?'正在凭长期记忆生成对话流…':'听你说，马上生成……')+'</span>';bd.scrollTop=0;
     });
     setControls('running');
     $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词会围绕话题一个角度一个角度往下展开、每节都是能直接念的具体话；反复说同一话题会自动讲下一个新角度，不重头复述；说全新话题才清空换题。中途按「暂停」，播完按「结束」。';
     toast('正在打开麦克风，请在浏览器弹窗点「允许」');
     openMic();
-    // 台词流开篇：优先用留言口预置的主题，否则凭长期记忆自发一个
+    // 对话流开篇：优先用留言口预置的主题，否则凭长期记忆自发一个
     var seed=$('typeInput')?$('typeInput').value.trim():'';
     if(seed)$('typeInput').value='';
     generateMoreScript('start',seed);
@@ -712,16 +712,16 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};saveMem();renderMem();toast('长期记忆已清空');
   });
 
-  /* ===== 一号台词窗：无限滚动台词流（网状节点式） =====
+  /* ===== 一号台词窗：无限滚动对话流（网状节点式） =====
      队列只增不减（念到快完自动续写下一批），当前行高亮、可回看可预览，
      滚轮下滑自动生成；内容是网状节点式——碎片、跳跃、可回跳、可重复，
      绝不按"阶梯/讲演稿"一二三往下走；不撑高页面，固定高度内部滚动。 */
   var scriptQueue=[],scriptIdx=-1,scriptTopic='',batchStarts=[],scriptBusy=false;
   var talkedAngles=[],angleIdx=0; // 话题逐节展开：已讲过的具体角度，保证每次讲新的一面、不原地复述话题名
-  var scriptNodes=[],nodeCursor=0; // 网状节点池：去重累积说过的话头，供后续跳跃/回跳/换角度重说
+  var scriptNodes=[],nodeCursor=0; // 网状节点池：去重累积说过的对话点，供后续跳跃/回跳/换角度重说
 
-  // 专门写台词流的提示词：主播本人原话、可自定主题、只输出 say + topic
-  // 台词流提示词：网状节点式（碎片/跳跃/可回跳/可重复），每条是可直接念的完整短句，只输出 say + topic
+  // 专门写对话流的提示词：主播本人原话、可自定主题、只输出 say + topic
+  // 对话流提示词：网状节点式（碎片/跳跃/可回跳/可重复），每条是可直接念的完整短句，只输出 say + topic
   var SAY_SYS='你是直播逐节展开的台词引擎。给你一个话题和"已经讲过哪些角度"，你要讲一个**还没讲过的具体角度**，把它展开成主播能直接念的实在话。\n'+
     '【第一铁律·必须往前推进，绝不原地复述话题名】话题是"情绪管理"，你绝不能反复写"情绪管理是什么""情绪调节方法""压力应对策略"这种把话题换个说法的标题——那是目录，不是台词，粉丝什么也学不到。每次必须讲一个具体的、没讲过的新角度。\n'+
     '【怎么展开一个角度】angle 用8-14字写清这一节讲的具体方面（如"情绪是身体的警报信号""被领导批评时的6秒暂停法""为什么越压抑越反弹"），不要只写话题名。say 用3条完整陈述句把这个角度讲透：给真实场景、给具体动作、给细节、给例子或数字，念出来观众脑子里能有画面。\n'+
@@ -736,7 +736,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     '{"angle":"这一节讲的具体角度（8-14字）","say":"①...②...③..."}\n';
 
   // 录入联动引擎提示词：一次产出 1号网状节点 + 2号知识，省一次往返、压低延迟
-  var LINK_SYS='你是直播现场的"双窗联动引擎"。主播说了或打了一段话，你一次算出两样东西：给1号窗口的网状话头节点，给2号窗口的知识补充。\n'+
+  var LINK_SYS='你是直播现场的"联动引擎"。主播说了或打了一段话（1号听见录入的），你一次算出两样东西：给3号对话流窗的推进方向，给2号知识窗的名词补充。窗口编号：1号=实时听见(录入声音)、2号=名词解释、3号=台词(预演推进)、4号=文字录入口。\n'+
     '【新话题开场·最高优先级】若主播明确开场新话题（如"今天聊聊X""要不说说X""换个话题""今天想谈X"），topic 必须精确就是那个新话题本身（例：说"情绪管理"→topic="情绪管理"，绝不能沿用上一个话题"时间管理"），nodes 必须全部围绕这个新话题展开，并置 replace:true 表示清空旧台词重开；非开场则 replace:false。\n'+
     '【2号知识 know——只认真专有名词】只有出现真正的专有名词/概念才写know：人名、历史人物、地名、机构、品牌、产品、技术术语、缩写、外语词、学科概念（理化生政史经）、专业词汇。要做"深度补充"：这人/概念是谁、什么背景、关联人物、朝代职务、领域归属、为什么重要——像一张迷你知识卡，60-90字。例：提到"司马光"→"司马光：北宋史学家，《资治通鉴》主编，砸缸典故主人公；与王安石变法立场相左，属旧党。父亲司马池，谥号文正。"\n'+
     '【2号知识——普通词一律不解释】普通日常词、动词短语、语气词（如"当中被骂""然后呢""这个东西""聊聊天"）不是专有名词，know 必须返回空字符串 ""，绝不要硬解释——把大白话当知识解释很低级。宁可空着。没有就给 ""。\n'+
@@ -1077,8 +1077,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   })();
 
   /* AI 生成：全自动，无按钮 */
-  var SYS='你在给主播做实时直播提词。本轮你只负责两件事：右边的"名词解释"(know) 和 方向指令(dir)。台词流由另一套独立系统负责，本轮不要写台词。\n'+
-    '【窗口位置】1号=台词流（上方左，缩略版话头，不用你管）；2号=名词解释（上方右，你负责）；3号=实时听见（下方，主播说的话）；4号=文字输入口（下方，主播打字指挥）。\n'+
+  var SYS='你在给主播做实时直播提词。本轮你只负责两件事：右边的"名词解释"(know) 和 方向指令(dir)。对话流由另一套独立系统负责，本轮不要写台词。\n'+
+    '【窗口位置】1号=实时听见（左上，主播说的话，第一个接收信息并触发联动）；2号=名词解释（右上，你负责）；3号=对话流（左下，预演推进的台词，不用你管）；4号=文字输入口（右下，主播打字指挥）。\n'+
     '【打字=主播的暗中指挥权】主播打字输入时，往往是当面不好意思说、或想扭转直播间方向。如果输入是方向性指令（如"幽默一点""往专业走""反转一下""聊回刚才那个""别提这个了""多抛梗"），就在 dir 字段用一句话写清新方向（如"更幽默、多抛梗、允许自嘲"），并且本轮 know 立刻按新方向走；方向一旦设定会被记住，持续影响后续所有输出，直到新指令覆盖。如果打字只是普通内容（想让你解释某个词或话题），dir 留空字符串。\n'+
     '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝留言里提到、主播照着念出来的词（如"有人问 WorkBuddy""粉丝说 API 是啥"）。\n'+
     ' - 只要出现主播可能不了解的名词，就必须在 know 里给出准确定义：先用标准术语说出本来的专业含义，再用半句浅显话点明。宁可短，也不要编跟真实定义偏差大的类比。哪怕主播没明说"这是啥"，只要这词有解释价值就主动给。一次多个名词，挑最容易让主播卡住的那个讲。\n'+
@@ -1144,7 +1144,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
           $('dirTag').textContent='当前风格：'+liveDir;
           $('dirTag').style.display='inline-block';
           toast('方向已调整：'+liveDir);
-          generateMoreScript('next'); // 打字暗中指挥：台词流也立刻按新方向续写
+          generateMoreScript('next'); // 打字暗中指挥：对话流也立刻按新方向续写
         }else{
           lastTopic=text.slice(0,120);
         }
@@ -1164,7 +1164,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       var m=cleaned.match(/\{[\s\S]*\}/);
       if(m){try{data=JSON.parse(m[0]);}catch(e2){}}
     }
-    // 一号台词窗已升级为独立无限滚动台词流，这里只负责右边二号名词卡，绝不再覆盖台词
+    // 一号台词窗已升级为独立无限滚动对话流，这里只负责右边二号名词卡，绝不再覆盖台词
     var v=data&&(data.know||data.knowledge||data.point||data.points);
     if(Array.isArray(v))v=v.join('\n');
     var got=false;
