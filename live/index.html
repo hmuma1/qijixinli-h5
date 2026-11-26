@@ -59,13 +59,13 @@ body{min-height:100vh;background:
 .startinfo .em{color:var(--gold)}
 
 .panel{background:var(--panel);border:1px solid var(--border);
-  border-radius:18px;box-shadow:var(--shadow);padding:12px 16px;margin-bottom:12px;
+  border-radius:18px;box-shadow:var(--shadow);padding:10px 16px;margin-bottom:10px;
   backdrop-filter:blur(8px)}
 .panel h2{font-size:13px;margin:0 0 7px;font-weight:600;color:var(--gold);
   letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between}
 .panel h2 .n{font-size:11px;color:var(--muted);font-weight:400}
 .transcript{background:var(--panel2);border:1px solid var(--border);
-  border-radius:12px;padding:6px 12px;height:90px;overflow-y:scroll;overflow-x:hidden;
+  border-radius:12px;padding:6px 12px;height:80px;overflow-y:scroll;overflow-x:hidden;
   font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .hearrow{display:flex;gap:12px;align-items:stretch}
 .hearrow .transcript{flex:1;min-width:0}
@@ -76,22 +76,22 @@ body{min-height:100vh;background:
 .transcript .interim{color:var(--muted);font-style:italic}
 .transcript .ph{color:#5c6f7a;font-size:13px}
 
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.cards{display:grid;grid-template-columns:1.55fr 1fr;gap:13px}
 @media(max-width:720px){.cards{grid-template-columns:1fr}}
 .card{background:var(--panel2);border:1px solid var(--border);border-radius:14px;
-  padding:10px 12px;height:146px;position:relative;overflow:hidden}
+  padding:10px 12px;height:158px;position:relative;overflow:hidden}
 .card .tag{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:6px;
   display:flex;align-items:center;gap:7px}
 .card .tag i{width:18px;height:18px;border-radius:6px;display:inline-flex;
   align-items:center;justify-content:center;font-style:normal;font-size:11px}
 .card .body{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;
-  height:100px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
+  height:112px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
   scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .card .empty{color:#5c6f7a;font-size:13px}
 .card .body .ln{padding:1px 5px;margin:0 0 4px;border-radius:5px}
 .card .body .ln.dim{opacity:.6}
-.card .body .ln.reading{background:rgba(226,192,122,.24);color:#fff;
-  box-shadow:inset 0 0 0 1px rgba(226,192,122,.45)}
+.card .body .ln.reading{background:rgba(226,192,122,.26);color:#fff;font-weight:600;
+  box-shadow:inset 3px 0 0 var(--gold),inset 0 0 0 1px rgba(226,192,122,.45)}
 .card .sbtns{margin-left:auto;display:flex;gap:3px;flex:none}
 .card .sbtns button{width:17px;height:17px;line-height:1;border:1px solid var(--border);
   background:rgba(255,255,255,.03);color:var(--muted);border-radius:5px;
@@ -252,12 +252,12 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <h2>直播提词 <span class="n">左边话头扫一眼自己展开 · 右边不懂时救场</span></h2>
     <div class="cards">
       <div class="card say first" id="cardSay">
-        <div class="tag"><i>1</i>台词流（话头提示，往下滚自动生成）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">启动后凭长期记忆生成主题和首批话头；鼠标往下滚到接近底部，会自动续写下一批</span></div>
+        <div class="tag"><i>1</i>话头流（网状节点 · 听你说话随时跳点，往下滚自动续）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">启动后凭长期记忆生成网状话头；你说到新话题会自动跳点，鼠标往下滚自动续写</span></div>
       </div>
       <div class="card know" id="cardKnow">
-        <div class="tag"><i>2</i>名词是啥（不懂时看这里）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">专有名词、外语词、稀有词，这里给准确定义，及时救场</span></div>
+        <div class="tag"><i>2</i>知识点（专有名词/难词深度补充）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">人名/历史/科技/概念等专有名词，给背景、关联、来龙去脉的深度补充；普通词不解释</span></div>
       </div>
     </div>
   </div>
@@ -415,8 +415,10 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   var ASR_MODEL='FunAudioLLM/SenseVoiceSmall';
   var audioCtx=null,micStream=null,procNode=null,silentGain=null;
   var started=false,paused=false,pendingText='',genTimer=null,failCount=0;
-  var pcmChunks=[],segmentHasVoice=false,segAudioMs=0,silenceAudioMs=0,uploadChain=null;
-  var frameMs=0,SILENCE_MS=500,MAX_SEG_MS=9000,VOICE_RMS=0.012;
+  var pcmChunks=[],segmentHasVoice=false,segAudioMs=0,silenceAudioMs=0;
+  // 并行上传：每段独立请求，用序号把识别结果按说话顺序排好，避免排队积压造成卡顿
+  var asrSeq=0,asrDone=0,asrResults={};
+  var frameMs=0,SILENCE_MS=500,MAX_SEG_MS=7000,VOICE_RMS=0.008;
 
   // 把浮点 PCM 片段编码成 16bit WAV（SenseVoice 必支持）
   function encodeWAV(chunks,rate){
@@ -437,8 +439,9 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     return new Blob([buf],{type:'audio/wav'});
   }
 
-  // 一段录音 → 上传 SenseVoice 转文字 → 走四步生成
+  // 一段录音 → 并行上传 SenseVoice 转文字 → 按序输出 → 走联动路由
   function asrUpload(blob){
+    var mySeq=++asrSeq;
     var fd=new FormData();
     fd.append('file',blob,'audio.wav');
     fd.append('model',ASR_MODEL);
@@ -446,9 +449,14 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       .then(function(r){if(!r.ok)throw new Error('识别服务 '+r.status);return r.json();})
       .then(function(j){
         var t=(j.text||'').replace(/\s+/g,' ').trim();
-        if(t&&started&&!paused){
-          transcriptFinal+=t;renderTranscript();
-          if(!onGuardText(t)){pendingText+=t;scheduleGenerate();} // 念台词期间只推进高亮，不生成
+        asrResults[mySeq]=t;
+        // 按说话顺序输出，先到的后面若缺前段就等，根治乱序
+        while(asrResults[asrDone+1]!==undefined){
+          var txt=asrResults[asrDone+1];delete asrResults[asrDone+1];asrDone++;
+          if(txt&&started&&!paused){
+            transcriptFinal+=txt;renderTranscript();
+            routeInput(txt,'voice'); // 3号录入 → 联动引擎
+          }
         }
       })
       .catch(function(e){toast('语音转文字失败：'+e.message);});
@@ -460,8 +468,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var chunks=pcmChunks;pcmChunks=[];segmentHasVoice=false;
     segAudioMs=0;silenceAudioMs=0;
     var blob=encodeWAV(chunks,audioCtx?audioCtx.sampleRate:44100);
-    if(!uploadChain)uploadChain=Promise.resolve();
-    uploadChain=uploadChain.then(function(){return asrUpload(blob);}).catch(function(){});
+    asrUpload(blob); // 并行上传，不再排队等上一段
   }
 
   function openMic(){
@@ -540,6 +547,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     }
     if(started)return;
     started=true;paused=false;pendingText='';failCount=0;liveDir='';lastTopic='';
+    asrSeq=0;asrDone=0;asrResults={};linkBusy=false;linkPending=null;
+    topicGraph={};topicHistory=[];
     resetScript();
     $('dirTag').style.display='none';
     transcriptFinal='';transcriptInterim='';renderTranscript();
@@ -581,6 +590,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     if(genTimer){clearTimeout(genTimer);genTimer=null;}
     closeMic();
     pcmChunks=[];pendingText='';transcriptFinal='';transcriptInterim='';failCount=0;
+    asrSeq=0;asrDone=0;asrResults={};linkBusy=false;linkPending=null;topicGraph={};topicHistory=[];
     renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
       var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">已结束，点「启动」重新开始</span>';bd.scrollTop=0;
@@ -709,6 +719,42 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     '【主题可自定】没给主题时，凭主播长期记忆自发生成一个具体、新鲜、能展开的主题；主题错了没关系，照写，主播会自己往下滚。\n'+
     '只输出一个 JSON 对象，不要解释、不要代码块：\n'+
     '{"topic":"本次主题（4-12字）","say":"①...②...③..."}\n';
+
+  // 录入联动引擎提示词：一次产出 1号网状节点 + 2号知识，省一次往返、压低延迟
+  var LINK_SYS='你是直播现场的"双窗联动引擎"。主播说了或打了一段话，你一次算出两样东西：给1号窗口的网状话头节点，给2号窗口的知识补充。\n'+
+    '【2号知识 know——只认真专有名词】只有出现真正的专有名词/概念才写know：人名、历史人物、地名、机构、品牌、产品、技术术语、缩写、外语词、学科概念（理化生政史经）、专业词汇。要做"深度补充"：这人/概念是谁、什么背景、关联人物、朝代职务、领域归属、为什么重要——像一张迷你知识卡，60-90字。例：提到"司马光"→"司马光：北宋史学家，《资治通鉴》主编，砸缸典故主人公；与王安石变法立场相左，属旧党。父亲司马池，谥号文正。"\n'+
+    '【2号知识——普通词一律不解释】普通日常词、动词短语、语气词（如"当中被骂""然后呢""这个东西""聊聊天"）不是专有名词，know 必须返回空字符串 ""，绝不要硬解释——把大白话当知识解释很低级。宁可空着。没有就给 ""。\n'+
+    '【语音纠错】识别常听错（中英混说/谐音/缩写），结合语境纠正：听到"NPD是啥"讲自恋型人格障碍，不是小米快充；拿不准用"你说的应该是X"。\n'+
+    '【1号网状话头 nodes】提炼这段话的话题点topic（4-12字），再给3-5个网状关联节点nodes，每条8-18字话头，用①②③分隔：\n'+
+    ' - 是网状不是阶梯：围绕topic散出不同角度的关联点，可往外发散，也可跳回"聊过的点"里的旧点。\n'+
+    ' - 靠关联性跳回：若新话题跟某个旧点共用某个节点，就让那个旧点重新冒出来——这是内容关联触发，不是随机、不是按概率。\n'+
+    ' - 碎片、可跳、可重复、不是连贯讲演稿；每节点独立弹出，主播扫一眼自己展开成口语。\n'+
+    '【方向指令 dir】打字若含方向指令（幽默点/往专业走/反转/别聊这个/多抛梗/换风格），写进dir；否则空。\n'+
+    '只输出JSON：{"know":"...或空","topic":"...","nodes":"①...②...③...","dir":""}\n';
+
+  // 话题图：网状关联，靠"共用节点"跳回旧话题（不是概率）
+  var topicGraph={},topicHistory=[];
+  function nodeTags(raw){
+    return splitScript(raw).map(function(x){return String(x).replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'').trim().slice(0,14);}).filter(Boolean);
+  }
+  function topicGraphAdd(topic,raw){
+    if(!topic)return;
+    var tags=nodeTags(raw);
+    if(!topicGraph[topic])topicGraph[topic]=[];
+    tags.forEach(function(g){if(topicGraph[topic].indexOf(g)<0)topicGraph[topic].push(g);});
+    if(topicHistory.indexOf(topic)<0)topicHistory.push(topic);
+    if(topicHistory.length>14)topicHistory=topicHistory.slice(-14);
+    var ks=Object.keys(topicGraph);
+    if(ks.length>16)delete topicGraph[ks[0]];
+  }
+  function topicGraphContext(){
+    if(!topicHistory.length)return '';
+    var lines=['\n\n【之前聊过的话题点（可凭内容关联性跳回，不是随机、不是按概率）】'];
+    topicHistory.slice(-8).forEach(function(k){
+      lines.push('- '+k+'：'+(topicGraph[k]||[]).slice(0,4).join('、'));
+    });
+    return lines.join('\n');
+  }
 
   function normTxt(x){return String(x||'').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g,'').toLowerCase();}
   function coverRatio(a,b){ // a 的字符有多大比例能在 b 里找到（按计数，防重复字虚高）
@@ -847,6 +893,78 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     }
     return false;
   }
+
+  // 统一联动入口：3号语音、4号打字都进这里。念台词只推进高亮，新话题/指挥触发联动
+  var linkBusy=false,linkPending=null;
+  function routeInput(text,source){
+    var t=String(text||'').trim();
+    if(!t)return;
+    if(source==='voice'&&onGuardText(t))return; // 念台词→只高亮，不跳转（保护正在念的话）
+    if(linkBusy){linkPending={t:t,s:source};return;}
+    linkGenerate(t,source);
+  }
+  // 一次调用同时喂饱 1号网状节点 + 2号知识 + 方向
+  function linkGenerate(text,source){
+    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey))return;
+    linkBusy=true;
+    $('genState').innerHTML='<span class="spin"></span> 正在联动';
+    var kb=CFG.knowledge?('\n\n【主播领域背景】'+CFG.knowledge):'';
+    var dirLine=liveDir?('\n\n【当前方向，必须遵守】'+liveDir):'';
+    var memLine=MEM.profile?('\n\n【主播长期记忆】'+MEM.profile):'';
+    var graphLine=topicGraphContext();
+    var body={model:CFG.model,
+      messages:[{role:'system',content:LINK_SYS+kb+dirLine+memLine},
+                {role:'user',content:(source==='type'?'主播打字输入：\n':'主播刚说：\n')+text.slice(-300)+graphLine}],
+      temperature:0.8,stream:false,max_tokens:360};
+    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
+    var x=new XMLHttpRequest();
+    x.open('POST',url,true);
+    x.setRequestHeader('Content-Type','application/json');
+    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
+    x.timeout=45000;
+    function done(){linkBusy=false;if(linkPending){var p=linkPending;linkPending=null;routeInput(p.t,p.s);}}
+    x.onreadystatechange=function(){
+      if(x.readyState!==4)return;
+      if(x.status<200||x.status>=300){done();$('genState').textContent='联动失败 · 继续说';return;}
+      try{
+        var j=JSON.parse(x.responseText);
+        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+        if(!c)throw new Error('空返回');
+        var cl=c.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+        var d=null;
+        try{d=JSON.parse(cl);}catch(e){var m=cl.match(/\{[\s\S]*\}/);if(m){try{d=JSON.parse(m[0]);}catch(e2){}}}
+        if(!d)throw new Error('解析');
+        // 1号：新话题节点追加进队列并跳到新起点（旧话题被淹没往下翻）
+        var nodes=d.nodes||d.say||'';
+        if(Array.isArray(nodes))nodes=nodes.join('');
+        var topic=String(d.topic||'').trim().slice(0,40);
+        if(String(nodes).trim()){
+          var start=appendScript(String(nodes).trim(),topic,true);
+          if(start>=0){scriptIdx=start;paintScript();}
+          topicGraphAdd(topic,String(nodes));
+          $('genState').textContent='话题联动 · '+(topic||'新节点');
+        }
+        // 2号：只有真专有名词才写；普通词返回空，给个轻提示而不是硬解释
+        var know=String(d.know||'').trim();
+        var kbd=$('cardKnow')&&$('cardKnow').querySelector('.body');
+        if(kbd){
+          kbd.textContent=know||'（这句没有需要解释的专有名词）';kbd.scrollTop=0;
+          if(know&&!CFG.quiet){var el=$('cardKnow');el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+        }
+        // 方向指令
+        var nd=String(d.dir||'').trim();
+        if(source==='type'&&nd){
+          liveDir=nd.slice(0,120);
+          $('dirTag').textContent='当前风格：'+liveDir;$('dirTag').style.display='inline-block';
+          toast('方向已调整：'+liveDir);
+        }
+      }catch(e){$('genState').textContent='联动解析失败 · 继续说';}
+      done();
+    };
+    x.ontimeout=function(){done();$('genState').textContent='联动超时 · 继续说';};
+    x.send(JSON.stringify(body));
+  }
+
   // 滚轮往下滚到接近底部：自动生成下一批接上，形成无限滚动（取代"下一步"按钮）
   (function(){
     var bd=$('cardSay')&&$('cardSay').querySelector('.body');
@@ -958,7 +1076,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     return data;
   }
 
-  // 右下角文字输入：不方便语音时打字回车，走同一套两块生成
+  // 4号文字输入：纯录入口，打的字作为话题/指挥喂给联动引擎（同时驱动1号跳转、2号知识）
   function sendTyped(){
     var t=$('typeInput').value.trim();
     if(!t){toast('先输入文字');return;}
@@ -966,10 +1084,9 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       toast('请先在设置里填 API Key');$('settingsBox').open=true;return;
     }
     if(busy){toast('正在生成，稍等一下');return;}
-    pendingText=t;
     $('typeInput').value='';
-    generate(true);
-    toast('已发送，正在生成');
+    routeInput(t,'type');
+    toast('已发送，正在联动');
   }
   $('typeSend').addEventListener('click',sendTyped);
   $('typeInput').addEventListener('keydown',function(e){
