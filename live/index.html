@@ -20,7 +20,7 @@ body{min-height:100vh;background:
   radial-gradient(1000px 600px at 50% -12%,rgba(226,192,122,.07),transparent 62%),
   radial-gradient(800px 500px at 90% 100%,rgba(127,201,196,.05),transparent 60%),
   linear-gradient(180deg,var(--bg2),var(--bg) 70%);}
-.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 70px}
+.wrap{max-width:1040px;margin:0 auto;padding:18px 18px 46px}
 
 .top{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--gold);
@@ -59,13 +59,13 @@ body{min-height:100vh;background:
 .startinfo .em{color:var(--gold)}
 
 .panel{background:var(--panel);border:1px solid var(--border);
-  border-radius:20px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px;
+  border-radius:18px;box-shadow:var(--shadow);padding:12px 16px;margin-bottom:12px;
   backdrop-filter:blur(8px)}
-.panel h2{font-size:13px;margin:0 0 12px;font-weight:600;color:var(--gold);
+.panel h2{font-size:13px;margin:0 0 7px;font-weight:600;color:var(--gold);
   letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between}
 .panel h2 .n{font-size:11px;color:var(--muted);font-weight:400}
 .transcript{background:var(--panel2);border:1px solid var(--border);
-  border-radius:14px;padding:10px 14px;height:92px;overflow-y:scroll;overflow-x:hidden;
+  border-radius:12px;padding:6px 12px;height:90px;overflow-y:scroll;overflow-x:hidden;
   font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .hearrow{display:flex;gap:12px;align-items:stretch}
 .hearrow .transcript{flex:1;min-width:0}
@@ -78,16 +78,18 @@ body{min-height:100vh;background:
 
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 @media(max-width:720px){.cards{grid-template-columns:1fr}}
-.card{background:var(--panel2);border:1px solid var(--border);border-radius:16px;
-  padding:14px 15px;height:148px;position:relative;overflow:hidden}
-.card .tag{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:10px;
+.card{background:var(--panel2);border:1px solid var(--border);border-radius:14px;
+  padding:10px 12px;height:146px;position:relative;overflow:hidden}
+.card .tag{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:6px;
   display:flex;align-items:center;gap:7px}
 .card .tag i{width:18px;height:18px;border-radius:6px;display:inline-flex;
   align-items:center;justify-content:center;font-style:normal;font-size:11px}
 .card .body{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;
-  height:86px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
+  height:100px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
   scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
 .card .empty{color:#5c6f7a;font-size:13px}
+.card .body .reading{background:rgba(226,192,122,.24);border-radius:5px;
+  padding:1px 4px;color:#fff;box-shadow:inset 0 0 0 1px rgba(226,192,122,.45)}
 .card .sbtns{margin-left:auto;display:flex;gap:3px;flex:none}
 .card .sbtns button{width:17px;height:17px;line-height:1;border:1px solid var(--border);
   background:rgba(255,255,255,.03);color:var(--muted);border-radius:5px;
@@ -99,10 +101,10 @@ body{min-height:100vh;background:
 .transcript::-webkit-scrollbar-thumb:hover,.card .body::-webkit-scrollbar-thumb:hover{background:rgba(226,192,122,.65)}
 .card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
 .card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
-.card.know.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
+.card.say.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
   box-shadow:inset 0 0 30px rgba(226,192,122,.04)}
-.card.know.first .tag{color:var(--gold)}
-.card.know.first .tag i{background:rgba(226,192,122,.2);color:var(--gold)}
+.card.say.first .tag{color:var(--gold)}
+.card.say.first .tag i{background:rgba(226,192,122,.2);color:var(--gold)}
 .card.flash::after{content:"";position:absolute;inset:0;pointer-events:none;
   border-radius:16px;animation:flash 1.4s ease-out forwards}
 @keyframes flash{0%{box-shadow:inset 0 0 0 1px var(--gold),inset 0 0 26px rgba(226,192,122,.22)}
@@ -257,15 +259,15 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 
   <!-- 提示卡 -->
   <div class="panel">
-    <h2>直播接力提示 <span class="n">从上到下＝先定义、再接话，两步照着说</span></h2>
+    <h2>直播接力提示 <span class="n">左边台词照着念 · 右边不懂时救场</span></h2>
     <div class="cards">
-      <div class="card know first" id="cardKnow">
-        <div class="tag"><i>1</i>名词是啥（先把定义讲出来）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">你或粉丝提到的名词，一两句话讲清是什么，让你当场接住不尴尬</span></div>
+      <div class="card say first" id="cardSay">
+        <div class="tag"><i>1</i>台词（直接照着念，读到哪高亮到哪）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">主播本人的台词，念到哪亮到哪，念完整组自动换下一组</span></div>
       </div>
-      <div class="card say" id="cardSay">
-        <div class="tag"><i>2</i>接下来说啥（给几个能展开的话头）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">讲完定义后，下一句该说什么，直接给你能说的话</span></div>
+      <div class="card know" id="cardKnow">
+        <div class="tag"><i>2</i>名词是啥（不懂时看这里）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
+        <div class="body"><span class="empty">专有名词、外语词、稀有词，这里给准确定义，及时救场</span></div>
       </div>
     </div>
   </div>
@@ -440,7 +442,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       .then(function(j){
         var t=(j.text||'').replace(/\s+/g,' ').trim();
         if(t&&started&&!paused){
-          transcriptFinal+=t;pendingText+=t;renderTranscript();scheduleGenerate();
+          transcriptFinal+=t;renderTranscript();
+          if(!onGuardText(t)){pendingText+=t;scheduleGenerate();} // 念台词期间只推进高亮，不生成
         }
       })
       .catch(function(e){toast('语音转文字失败：'+e.message);});
@@ -532,6 +535,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     }
     if(started)return;
     started=true;paused=false;pendingText='';failCount=0;liveDir='';lastTopic='';
+    disarmGuard();
     $('dirTag').style.display='none';
     transcriptFinal='';transcriptInterim='';renderTranscript();
     ['cardKnow','cardSay'].forEach(function(id){
@@ -564,7 +568,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   // 结束（stopBtn）
   $('stopBtn').addEventListener('click',function(){
     var justSaid=(transcriptFinal||'').trim();
-    started=false;paused=false;
+    started=false;paused=false;disarmGuard();
     if(genTimer){clearTimeout(genTimer);genTimer=null;}
     closeMic();
     pcmChunks=[];pendingText='';transcriptFinal='';transcriptInterim='';failCount=0;
@@ -678,19 +682,69 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};saveMem();renderMem();toast('长期记忆已清空');
   });
 
+  /* ===== 跟读保护主播台词：念台词时麦克风听到的是台词本身，不该触发生成把自己冲掉 ===== */
+  var guardOn=false,guardLines=[],guardRaw='',guardIdx=-1;
+  function normTxt(x){return String(x||'').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g,'').toLowerCase();}
+  function coverRatio(a,b){ // a 的字符有多大比例能在 b 里找到（按计数，防重复字虚高）
+    var pool=b.split(''),hit=0,i,k;
+    for(i=0;i<a.length;i++){k=pool.indexOf(a.charAt(i));if(k>=0){hit++;pool.splice(k,1);}}
+    return a.length?hit/a.length:0;
+  }
+  function splitLines(raw){
+    var parts=String(raw||'').split(/(?=[①②③④⑤⑥⑦⑧⑨⑩])/).map(function(x){return x.trim();}).filter(Boolean);
+    return parts.length?parts:[String(raw||'')];
+  }
+  function paintGuard(){
+    var el=$('cardSay');if(!el)return;
+    var bd=el.querySelector('.body');
+    if(!guardOn){bd.textContent=guardRaw||'';return;}
+    bd.innerHTML=guardLines.map(function(ln,i){
+      return '<span'+(i===guardIdx?' class="reading"':'')+'>'+esc(ln)+'</span>';
+    }).join('\n');
+  }
+  function armGuard(raw){
+    guardRaw=String(raw||'').trim();
+    guardLines=splitLines(guardRaw);guardIdx=-1;
+    guardOn=guardLines.length>0&&guardRaw.length>0;
+    paintGuard();
+  }
+  function disarmGuard(){guardOn=false;guardIdx=-1;guardRaw='';guardLines=[];}
+  // ASR 文本进来：返回 true=正在念台词(抑制生成)；false=新内容(放行生成)
+  function onGuardText(t){
+    if(!guardOn)return false;
+    var a=normTxt(t);
+    if(a.length<2)return true; // 过短的识别片段，忽略
+    var best=-1,bestScore=0,i,L,sc;
+    for(i=0;i<guardLines.length;i++){
+      L=normTxt(guardLines[i]);if(!L)continue;
+      sc=Math.max(coverRatio(a,L),coverRatio(L,a)*0.85);
+      if(sc>bestScore){bestScore=sc;best=i;}
+    }
+    if(bestScore>=0.45){ // 判定为在念稿：只推进高亮，不生成
+      if(best!==guardIdx){
+        guardIdx=best;paintGuard();
+        var bd=$('cardSay').querySelector('.body');bd.scrollTop=0;
+        $('genState').textContent='跟读中 · 第 '+(guardIdx+1)+' 条';
+      }
+      return true;
+    }
+    disarmGuard(); // 不是台词内容，是新话题 → 解除保护、放行生成
+    return false;
+  }
+
   /* AI 生成：全自动，无按钮 */
   var SYS='你在为主播做实时直播提词。记住三条铁律，尤其第二条：\n'+
-    '【窗口分工】0号=实时听见（主播说的话，不用你管）；1号=知识盲区补充，围绕当下话题的关键词及周边，补主播可能不懂的定义、原则、理论、基础事实——专有名词的定义永远是第一位，及时救场，稳、准、克制；2号=台词本身，是主播本人要张嘴念出去的原话、讲演稿、内容本体。\n'+
-    '【二号最重要·你就是主播本人】say 窗口不是助手、不是军师、不是旁白、不是提建议的人——它就是这个主播本人，是执行者本人，是内容本体、台词本身。你写的每一句，都是主播下一秒要原封不动说给观众听的话。严禁任何指导性、建议性、指向性语言，严禁切换主客体：不许写“这时候应该讲点什么”“应该抛出什么话题”“可以聊聊”“建议你”“主播可以说”“接下来你可以”“这里不妨”“作为一个助手我认为”这类废话——这些全都错，因为主播直播时根本不会去看内容的指向，他只会照着念台词。你要彻底代入主播这个人的身份，用他的口吻、他的语气，直接把该说的话写出来。say 就是讲演稿本身，不是关于讲演稿的说明。\n'+
-    '【二号台词必须跟随直播间风格】先判断直播间流派（幽默风趣/专业硬核/情绪共鸣/观点交锋/闲聊陪伴），再用主播本人的口吻把台词写出来：幽默场就写出段子和调侃的原话（直接好笑，不是“讲个段子”）；专业场就写出有门道、有数字、够狠的原话；情绪场就写出共情的原话。台词本身要带爆点、能引弹幕，但一律用“主播直接说出口的句子”呈现，不写任何关于这句话的点评或指引。\n'+
+    '【窗口分工】0号=实时听见（主播说的话，不用你管）；1号=台词本身，是主播本人要张嘴念出去的原话、讲演稿、内容本体，是最重要的窗口，放在左边；2号=知识盲区补充，围绕当下话题的关键词及周边，补主播可能不懂的定义、原则、理论、基础事实——专有名词的定义永远是第一位，及时救场，稳、准、克制，放在右边，只有遇到不懂的词才看它。\n'+
+    '【一号最重要·你就是主播本人】say 窗口不是助手、不是军师、不是旁白、不是提建议的人——它就是这个主播本人，是执行者本人，是内容本体、台词本身。你写的每一句，都是主播下一秒要原封不动说给观众听的话。严禁任何指导性、建议性、指向性语言，严禁切换主客体：不许写“这时候应该讲点什么”“应该抛出什么话题”“可以聊聊”“建议你”“主播可以说”“接下来你可以”“这里不妨”“作为一个助手我认为”这类废话——这些全都错，因为主播直播时根本不会去看内容的指向，他只会照着念台词。你要彻底代入主播这个人的身份，用他的口吻、他的语气，直接把该说的话写出来。say 就是讲演稿本身，不是关于讲演稿的说明。\n'+
+    '【一号台词必须跟随直播间风格】先判断直播间流派（幽默风趣/专业硬核/情绪共鸣/观点交锋/闲聊陪伴），再用主播本人的口吻把台词写出来：幽默场就写出段子和调侃的原话（直接好笑，不是“讲个段子”）；专业场就写出有门道、有数字、够狠的原话；情绪场就写出共情的原话。台词本身要带爆点、能引弹幕，但一律用“主播直接说出口的句子”呈现，不写任何关于这句话的点评或指引。\n'+
     '【打字=主播的暗中指挥权】主播打字输入时，往往是当面不好意思说、或想扭转直播间方向。如果输入是方向性指令（如“幽默一点”“往专业走”“反转一下”“聊回刚才那个”“别提这个了”“多抛梗”），就在 dir 字段用一句话写清新方向（如“更幽默、多抛梗、允许自嘲”），并且本轮 know/say 立刻按新方向走；方向一旦设定会被记住，持续影响后续所有输出，直到新指令覆盖。如果打字只是普通内容（想让你解释某个词或话题），dir 留空字符串。\n'+
     '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝留言里提到、主播照着念出来的词（如“有人问 WorkBuddy”“粉丝说 API 是啥”）。\n'+
     ' - 只要出现主播可能不了解的名词，就必须在 know 里给出准确定义：先用标准术语说出本来的专业含义，再用半句浅显话点明。宁可短，也不要编跟真实定义偏差大的类比。哪怕主播没明说“这是啥”，只要这词有解释价值就主动给。一次多个名词，挑最容易让主播卡住的那个讲。\n'+
     ' - 例子：主播说“API”，know 写：“API（应用程序编程接口）：一套让不同软件按统一规则互相调用、交换数据的接口；通俗说就是软件之间按格式提请求、拿结果的窗口。”主播念“有人提 WorkBuddy”，know 写：“WorkBuddy 是一款能查资料、写文档、做表格、执行各类任务的 AI 工作助手；通俗说就是随身替你干活的 AI 同事。”\n'+
     '【名词纠错】语音识别常把名词听错（中英混说、缩写、谐音），如把 NPD 听成“MPD/NP的”。结合语境推断主播真正想说的词：听到“NPD是啥”要讲自恋型人格障碍，而不是小米快充。拿不准时用“你说的应该是X”点明，绝不讲错东西。\n'+
     '两块内容性质完全不同，别写串：know 是“补充给主播的知识”，say 是“主播要说出口的台词本身”。\n'+
-    ' - know（1号·知识盲区补充）：围绕当下话题关键词及周边，补主播可能不懂的定义和基础事实；专有名词定义放第一位——先用标准术语给准确含义，再用半句浅显话点明，宁可短也别编偏差大的类比；60 字以内、最多两句。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
-    ' - say（2号·台词本身，至关重要）：直接写主播本人要念的台词原文，就像主播自己在讲课、在跟观众聊天，你就是他本人，不是在给他出主意。严禁说明性/概括性/框架性标签，严禁“这时候该讲点什么/该提个什么话题/可以聊聊X/建议/主播可以说/接下来你可以/这里不妨/作为助手”等任何指导和主客体切换——这些是二号最容易犯的错，一律不许出现。①②③后面直接就是能张嘴念的具体台词，每句完整、具体、角度不同；80 字以内。\n'+
+    ' - know（2号·知识盲区补充，右边）：围绕当下话题关键词及周边，补主播可能不懂的定义和基础事实；专有名词定义放第一位——先用标准术语给准确含义，再用半句浅显话点明，宁可短也别编偏差大的类比；60 字以内、最多两句。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
+    ' - say（1号·台词本身，至关重要，左边）：直接写主播本人要念的台词原文，就像主播自己在讲课、在跟观众聊天，你就是他本人，不是在给他出主意。严禁说明性/概括性/框架性标签，严禁“这时候该讲点什么/该提个什么话题/可以聊聊X/建议/主播可以说/接下来你可以/这里不妨/作为助手”等任何指导和主客体切换——这些是一号最容易犯的错，一律不许出现。①②③后面直接就是能张嘴念的具体台词，每句完整、具体、角度不同；80 字以内。\n'+
     ' - say 正例：主播说“API”，say 写：“①你每次点外卖、刷地图，背后都在偷偷调 API。②哪天接口一换，App 根本不用重写，只改个对接方式就行。③你们最烦哪两个 App 之间传不过数据？”——三句全是主播本人的台词，没有一个指导词。\n'+
     ' - say 反例（禁止这样写）：“这时候可以讲讲 API 的用处”“建议抛出一个问题给观众”“作为助手我认为接下来该……”——这些是站在旁边指点，全错。\n'+
     '【极简·提速】每块都要短、口语、一屏读完；know 60 字内，say 2-3 句台词、80 字内。\n'+
@@ -780,10 +834,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       if(Array.isArray(v))v=v.join('\n');
       if(v&&String(v).trim()){
         var bd=$(p[0]).querySelector('.body');bd.textContent=String(v).trim();bd.scrollTop=0;got=true;
+        if(p[0]==='cardSay')armGuard(String(v).trim()); // 台词就绪，进入跟读保护
         if(!CFG.quiet){var el=$(p[0]);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
       }
     });
-    if(!got)$('cardSay').querySelector('.body').textContent=cleaned;
+    if(!got){$('cardSay').querySelector('.body').textContent=cleaned;disarmGuard();}
     return data;
   }
 
@@ -795,6 +850,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       toast('请先在设置里填 API Key');$('settingsBox').open=true;return;
     }
     if(busy){toast('正在生成，稍等一下');return;}
+    disarmGuard(); // 打字=主播暗中指挥，立刻覆盖念稿状态
     pendingText=t;
     $('typeInput').value='';
     generate(true);
