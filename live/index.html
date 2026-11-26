@@ -76,7 +76,7 @@ body{min-height:100vh;background:
 .transcript .interim{color:var(--muted);font-style:italic}
 .transcript .ph{color:#5c6f7a;font-size:13px}
 
-.cards{display:grid;grid-template-columns:1.55fr 1fr;gap:13px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 @media(max-width:720px){.cards{grid-template-columns:1fr}}
 .card{background:var(--panel2);border:1px solid var(--border);border-radius:14px;
   padding:10px 12px;height:158px;position:relative;overflow:hidden}
@@ -107,11 +107,13 @@ body{min-height:100vh;background:
 .card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
 .card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
 /* v5.1：3号听见在上方大卡（青色系强调） */
+.cards .card{height:88px}
+.cards .card .body{height:46px}
 .card.heard .tag{color:var(--cyan)} .card.heard .tag i{background:rgba(127,201,196,.16);color:var(--cyan)}
 .card.heard.first{border-color:rgba(127,201,196,.5);background:rgba(127,201,196,.04)}
 /* v5.1：1号台词在下方 hearrow 里 flex 宽、尺寸压到接近原听见的条高 */
-.hearrow .card.say{flex:1;min-width:0;height:96px}
-.hearrow .card.say .body{height:50px}
+.hearrow .card.say{flex:1;min-width:0;height:172px}
+.hearrow .card.say .body{height:126px}
 .card.say.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
   box-shadow:inset 0 0 30px rgba(226,192,122,.04)}
 .card.say.first .tag{color:var(--gold)}
