@@ -222,10 +222,11 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
     <label class="toggle"><input type="checkbox" id="quietChk"> 静默提醒（关掉卡片柔光，适合对话/录像场景）</label>
     <div class="note">
-      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制，模型选 Qwen 系列（开源、有免费额度）；DeepSeek 同理。本地 Ollama 地址填 <b>http://localhost:11434/v1</b>、设 OLLAMA_ORIGINS=* 允许跨域。填好后点"一键启动"，之后全程自动。
+      <b>语音怎么来的：</b>点「启动」后浏览器会请求麦克风权限（地址栏点允许），录音在说完停顿约1秒后自动切成一段，发到硅基流动用 <b>SenseVoice</b> 转成文字——这是云端识别，不依赖浏览器自带识别，国内可用。上文的 API Key 同时用于语音识别和内容生成。<br>
+      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制；文本模型推荐 Qwen 系列（开源、有免费额度）。点「启动」全程自动。
     </div>
     <div class="privacy">
-      <b>隐私：</b>配置与 API Key 只存当前浏览器本地，本站不上传、不保存。语音识别由浏览器识别服务处理（开启时），介意可在开始前不填 Key、或改用你信任的环境。<b>直播中没有任何操作键</b>，停止只需刷新页面。
+      <b>隐私：</b>配置与 API Key 只存当前浏览器本地，本站不保存；麦克风录的声音只发往硅基流动做转写，用于生成提示。<b>控制键只有三个</b>：启动 / 暂停（关麦克风省算力）/ 结束。
     </div>
   </details>
 
@@ -310,39 +311,98 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   function esc(s){return s.replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-  /* 语音识别：三态控制 启动/暂停/结束 */
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  var rec=null,started=false,paused=false,pendingText='',lastGenAt=0,genTimer=null,failCount=0;
+  /* 麦克风录音 + 云端语音转文字（硅基流动 SenseVoice），绕开浏览器自带识别在国内连不上的问题 */
+  var ASR_URL='https://api.siliconflow.cn/v1/audio/transcriptions';
+  var ASR_MODEL='FunAudioLLM/SenseVoiceSmall';
+  var audioCtx=null,micStream=null,procNode=null,silentGain=null;
+  var started=false,paused=false,pendingText='',lastGenAt=0,genTimer=null,failCount=0;
+  var pcmChunks=[],segmentHasVoice=false,segAudioMs=0,silenceAudioMs=0,uploadChain=null;
+  var frameMs=0,SILENCE_MS=1000,MAX_SEG_MS=12000,VOICE_RMS=0.012;
 
-  function ensureRec(){
-    if(rec)return rec;
-    if(!SR)return null;
-    rec=new SR();
-    rec.continuous=true;rec.interimResults=true;rec.lang='zh-CN';
-    rec.onstart=function(){setStatus('live','聆听中 · 说完停一下自动出提示');};
-    rec.onresult=function(e){
-      var interim='';
-      for(var i=e.resultIndex;i<e.results.length;i++){
-        var r=e.results[i],t=r[0].transcript;
-        if(r.isFinal){transcriptFinal+=t;pendingText+=t;}
-        else{interim+=t;}
-      }
-      transcriptInterim=interim;
-      renderTranscript();
-      // 说完就安排生成：不设字数门槛，停止说话约1.2秒即自动触发
-      scheduleGenerate();
-    };
-    rec.onerror=function(e){
-      if(e.error==='no-speech'||e.error==='aborted')return;
-      toast('语音识别中断：'+e.error+'（会尝试自动恢复）');
-    };
-    rec.onend=function(){
-      // 仅"运行中"自动重连；暂停/结束时停止识别，不再占用算力
-      if(started&&!paused){try{rec.start();}catch(err){}}
-      else if(started&&paused){setStatus('','已暂停 · 不占用识别');}
-      else setStatus('','已结束');
-    };
-    return rec;
+  // 把浮点 PCM 片段编码成 16bit WAV（SenseVoice 必支持）
+  function encodeWAV(chunks,rate){
+    var len=0,i;for(i=0;i<chunks.length;i++)len+=chunks[i].length;
+    var buf=new ArrayBuffer(44+len*2),v=new DataView(buf);
+    function ws(o,s){for(var k=0;k<s.length;k++)v.setUint8(o+k,s.charCodeAt(k));}
+    ws(0,'RIFF');v.setUint32(4,36+len*2,true);ws(8,'WAVE');
+    ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);
+    v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);
+    v.setUint16(32,2,true);v.setUint16(34,16,true);
+    ws(36,'data');v.setUint32(40,len*2,true);
+    var off=44;
+    for(i=0;i<chunks.length;i++){
+      var c=chunks[i];
+      for(var j=0;j<c.length;j++){var s=c[j]< -1?-1:(c[j]>1?1:c[j]);
+        v.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);off+=2;}
+    }
+    return new Blob([buf],{type:'audio/wav'});
+  }
+
+  // 一段录音 → 上传 SenseVoice 转文字 → 走四步生成
+  function asrUpload(blob){
+    var fd=new FormData();
+    fd.append('file',blob,'audio.wav');
+    fd.append('model',ASR_MODEL);
+    return fetch(ASR_URL,{method:'POST',headers:{'Authorization':'Bearer '+CFG.apiKey},body:fd})
+      .then(function(r){if(!r.ok)throw new Error('识别服务 '+r.status);return r.json();})
+      .then(function(j){
+        var t=(j.text||'').replace(/\s+/g,' ').trim();
+        if(t&&started&&!paused){
+          transcriptFinal+=t;pendingText+=t;renderTranscript();scheduleGenerate();
+        }
+      })
+      .catch(function(e){toast('语音转文字失败：'+e.message);});
+  }
+
+  // 静音/超时切段：把当前 PCM 编码上传，然后清空继续录
+  function flushSegment(){
+    if(!pcmChunks.length)return;
+    var chunks=pcmChunks;pcmChunks=[];segmentHasVoice=false;
+    segAudioMs=0;silenceAudioMs=0;
+    var blob=encodeWAV(chunks,audioCtx?audioCtx.sampleRate:44100);
+    if(!uploadChain)uploadChain=Promise.resolve();
+    uploadChain=uploadChain.then(function(){return asrUpload(blob);}).catch(function(){});
+  }
+
+  function openMic(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      toast('当前环境无法录音，请在电脑版 Chrome / Edge 打开');return Promise.reject(new Error('no getUserMedia'));
+    }
+    return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})
+      .then(function(stream){
+        micStream=stream;
+        var AC=window.AudioContext||window.webkitAudioContext;
+        audioCtx=new AC();
+        if(audioCtx.state==='suspended')audioCtx.resume();
+        var src=audioCtx.createMediaStreamSource(stream);
+        procNode=audioCtx.createScriptProcessor(4096,1,1);
+        silentGain=audioCtx.createGain();silentGain.gain.value=0; // 静音输出，避免回声
+        src.connect(procNode);procNode.connect(silentGain);silentGain.connect(audioCtx.destination);
+        pcmChunks=[];segmentHasVoice=false;segAudioMs=0;silenceAudioMs=0;
+        frameMs=1000*4096/(audioCtx.sampleRate||16000); // 每帧代表的毫秒
+        procNode.onaudioprocess=function(e){
+          if(!started||paused)return;
+          var d=e.inputBuffer.getChannelData(0),sum=0,i;
+          for(i=0;i<d.length;i++)sum+=d[i]*d[i];
+          var rms=Math.sqrt(sum/d.length);
+          if(rms>VOICE_RMS){silenceAudioMs=0;segmentHasVoice=true;}
+          else{silenceAudioMs+=frameMs;}
+          segAudioMs+=frameMs;
+          pcmChunks.push(new Float32Array(d));
+          if(segmentHasVoice&&(silenceAudioMs>=SILENCE_MS||segAudioMs>=MAX_SEG_MS))flushSegment();
+        };
+        setStatus('live','麦克风已开 · 说话自动转文字');
+      })
+      .catch(function(e){
+        toast('麦克风打不开：'+(e&&e.message?e.message:'请允许麦克风权限')+'（浏览器地址栏要允许麦克风）');
+        started=false;setControls('idle');
+      });
+  }
+
+  function closeMic(){
+    if(procNode){try{procNode.onaudioprocess=null;procNode.disconnect();}catch(e){}procNode=null;}
+    if(micStream){try{micStream.getTracks().forEach(function(t){t.stop();});}catch(e){}micStream=null;}
+    if(audioCtx){try{audioCtx.close();}catch(e){}audioCtx=null;}
   }
 
   // 三键状态同步
@@ -369,15 +429,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
       toast('请先在下方「开始前设置一次」里填 API Key');$('settingsBox').open=true;return;
     }
-    if(!SR){
-      toast('当前浏览器不支持语音识别，请用电脑版 Chrome / Edge');return;
-    }
-    var r=ensureRec();
     if(paused){
-      // 从暂停恢复
+      // 从暂停恢复：重新开麦
       paused=false;setControls('running');
-      $('startInfo').innerHTML='<b>已继续，全程自动。</b>说完停一下提示卡就刷新；中途不用按「暂停」，播完按「结束」。';
-      try{r.start();toast('已继续');}catch(e){toast('恢复失败，请按结束再启动');}
+      $('genState').textContent='启动后自动刷新提示';
+      $('startInfo').innerHTML='<b>已继续，全程自动。</b>说话自动转文字、说完停一下提示卡就刷新；中途按「暂停」，播完按「结束」。';
+      toast('已继续，正在重新打开麦克风');
+      openMic();
       return;
     }
     if(started)return;
@@ -387,9 +445,9 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       $(id).querySelector('.body').innerHTML='<span class="empty">听你说，马上生成……</span>';
     });
     setControls('running');
-    $('startInfo').innerHTML='<b>已启动，全程自动。</b>说完停一下提示卡就刷新；中途不用按「暂停」，播完按「结束」。';
-    try{r.start();toast('已启动，说完一句话停一下就会自动生成');}
-    catch(e){toast('启动失败，请重试');}
+    $('startInfo').innerHTML='<b>已启动，全程自动。</b>说话自动转文字、说完停一下提示卡就刷新；中途按「暂停」，播完按「结束」。';
+    toast('正在打开麦克风，请在浏览器弹窗点「允许」');
+    openMic();
   });
 
   // 暂停 / 继续（pauseBtn）
@@ -397,12 +455,13 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     if(!started)return;
     if(!paused){
       paused=true;
-      if(genTimer){clearTimeout(genTimer);genTimer=null;} // 取消待生成的提示，省算力
-      if(rec)try{rec.abort();}catch(e){} // 立即停止识别（abort 不触发自动重连逻辑由 onend 的 paused 判断保证）
+      if(genTimer){clearTimeout(genTimer);genTimer=null;} // 取消待生成的提示
+      if(pcmChunks.length&&segmentHasVoice)flushSegment(); // 已说的话先转成文字
+      closeMic(); // 关掉麦克风，真省算力
       setControls('paused');
-      setStatus('','已暂停 · 不占用识别');
+      setStatus('','已暂停 · 麦克风已关');
       $('genState').textContent='已暂停';
-      toast('已暂停，识别与生成都停了；按「继续」恢复');
+      toast('已暂停，麦克风已关；按「继续」恢复');
     }else{
       // pauseBtn 也可作继续
       $('startBtn').click();
@@ -413,8 +472,8 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   $('stopBtn').addEventListener('click',function(){
     started=false;paused=false;
     if(genTimer){clearTimeout(genTimer);genTimer=null;}
-    if(rec)try{rec.abort();}catch(e){}
-    pendingText='';transcriptFinal='';transcriptInterim='';lastGenAt=0;failCount=0;
+    closeMic();
+    pcmChunks=[];pendingText='';transcriptFinal='';transcriptInterim='';lastGenAt=0;failCount=0;
     renderTranscript();
     ['cardSay','cardIdea','cardKnow','cardSave'].forEach(function(id){
       $(id).querySelector('.body').innerHTML='<span class="empty">已结束，点「启动」重新开始</span>';
