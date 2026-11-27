@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>话到嘴边 · 一键启动 全程自动</title>
-<meta name="description" content="点一次启动，实时听、实时生成对话流与知识点提醒的私密直播助手">
+<title>话到嘴边 · 直播嘴替</title>
+<meta name="description" content="你说一句，它替你把下一句说出来。实时听、用你的口吻接话的私密直播嘴替。">
 <style>
 :root{
   --bg:#07121d; --bg2:#0b1b2b; --panel:rgba(18,36,52,.78);
@@ -44,7 +44,7 @@ body{min-height:100vh;background:
 .keys{flex:none;display:flex;gap:10px;flex-wrap:wrap}
 .kbtn{display:inline-flex;align-items:center;gap:8px;border-radius:14px;
   padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;
-  border:1px solid transparent;white-space:nowrap}
+  border:1px solid transparent;white-space:nowrap;font-family:inherit}
 .kbtn svg{width:19px;height:19px}
 .kbtn.start{background:linear-gradient(135deg,#b9985a,#e2c07a);color:#1a1206;
   box-shadow:0 8px 24px rgba(226,192,122,.2)}
@@ -59,72 +59,49 @@ body{min-height:100vh;background:
 .startinfo .em{color:var(--gold)}
 
 .panel{background:var(--panel);border:1px solid var(--border);
-  border-radius:18px;box-shadow:var(--shadow);padding:10px 16px;margin-bottom:10px;
+  border-radius:18px;box-shadow:var(--shadow);padding:14px 18px;margin-bottom:12px;
   backdrop-filter:blur(8px)}
-.panel h2{font-size:13px;margin:0 0 7px;font-weight:600;color:var(--gold);
+.panel h2{font-size:14px;margin:0 0 10px;font-weight:600;color:var(--gold);
   letter-spacing:.5px;display:flex;align-items:center;justify-content:flex-start}
-.panel h2 .n{font-size:11px;color:var(--muted);font-weight:400;margin-left:auto}
-.transcript{background:var(--panel2);border:1px solid var(--border);
-  border-radius:12px;padding:6px 12px;height:80px;overflow-y:scroll;overflow-x:hidden;
-  font-size:15px;line-height:1.7;scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
-.hearrow{display:flex;gap:12px;align-items:stretch}
-.hearrow .transcript{flex:1;min-width:0}
-@media(max-width:760px){.hearrow{flex-direction:column}}
-.dirtag{color:var(--gold);background:rgba(226,192,122,.1);
-  border:1px solid rgba(226,192,122,.3);border-radius:8px;padding:1px 7px;
-  margin-right:8px;font-size:11px}
-.transcript .interim{color:var(--muted);font-style:italic}
-.transcript .ph{color:#5c6f7a;font-size:13px}
-
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-@media(max-width:720px){.cards{grid-template-columns:1fr}}
-.card{background:var(--panel2);border:1px solid var(--border);border-radius:14px;
-  padding:10px 12px;height:158px;position:relative;overflow:hidden}
-.card .tag{font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:6px;
-  display:flex;align-items:center;gap:7px}
-.card .tag i{width:18px;height:18px;border-radius:6px;display:inline-flex;
-  align-items:center;justify-content:center;font-style:normal;font-size:11px}
-.card .body{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;
-  height:112px;overflow-y:scroll;overflow-x:hidden;padding-right:6px;
+.panel h2 .n{font-size:12px;color:var(--muted);font-weight:400;margin-left:auto}
+/* 唯一台词窗口 */
+.script{background:var(--panel2);border:1px solid rgba(226,192,122,.3);
+  border-radius:14px;padding:14px 16px;height:315px;overflow-y:scroll;overflow-x:hidden;
   scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
-.card .empty{color:#5c6f7a;font-size:13px}
-.card .body .ln{padding:1px 5px;margin:0 0 4px;border-radius:5px}
-.card .body .ln.dim{opacity:.6}
-.card .body .ln.reading{background:rgba(226,192,122,.26);color:#fff;font-weight:600;
-  box-shadow:inset 3px 0 0 var(--gold),inset 0 0 0 1px rgba(226,192,122,.45)}
-.card .sbtns{margin-left:auto;display:flex;gap:3px;flex:none}
-.card .sbtns button{width:17px;height:17px;line-height:1;border:1px solid var(--border);
-  background:rgba(255,255,255,.03);color:var(--muted);border-radius:5px;
-  font-size:9px;cursor:pointer;padding:0}
-.card .sbtns button:hover{color:var(--gold);border-color:var(--gold-dim)}
-.panel h2 .wnum,.typebox .tbhead .wnum{width:18px;height:18px;border-radius:6px;
-  display:inline-flex;align-items:center;justify-content:center;font-style:normal;
-  font-size:11px;background:rgba(226,192,122,.2);color:var(--gold);margin-right:2px;flex:none}
-.transcript::-webkit-scrollbar,.card .body::-webkit-scrollbar{width:7px}
-.transcript::-webkit-scrollbar-track,.card .body::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:6px}
-.transcript::-webkit-scrollbar-thumb,.card .body::-webkit-scrollbar-thumb{background:rgba(226,192,122,.42);border-radius:6px}
-.transcript::-webkit-scrollbar-thumb:hover,.card .body::-webkit-scrollbar-thumb:hover{background:rgba(226,192,122,.65)}
-.card.say .tag{color:var(--gold)} .card.say .tag i{background:rgba(226,192,122,.16)}
-.card.know .tag{color:var(--warn)} .card.know .tag i{background:rgba(224,160,106,.16)}
-/* v5.1：3号听见在上方大卡（青色系强调） */
-.cards .card{height:88px}
-.cards .card .body{height:46px}
-.card.heard .tag{color:var(--cyan)} .card.heard .tag i{background:rgba(127,201,196,.16);color:var(--cyan)}
-.card.heard.first{border-color:rgba(127,201,196,.5);background:rgba(127,201,196,.04)}
-/* 3号台词在下方 hearrow 里 flex 宽、尺寸压到接近原听见的条高 */
-.hearrow .card.say{flex:1;min-width:0;height:172px}
-.hearrow .card.say .body{height:126px}
-.card.say.first{border-color:rgba(226,192,122,.55);background:rgba(226,192,122,.05);
-  box-shadow:inset 0 0 30px rgba(226,192,122,.04)}
-.card.say.first .tag{color:var(--gold)}
-.card.say.first .tag i{background:rgba(226,192,122,.2);color:var(--gold)}
-.card.flash::after{content:"";position:absolute;inset:0;pointer-events:none;
-  border-radius:16px;animation:flash 1.4s ease-out forwards}
-@keyframes flash{0%{box-shadow:inset 0 0 0 1px var(--gold),inset 0 0 26px rgba(226,192,122,.22)}
-  100%{box-shadow:inset 0 0 0 1px transparent,inset 0 0 26px rgba(226,192,122,0)}}
+.script::-webkit-scrollbar{width:8px}
+.script::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:6px}
+.script::-webkit-scrollbar-thumb{background:rgba(226,192,122,.42);border-radius:6px}
+.script::-webkit-scrollbar-thumb:hover{background:rgba(226,192,122,.65)}
+.script .ph{color:#5c6f7a;font-size:14px}
+.script .say{padding:10px 12px;margin:0 0 10px;border-radius:10px;font-size:15px;
+  line-height:1.75;color:var(--text);white-space:pre-wrap;
+  background:rgba(255,255,255,.025);border:1px solid transparent}
+.script .say.latest{background:rgba(226,192,122,.16);color:#fff;font-weight:600;
+  border-color:rgba(226,192,122,.42);box-shadow:inset 3px 0 0 var(--gold)}
+.script .say .who{display:block;font-size:11px;color:var(--cyan);font-weight:600;
+  margin-bottom:5px;letter-spacing:.5px}
+.script .say.latest .who{color:var(--gold)}
 
-.bottomrow{display:flex;gap:12px;align-items:flex-start;margin-top:4px}
-details.settings{flex:1;min-width:0;background:var(--panel);border:1px solid var(--border);
+/* 文字输入口：跟语音等价 */
+.typebox{background:var(--panel2);border:1px solid rgba(226,192,122,.42);
+  border-radius:15px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;margin-bottom:12px}
+.typebox .tbhead{display:flex;align-items:center;gap:8px;padding:10px 14px;
+  font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;
+  background:rgba(226,192,122,.09);border-bottom:1px solid var(--border)}
+.typebox .tbhead .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 10px rgba(226,192,122,.8);flex:none}
+.typebox .tbhead .hint{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted)}
+.typebox .tbrow{display:flex;align-items:center;gap:7px;padding:10px 12px}
+.typebox input{flex:1;min-width:0;border:0;outline:none;background:transparent;color:var(--text);
+  font-family:inherit;font-size:14px;padding:6px 7px}
+.typebox input::placeholder{color:#718794}
+.typebox button{flex:none;border:0;border-radius:9px;background:var(--gold);color:#1a1206;
+  font-family:inherit;font-size:13px;font-weight:700;padding:9px 18px;cursor:pointer;white-space:nowrap}
+.typebox button:hover:not(:disabled){background:#f0d39a}
+.typebox button:disabled{opacity:.45;cursor:not-allowed}
+
+details.settings{background:var(--panel);border:1px solid var(--border);
   border-radius:18px;padding:16px 20px}
 details.settings summary{cursor:pointer;list-style:none;display:flex;align-items:center;
   justify-content:space-between;font-size:12px;color:var(--muted)}
@@ -135,7 +112,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .field input,.field select,.field textarea{width:100%;background:var(--panel2);
   border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);
   font-size:13px;outline:none;font-family:inherit}
-.field textarea{resize:vertical;min-height:72px;line-height:1.6}
+.field textarea{resize:vertical;min-height:66px;line-height:1.6}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold-dim)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.grid2{grid-template-columns:1fr}}
@@ -158,60 +135,6 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(127,201,196,.3);
   border-top-color:var(--cyan);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.typebox{flex:0 0 300px;min-width:0;background:var(--panel2);border:1px solid rgba(226,192,122,.42);
-  border-radius:15px;box-shadow:var(--shadow);backdrop-filter:blur(8px);
-  overflow:hidden;display:flex;flex-direction:column}
-.typebox .tbrow{flex:1;min-height:0}
-.typebox .tbhead{display:flex;align-items:center;gap:8px;padding:10px 14px;
-  font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;
-  background:rgba(226,192,122,.09);border-bottom:1px solid var(--border)}
-.typebox .tbhead .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 10px rgba(226,192,122,.8);flex:none}
-.typebox .tbhead .hint{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted)}
-.typebox .tbrow{display:flex;align-items:center;gap:7px;padding:9px 11px}
-.typebox input{flex:1;min-width:0;border:0;outline:none;background:transparent;color:var(--text);
-  font-family:inherit;font-size:13px;padding:6px 7px}
-.typebox input::placeholder{color:#718794}
-.typebox button{flex:none;border:0;border-radius:9px;background:var(--gold);color:#1a1206;
-  font-family:inherit;font-size:13px;font-weight:700;padding:8px 15px;cursor:pointer;white-space:nowrap}
-.typebox button:hover:not(:disabled){background:#f0d39a}
-.typebox button:disabled{opacity:.45;cursor:not-allowed}
-@media(max-width:760px){.typebox{flex:none;width:100%}}
-.membtn{margin-left:auto;border:1px solid rgba(226,192,122,.4);background:rgba(226,192,122,.08);
-  color:var(--gold);border-radius:10px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap}
-.membtn:hover{background:rgba(226,192,122,.18)}
-.memmask{position:fixed;inset:0;background:rgba(3,10,16,.72);backdrop-filter:blur(5px);
-  z-index:120;display:none;align-items:center;justify-content:center;padding:20px}
-.memcard{width:min(620px,94vw);max-height:88vh;overflow-y:auto;background:var(--panel2);
-  border:1px solid rgba(226,192,122,.35);border-radius:20px;box-shadow:var(--shadow);padding:22px 24px;
-  scrollbar-width:thin;scrollbar-color:rgba(226,192,122,.42) rgba(255,255,255,.03)}
-.memhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.memtitle{font-size:16px;font-weight:700;color:var(--gold);letter-spacing:.5px}
-.memhead button{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);
-  border-radius:9px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit}
-.memhead button:hover{color:var(--gold);border-color:var(--gold-dim)}
-.memstat{font-size:12px;color:var(--muted);background:rgba(226,192,122,.06);
-  border:1px solid var(--border);border-radius:11px;padding:9px 12px;margin-bottom:14px}
-.memstat b{color:var(--gold);font-weight:700}
-.memkeys{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;min-height:20px}
-.mkw{font-size:11px;color:var(--cyan);background:rgba(127,201,196,.1);
-  border:1px solid rgba(127,201,196,.3);border-radius:20px;padding:3px 10px}
-.memsechead{font-size:12px;color:var(--gold-dim);font-weight:600;margin:14px 0 7px;letter-spacing:.5px}
-.membody,.membrief{font-size:13px;line-height:1.8;color:var(--text);background:var(--panel);
-  border:1px solid var(--border);border-radius:12px;padding:12px 14px;white-space:pre-wrap}
-.membrief{color:var(--muted);font-size:12px}
-.memtext{width:100%;min-height:74px;background:var(--panel);border:1px solid var(--border);
-  border-radius:12px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:13px;
-  line-height:1.6;resize:vertical;outline:none}
-.memtext:focus{border-color:var(--gold-dim)}
-.memtext::placeholder{color:#718794}
-.memfoot{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-.memfoot button{border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
-.memprimary{border:0;background:var(--gold);color:#1a1206}
-.memprimary:hover{background:#f0d39a}
-.memghost{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted)}
-.memghost:hover{color:var(--warn);border-color:var(--warn)}
-.muted{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -220,7 +143,7 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
   <div class="top">
     <div class="brand">
       <span class="dot"></span><h1>话到<span>嘴边</h1>
-      <p>一键启动 · 全程自动听、自动写，直播中无需任何操作</p>
+      <p>直播嘴替 · 你说一句，它替你把下一句说出来</p>
     </div>
   </div>
 
@@ -229,16 +152,12 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     <span id="statusText">未启动</span>
     <span class="sep">·</span>
     <span id="apiState">AI 未配置</span>
-    <button class="membtn" id="memBtn" type="button">长期记忆 · 0场</button>
   </div>
 
-  <!-- 三个控制键：启动/暂停/结束 -->
   <div class="startrow">
     <div class="keys">
       <button class="kbtn start" id="startBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>
         <span id="startLabel">启动</span>
       </button>
       <button class="kbtn pause" id="pauseBtn" disabled>
@@ -251,53 +170,35 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       </button>
     </div>
     <div class="startinfo" id="startInfo">
-      <b>点「启动」后全自动</b>——持续听你说话，说完停一下就自动刷新提示卡。<span class="em">中途不用就按「暂停」省算力，再按「继续」恢复；播完按「结束」。</span>
+      <b>点「启动」后</b>，你说话它就听、听完替你接下一句，用你自己的口吻。<span class="em">不方便说话时直接在下面打字，一样的效果。中途按「暂停」省算力，播完按「结束」。</span>
     </div>
   </div>
 
-  <!-- 1号听见(大卡) + 2号知识(小卡)：放上方 -->
+  <!-- 唯一的台词窗口 -->
   <div class="panel">
-    <h2><i class="wnum">1</i>实时听见 <span class="n"><span class="dirtag" id="dirTag" style="display:none"></span><span id="genState">启动后自动刷新提示</span></span></h2>
-    <div class="cards">
-      <div class="card heard first" id="cardTranscript">
-        <div class="tag"><i>1</i>实时听见（声音录入 · 听你说的话实时进这里）</div>
-        <div class="body" id="transcript"><span class="ph">启动后，这里实时显示你说的话……</span></div>
-      </div>
-      <div class="card know" id="cardKnow">
-        <div class="tag"><i>2</i>知识点（专有名词/难词深度补充）<span class="sbtns"><button type="button" data-sc="cardKnow" data-dir="-1" title="向上看">▲</button><button type="button" data-sc="cardKnow" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">人名/历史/科技/概念等专有名词，给背景、关联、来龙去脉的深度补充；普通词不解释</span></div>
-      </div>
+    <h2><i class="wnum">●</i>嘴替台词 <span class="n" id="genState">启动后，你说一句它接一句</span></h2>
+    <div class="script" id="script">
+      <span class="ph">启动后，你说的话会变成这里的一句句台词——就像你自己说的。最新的一句高亮，往上能回看。</span>
     </div>
   </div>
 
-  <!-- 3号对话流(flex宽) + 4号文字输入：放下方 -->
-  <div class="panel">
-    <h2><i class="wnum">3</i>对话流 <span class="n">预设顺序 · 顺着话题一层层往下讲，往下滚自动续</span></h2>
-    <div class="hearrow">
-      <div class="card say first" id="cardSay">
-        <div class="tag"><i>3</i>对话流（预设顺序 · 顺着话题一层层讲，往下滚自动续）<span class="sbtns"><button type="button" data-sc="cardSay" data-dir="-1" title="向上回看">▲</button><button type="button" data-sc="cardSay" data-dir="1" title="向下看">▼</button></span></div>
-        <div class="body"><span class="empty">启动后凭长期记忆按预设顺序连贯生成台词；你说到新话题会换题重开，鼠标往下滚自动往下讲</span></div>
-      </div>
-      <div class="typebox" id="typeBox">
-        <div class="tbhead"><i class="wnum">4</i>文字输入口<span class="hint">不方便说话时打这里</span></div>
-        <div class="tbrow">
-          <input id="typeInput" type="text" placeholder="输入你说的话，回车发送…" autocomplete="off">
-          <button id="typeSend" type="button">发送</button>
-        </div>
-      </div>
+  <!-- 文字输入口：跟语音完全等价 -->
+  <div class="typebox" id="typeBox">
+    <div class="tbhead"><span class="dot"></span>文字输入口<span class="hint">不方便说话时打这里，回车发送</span></div>
+    <div class="tbrow">
+      <input id="typeInput" type="text" placeholder="把你想说的话打进来，它替你接下一句…" autocomplete="off">
+      <button id="typeSend" type="button">发送</button>
     </div>
   </div>
 
-  <!-- 一次性设置：默认收起的一条横线 -->
   <details class="settings" id="settingsBox">
-    <summary><span class="t">⚙ 开始前设置一次（API 与知识库）</span><span id="foldHint">展开 ▾</span></summary>
-
+    <summary><span class="t">⚙ 开始前设置一次（API 与你的说话风格）</span><span id="foldHint">展开 ▾</span></summary>
     <div class="field">
       <label>接口预设（选一个，下面自动填好）</label>
       <select id="preset">
-        <option value="siliconflow">硅基流动 · 开源模型 Qwen（推荐，注册送额度）</option>
+        <option value="siliconflow">硅基流动 · Qwen（推荐，注册送额度）</option>
         <option value="deepseek">DeepSeek · deepseek-chat</option>
-        <option value="ollama">本地 Ollama（电脑上自己跑开源模型）</option>
+        <option value="ollama">本地 Ollama（电脑上自己跑）</option>
         <option value="custom">自定义（OpenAI 兼容接口）</option>
       </select>
     </div>
@@ -307,47 +208,29 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     </div>
     <div class="field"><label>API Key（只存在本机，不上传）</label><input id="apiKey" type="password" placeholder="sk-..."></div>
     <div class="field">
-      <label>你的知识库 / 直播背景（可选，注入给 AI 当背景，让它更懂你的领域）</label>
-      <textarea id="knowledge" placeholder="例：我播数码赛道，主打芯片和手机，重点关注算力、制程、主流品牌（高通/联发科/苹果/英伟达）与当下新品，风格亲切接地气。"></textarea>
+      <label>你的说话风格 / 直播背景（可选，让它更像你）</label>
+      <textarea id="knowledge" placeholder="例：我播情感赛道，说话接地气、爱用'家人们''我跟你说'，喜欢反问观众、给实在建议，不端着、不说教。"></textarea>
     </div>
-    <label class="toggle"><input type="checkbox" id="quietChk"> 静默提醒（关掉卡片柔光，适合对话/录像场景）</label>
+    <label class="toggle"><input type="checkbox" id="quietChk"> 静默模式（关掉高亮柔光，适合对话/录像场景）</label>
     <div class="note">
-      <b>语音怎么来的：</b>点「启动」后浏览器会请求麦克风权限（地址栏点允许），录音在说完停顿约0.5秒后自动切成一段，发到硅基流动用 <b>SenseVoice</b> 转成文字——这是云端识别，不依赖浏览器自带识别，国内可用。上文的 API Key 同时用于语音识别和内容生成。<br>
-      <b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」复制；文本模型推荐 Qwen 系列（开源、有免费额度）。点「启动」全程自动；不方便说话时，用下方「文字输入口」打字回车发送。
+      <b>声音怎么来的：</b>点「启动」允许麦克风，说完停顿约0.5秒自动切成一段，发到硅基流动用 <b>SenseVoice</b> 转文字（云端识别，国内可用），再交给 AI 替你接话。<b>拿 Key：</b>siliconflow.cn 注册 →「API 密钥」。API Key 同时用于语音识别和内容生成。
     </div>
     <div class="privacy">
-      <b>隐私：</b>配置与 API Key 只存当前浏览器本地，本站不保存；麦克风录的声音只发往硅基流动做转写，用于生成提示。<b>控制键只有三个</b>：启动 / 暂停（关麦克风省算力）/ 结束。
+      <b>隐私：</b>配置与 Key 只存当前浏览器本地，本站不保存；录音只发往硅基流动做转写。<b>只有三个控制键</b>：启动 / 暂停 / 结束。
     </div>
   </details>
 
-  <div class="foot">话到嘴边 · 静态单页 · 数据仅存本机 · 一键启动后全程自动</div>
+  <div class="foot">话到嘴边 · 直播嘴替 · 静态单页 · 数据仅存本机</div>
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- 长期记忆浮层：固定定位，不占文档流、不撑高页面 -->
-<div class="memmask" id="memMask">
-  <div class="memcard" role="dialog" aria-label="长期记忆">
-    <div class="memhead"><span class="memtitle">长期记忆库 · 提炼不堆积</span><button id="memClose" type="button">关闭 ✕</button></div>
-    <div class="memstat" id="memStat"></div>
-    <div class="memkeys" id="memKeys"></div>
-    <div class="memsechead">主播画像（每次和旧记忆合并重压后的结论）</div>
-    <div class="membody" id="memBody"></div>
-    <div class="memsechead">本场新增 / 变化</div>
-    <div class="membrief" id="memBrief"></div>
-    <div class="memsechead">想立刻看效果？手动喂一段内容来提炼（可选）</div>
-    <textarea class="memtext" id="memText" placeholder="粘贴一段直播里说过的话，点下面的「立即提炼」看看效果…"></textarea>
-    <div class="memfoot">
-      <button class="memprimary" id="memDigest" type="button">立即提炼</button>
-      <button class="memghost" id="memClear" type="button">清空记忆</button>
-    </div>
-  </div>
-</div>
 
 <script>
 (function(){
   "use strict";
   var $=function(id){return document.getElementById(id);};
+
+  /* ===== 配置 ===== */
   var KEY='live_muse_cfg_v2';
   var CFG={preset:'siliconflow',baseUrl:'',model:'',apiKey:'',knowledge:'',quiet:false};
   var PRESETS={
@@ -356,8 +239,6 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     ollama:{baseUrl:'http://localhost:11434/v1',model:'qwen2.5:7b'},
     custom:{baseUrl:'',model:''}
   };
-
-  /* 配置：仅开始前一次性设置 */
   function load(){
     try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);for(var k in CFG)if(k in o)CFG[k]=o[k];}}catch(e){}
   }
@@ -395,7 +276,6 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     $('foldHint').textContent=this.open?'收起 ▴':'展开 ▾';
   });
 
-  /* 状态 / toast */
   function setStatus(cls,text){
     var b=$('statusBar');b.className='status'+(cls?' '+cls:'');
     if(text)$('statusText').textContent=text;
@@ -405,33 +285,141 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     var t=$('toast');t.textContent=msg;t.classList.add('show');
     clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},ms||2600);
   }
-
-  /* 字幕 */
-  var transcriptFinal='',transcriptInterim='';
-  function renderTranscript(){
-    var el=$('transcript');
-    var atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<32;
-    if(!transcriptFinal&&!transcriptInterim){
-      el.innerHTML='<span class="ph">启动后，这里实时显示你说的话……</span>';return;
-    }
-    el.innerHTML='<span class="final">'+esc(transcriptFinal)+'</span>'+
-      (transcriptInterim?' <span class="interim">'+esc(transcriptInterim)+'</span>':'');
-    if(atBottom)el.scrollTop=el.scrollHeight;
-  }
   function esc(s){return s.replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-  /* 麦克风录音 + 云端语音转文字（硅基流动 SenseVoice），绕开浏览器自带识别在国内连不上的问题 */
+  /* ===== 嘴替引擎：你说一句，它用你的口吻接下一句 ===== */
+  var VOICE_SYS='你是主播本人的"嘴替"。主播在直播间说了话，你要用主播的口吻，把主播接下来会说的那段话讲出来——就像替他把心里想说、还没说出口的话直接说出来。\n'+
+    '你不是助手、不是军师、不是老师、不是旁白。你就是主播本人，正对着直播间的话筒说话。你写出来的每一个字，都会被主播原样念给观众听。\n'+
+    '\n'+
+    '【怎么说·照真人直播的样子，别像念稿】\n'+
+    '- 短句为主，一口气能念完；不写长难句、不写书面语、不写"综上所述"那种作文腔。\n'+
+    '- 带称谓、带口头禅、带语气词：家人们、你们、有没有人、我跟你说、你知道吧、说真的、其实吧、你看、对吧、啊、呢、吧。真人说话就有这些重复和语气词，别怕啰嗦——照着好的样例写。\n'+
+    '- 会跟弹幕互动：偶尔反问一句"你们是不是也这样？""有的扣个1我看看""对不对？"——这是直播，不是录播，得把观众拽进来。\n'+
+    '- 有情绪、有态度、有温度：敢说、共情、替观众撑腰、讲大白话。可以把话说得直一点、糙一点、戳心一点，但别恶毒。\n'+
+    '- 内容具体：给真实场景、具体动作、细节、例子，别讲空泛的大道理。\n'+
+    '\n'+
+    '【照这个水平写·这是用户亲口给的标准】\n'+
+    '"我教你们一个笨办法，真管用——睡前拿张纸，把脑子里那些乱七八糟的都写下来，不用写好啊，就\'被领导怼了\'\'跟对象又闹了\'，写完往抽屉里一塞，完事。"\n'+
+    '"我跟你说啊，这不是你矫情，真的不是。白天撑了一天，到了晚上一个人，那些事儿就全冒出来了，搁谁谁都这样。"\n'+
+    '要点：短句、有称谓、有口头禅、有具体动作、有情绪，念出来观众脑子里有画面。\n'+
+    '\n'+
+    '【写什么】\n'+
+    '- 接着主播刚说的话往下讲，是那句话自然的下一句；开头一两句要接住，别突兀。\n'+
+    '- 一次给 2 到 4 句，主播念完大概十几秒的量。\n'+
+    '- 如果主播像是在复述你上一条台词，说明他念完了，直接往下讲新的内容，绝不重复。\n'+
+    '- 如果主播打的字像方向要求（幽默点、专业点、严肃点、多抛梗），就按那个方向说一段。\n'+
+    '\n'+
+    '【严禁·一句都不许出现】\n'+
+    '- 标题、提纲、设问开场："X的重要性""X有哪些方法""如何X？""你知道吗？""关于X"——这些是目录不是台词。\n'+
+    '- 空话套话："记得记下来提高效率""对话如何提升工作效率""倾听与表达的艺术""情绪管理的方法"。\n'+
+    '- 旁白/指导语："接下来主播可以讲…""建议你说…""这时候应该…"——你就是主播，直接说台词本身。\n'+
+    '- 编号列表、代码块、引号包裹、任何解释。\n'+
+    '\n'+
+    '只输出主播要说的话本身，纯文本，不要引号、不要编号、不要任何说明。';
+
+  var scriptLines=[];   // [{text,who}] 窗口里的台词
+  var ctx=[];           // [{in,out}] 本场最近上下文，保持连贯
+  var busy=false;       // 一次只生成一条，避免乱序
+  var turnQueue=[];     // 待处理的输入队列
+  var failCount=0;
+
+  function renderScript(){
+    var el=$('script');
+    if(!scriptLines.length){
+      el.innerHTML='<span class="ph">启动后，你说的话会变成这里的一句句台词——就像你自己说的。最新的一句高亮，往上能回看。</span>';
+      return;
+    }
+    el.innerHTML=scriptLines.map(function(x,i){
+      var cls='say'+(i===scriptLines.length-1&&!CFG.quiet?' latest':'');
+      var who=(x.who==='type'?'（你打字）':'（你说）');
+      return '<div class="'+cls+'"><span class="who">替你说 '+who+'</span>'+esc(x.text)+'</div>';
+    }).join('');
+    el.scrollTop=el.scrollHeight;
+  }
+  function cleanOut(c){
+    var s=String(c||'').trim();
+    s=s.replace(/^```[a-zA-Z]*\s*/i,'').replace(/\s*```$/,'').trim();
+    // 去各种引号（直/弯/中文），首尾都去
+    s=s.replace(/^["'\u201c\u201d\u2018\u2019\u300c\u300d\u300e\u300f]+/,'').replace(/["'\u201c\u201d\u2018\u2019\u300c\u300d\u300e\u300f]+$/,'').trim();
+    s=s.replace(/^(主播|台词|嘴替)\s*[:：]\s*/,'');
+    // 去行首编号：① 或 "1." "1、" "1)" 都去掉
+    s=s.replace(/^\s*[①②③④⑤⑥⑦⑧⑨⑩]+/,'');
+    s=s.replace(/^\s*\d+[.、)]\s*/,'');
+    return s.trim();
+  }
+  // 把一段输入交给嘴替引擎；串行处理，保证顺序
+  function pushTurn(text,who){
+    text=String(text||'').trim();
+    if(!text)return;
+    turnQueue.push({text:text,who:who||'voice'});
+    pumpTurn();
+  }
+  function pumpTurn(){
+    if(busy||!turnQueue.length)return;
+    var t=turnQueue.shift();
+    generateTurn(t.text,t.who);
+  }
+  function generateTurn(text,who){
+    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){toast('请先在下方设置里填 API Key');$('settingsBox').open=true;return;}
+    busy=true;
+    $('genState').innerHTML='<span class="spin"></span> 正在替你想词…';
+    var kb=CFG.knowledge?('\n【主播的说话风格与背景，务必贴合】'+CFG.knowledge):'';
+    var ctxLine='';
+    if(ctx.length){
+      ctxLine='\n\n【本场刚才聊的·接着往下，别重复】\n'+ctx.map(function(c,i){
+        return (i+1)+'. 主播说：'+c.in+'\n   替他说：'+String(c.out).slice(0,70);
+      }).join('\n');
+    }
+    var body={model:CFG.model,
+      messages:[{role:'system',content:VOICE_SYS+kb},
+                {role:'user',content:ctxLine+'\n\n主播刚说：'+text}],
+      temperature:0.9,stream:false,max_tokens:320};
+    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
+    var x=new XMLHttpRequest();
+    x.open('POST',url,true);
+    x.setRequestHeader('Content-Type','application/json');
+    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
+    x.timeout=45000;
+    function finish(){
+      busy=false;failCount=0;
+      pumpTurn();
+    }
+    x.onreadystatechange=function(){
+      if(x.readyState!==4)return;
+      if(x.status<200||x.status>=300){
+        $('genState').textContent='接话失败 · 再说一句';
+        finish();return;
+      }
+      try{
+        var j=JSON.parse(x.responseText);
+        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+        var out=cleanOut(c);
+        if(!out)throw new Error('empty');
+        scriptLines.push({text:out,who:who});
+        ctx.push({in:text,out:out});
+        if(ctx.length>4)ctx=ctx.slice(-4);
+        if(scriptLines.length>40)scriptLines=scriptLines.slice(-40);
+        renderScript();
+        $('genState').textContent='已替你接上 · 继续说';
+      }catch(e){
+        $('genState').textContent='没接上 · 再说一句';
+      }
+      finish();
+    };
+    x.ontimeout=function(){$('genState').textContent='超时 · 再说一句';busy=false;pumpTurn();};
+    x.send(JSON.stringify(body));
+  }
+
+  /* ===== 麦克风录音 + 云端语音转文字（复用已验证方案） ===== */
   var ASR_URL='https://api.siliconflow.cn/v1/audio/transcriptions';
   var ASR_MODEL='FunAudioLLM/SenseVoiceSmall';
   var audioCtx=null,micStream=null,procNode=null,silentGain=null;
-  var started=false,paused=false,pendingText='',genTimer=null,failCount=0;
+  var started=false,paused=false;
   var pcmChunks=[],segmentHasVoice=false,segAudioMs=0,silenceAudioMs=0;
-  // 并行上传：每段独立请求，用序号把识别结果按说话顺序排好，避免排队积压造成卡顿
   var asrSeq=0,asrDone=0,asrResults={};
   var frameMs=0,SILENCE_MS=500,MAX_SEG_MS=7000,VOICE_RMS=0.008;
 
-  // 把浮点 PCM 片段编码成 16bit WAV（SenseVoice 必支持）
   function encodeWAV(chunks,rate){
     var len=0,i;for(i=0;i<chunks.length;i++)len+=chunks[i].length;
     var buf=new ArrayBuffer(44+len*2),v=new DataView(buf);
@@ -449,8 +437,6 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
     }
     return new Blob([buf],{type:'audio/wav'});
   }
-
-  // 一段录音 → 并行上传 SenseVoice 转文字 → 按序输出 → 走联动路由
   function asrUpload(blob){
     var mySeq=++asrSeq;
     var fd=new FormData();
@@ -461,27 +447,20 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
       .then(function(j){
         var t=(j.text||'').replace(/\s+/g,' ').trim();
         asrResults[mySeq]=t;
-        // 按说话顺序输出，先到的后面若缺前段就等，根治乱序
         while(asrResults[asrDone+1]!==undefined){
           var txt=asrResults[asrDone+1];delete asrResults[asrDone+1];asrDone++;
-          if(txt&&started&&!paused){
-            transcriptFinal+=txt;renderTranscript();
-            routeInput(txt,'voice'); // 3号录入 → 联动引擎
-          }
+          if(txt&&started&&!paused)pushTurn(txt,'voice');
         }
       })
       .catch(function(e){toast('语音转文字失败：'+e.message);});
   }
-
-  // 静音/超时切段：把当前 PCM 编码上传，然后清空继续录
   function flushSegment(){
     if(!pcmChunks.length)return;
     var chunks=pcmChunks;pcmChunks=[];segmentHasVoice=false;
     segAudioMs=0;silenceAudioMs=0;
     var blob=encodeWAV(chunks,audioCtx?audioCtx.sampleRate:44100);
-    asrUpload(blob); // 并行上传，不再排队等上一段
+    asrUpload(blob);
   }
-
   function openMic(){
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
       toast('当前环境无法录音，请在电脑版 Chrome / Edge 打开');return Promise.reject(new Error('no getUserMedia'));
@@ -494,10 +473,10 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
         if(audioCtx.state==='suspended')audioCtx.resume();
         var src=audioCtx.createMediaStreamSource(stream);
         procNode=audioCtx.createScriptProcessor(4096,1,1);
-        silentGain=audioCtx.createGain();silentGain.gain.value=0; // 静音输出，避免回声
+        silentGain=audioCtx.createGain();silentGain.gain.value=0;
         src.connect(procNode);procNode.connect(silentGain);silentGain.connect(audioCtx.destination);
         pcmChunks=[];segmentHasVoice=false;segAudioMs=0;silenceAudioMs=0;
-        frameMs=1000*4096/(audioCtx.sampleRate||16000); // 每帧代表的毫秒
+        frameMs=1000*4096/(audioCtx.sampleRate||16000);
         procNode.onaudioprocess=function(e){
           if(!started||paused)return;
           var d=e.inputBuffer.getChannelData(0),sum=0,i;
@@ -512,713 +491,86 @@ details.settings summary .t{color:var(--gold-dim);font-size:13px}
         setStatus('live','麦克风已开 · 说话自动转文字');
       })
       .catch(function(e){
-        toast('麦克风打不开：'+(e&&e.message?e.message:'请允许麦克风权限')+'（浏览器地址栏要允许麦克风）');
+        toast('麦克风打不开：'+(e&&e.message?e.message:'请允许麦克风权限')+'（地址栏要允许麦克风）');
         started=false;setControls('idle');
       });
   }
-
   function closeMic(){
     if(procNode){try{procNode.onaudioprocess=null;procNode.disconnect();}catch(e){}procNode=null;}
     if(micStream){try{micStream.getTracks().forEach(function(t){t.stop();});}catch(e){}micStream=null;}
     if(audioCtx){try{audioCtx.close();}catch(e){}audioCtx=null;}
   }
 
-  // 三键状态同步
+  /* ===== 三键 ===== */
   function setControls(mode){
-    // mode: 'idle' | 'running' | 'paused'
     var sb=$('startBtn'),pb=$('pauseBtn'),xb=$('stopBtn');
     if(mode==='idle'){
       sb.disabled=false;$('startLabel').textContent='启动';
-      pb.disabled=true;$('pauseLabel').textContent='暂停';
-      xb.disabled=true;
+      pb.disabled=true;$('pauseLabel').textContent='暂停';xb.disabled=true;
     }else if(mode==='running'){
       sb.disabled=true;$('startLabel').textContent='运行中';
-      pb.disabled=false;$('pauseLabel').textContent='暂停';
-      xb.disabled=false;
+      pb.disabled=false;$('pauseLabel').textContent='暂停';xb.disabled=false;
     }else if(mode==='paused'){
       sb.disabled=false;$('startLabel').textContent='继续';
-      pb.disabled=false;$('pauseLabel').textContent='继续';
-      xb.disabled=false;
+      pb.disabled=false;$('pauseLabel').textContent='继续';xb.disabled=false;
     }
   }
-
-  // 启动 / 继续（startBtn）
   $('startBtn').addEventListener('click',function(){
     if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
-      toast('请先在下方「开始前设置一次」里填 API Key');$('settingsBox').open=true;return;
+      toast('请先在下方设置里填 API Key');$('settingsBox').open=true;return;
     }
     if(paused){
-      // 从暂停恢复：重新开麦
       paused=false;setControls('running');
-      $('genState').textContent='启动后自动刷新提示';
-      $('startInfo').innerHTML='<b>已继续，全程自动。</b>说话自动转文字、说完停一下提示卡就刷新；中途按「暂停」，播完按「结束」。';
-      toast('已继续，正在重新打开麦克风');
-      openMic();
-      return;
+      $('genState').textContent='已继续 · 你说一句它接一句';
+      toast('已继续，正在重新打开麦克风');openMic();return;
     }
     if(started)return;
-    started=true;paused=false;pendingText='';failCount=0;liveDir='';lastTopic='';
-    asrSeq=0;asrDone=0;asrResults={};linkBusy=false;linkPending=null;
-    topicGraph={};topicHistory=[];
-    resetScript();
-    $('dirTag').style.display='none';
-    transcriptFinal='';transcriptInterim='';renderTranscript();
-    ['cardKnow','cardSay'].forEach(function(id){
-      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">'+(id==='cardSay'?'正在凭长期记忆生成对话流…':'听你说，马上生成……')+'</span>';bd.scrollTop=0;
-    });
+    started=true;paused=false;asrSeq=0;asrDone=0;asrResults={};turnQueue=[];ctx=[];
+    scriptLines=[];renderScript();
     setControls('running');
-    $('startInfo').innerHTML='<b>已启动，全程自动。</b>台词会围绕话题一个角度一个角度往下展开、每节都是能直接念的具体话；反复说同一话题会自动讲下一个新角度，不重头复述；说全新话题才清空换题。中途按「暂停」，播完按「结束」。';
-    toast('正在打开麦克风，请在浏览器弹窗点「允许」');
+    $('genState').textContent='听你说，马上替你接…';
+    toast('正在打开麦克风，请在弹窗点「允许」');
     openMic();
-    // 对话流开篇：优先用留言口预置的主题，否则凭长期记忆自发一个
-    var seed=$('typeInput')?$('typeInput').value.trim():'';
-    if(seed)$('typeInput').value='';
-    generateMoreScript('start',seed);
   });
-
-  // 暂停 / 继续（pauseBtn）
   $('pauseBtn').addEventListener('click',function(){
     if(!started)return;
     if(!paused){
       paused=true;
-      if(genTimer){clearTimeout(genTimer);genTimer=null;} // 取消待生成的提示
-      if(pcmChunks.length&&segmentHasVoice)flushSegment(); // 已说的话先转成文字
-      closeMic(); // 关掉麦克风，真省算力
-      setControls('paused');
+      if(pcmChunks.length&&segmentHasVoice)flushSegment();
+      closeMic();setControls('paused');
       setStatus('','已暂停 · 麦克风已关');
       $('genState').textContent='已暂停';
       toast('已暂停，麦克风已关；按「继续」恢复');
     }else{
-      // pauseBtn 也可作继续
       $('startBtn').click();
     }
   });
-
-  // 结束（stopBtn）
   $('stopBtn').addEventListener('click',function(){
-    var justSaid=(transcriptFinal||'').trim();
-    started=false;paused=false;resetScript();
-    if(genTimer){clearTimeout(genTimer);genTimer=null;}
+    started=false;paused=false;
     closeMic();
-    pcmChunks=[];pendingText='';transcriptFinal='';transcriptInterim='';failCount=0;
-    asrSeq=0;asrDone=0;asrResults={};linkBusy=false;linkPending=null;topicGraph={};topicHistory=[];
-    renderTranscript();
-    ['cardKnow','cardSay'].forEach(function(id){
-      var bd=$(id).querySelector('.body');bd.innerHTML='<span class="empty">已结束，点「启动」重新开始</span>';bd.scrollTop=0;
-    });
-    setControls('idle');
-    setStatus('','已结束');
-    $('genState').textContent='启动后自动刷新提示';
-    $('startInfo').innerHTML='<b>点「启动」后全自动</b>——持续听你说话，说完停一下就自动刷新提示卡。<span class="em">中途不用就按「暂停」省算力，再按「继续」恢复；播完按「结束」。</span>';
+    pcmChunks=[];turnQueue=[];ctx=[];scriptLines=[];
+    asrSeq=0;asrDone=0;asrResults={};busy=false;
+    scriptLines=[];renderScript();
+    $('script').innerHTML='<span class="ph">已结束，点「启动」重新开始。</span>';
+    setControls('idle');setStatus('','已结束');
+    $('genState').textContent='启动后，你说一句它接一句';
     toast('已结束');
-    if(justSaid.length>=10)setTimeout(function(){digestMemory(justSaid);},500);
   });
 
-  /* ===== 长期记忆：提炼式记忆库（跨场次持久化，不堆积原文） ===== */
-  var MEM_KEY='live_muse_memory_v1';
-  var MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};
-  var memBusy=false;
-  function loadMem(){
-    try{var raw=localStorage.getItem(MEM_KEY);if(!raw)return;var o=JSON.parse(raw);
-      if(o&&typeof o==='object'){
-        MEM.profile=typeof o.profile==='string'?o.profile:'';
-        MEM.keywords=Array.isArray(o.keywords)?o.keywords:[];
-        MEM.sessions=Number(o.sessions)||0;
-        MEM.updated=o.updated||'';MEM.brief=o.brief||'';
-      }
-    }catch(e){}
-  }
-  function saveMem(){try{localStorage.setItem(MEM_KEY,JSON.stringify(MEM));}catch(e){}}
-  function renderMem(){
-    var chars=MEM.profile.length;
-    if($('memBtn'))$('memBtn').textContent=memBusy?'提炼中…':('长期记忆 · '+MEM.sessions+'场');
-    if($('memStat'))$('memStat').innerHTML='已累计 <b>'+MEM.sessions+'</b> 场 · 画像仅 <b>'+chars+'</b> 字 · 关键词 <b>'+MEM.keywords.length+'</b> 个'+(MEM.updated?(' · 更新于 '+MEM.updated):'');
-    if($('memKeys'))$('memKeys').innerHTML=MEM.keywords.length?MEM.keywords.map(function(k){return '<span class="mkw">'+esc(k)+'</span>';}).join(''):'<span class="muted">还没有关键词，播完一场点「结束」自动提炼</span>';
-    if($('memBody'))$('memBody').textContent=MEM.profile||'还没有记忆。播完一场点「结束」，AI 会把本场压缩成几句话存下来；之后每场都和旧记忆合并重压，始终只留几百字，不会越堆越多。';
-    if($('memBrief'))$('memBrief').textContent=MEM.brief||'—';
-  }
-  function openMem(on){
-    var m=$('memMask');if(!m)return;
-    m.style.display=on?'flex':'none';
-    if(on)renderMem();
-  }
-  var MEM_SYS='你是主播的长期记忆提炼器。把“已有画像”和“本场直播记录”合并成一份新画像——不是追加，是重写压缩。\n'+
-    '①只保留长期有用的：主播的说话风格、关注领域、常聊话题、需求习惯、禁忌偏好、口头禅；丢掉一次性新闻、某句原话、临时话题。\n'+
-    '②新画像比旧画像更精炼或等量，总长不超过 400 字，用几条短句写清，不写流水账。\n'+
-    '③keywords 给 6-12 个最能代表这位主播的关键词，去重、按重要度排序。\n'+
-    '④brief 用一句话说清本场新增或强化了什么。\n'+
-    '只输出 JSON：{"profile":"...","keywords":["..."],"brief":"..."}';
-  function digestMemory(auto){
-    if(memBusy)return;
-    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
-      if(!auto){toast('请先在设置里填 API Key');$('settingsBox').open=true;openMem(false);}
-      return;
-    }
-    var mt=$('memText')?$('memText').value.trim():'';
-    var src=mt||((typeof auto==='string')?auto:(transcriptFinal||''));
-    if(mt)$('memText').value='';
-    if(!src||!src.trim()){
-      if(!auto)toast('还没有可提炼的内容，先说几句或在上面粘贴一段');
-      return;
-    }
-    memBusy=true;renderMem();
-    var kb=CFG.knowledge?('\n主播自述背景：'+CFG.knowledge):'';
-    var body={model:CFG.model,
-      messages:[{role:'system',content:MEM_SYS+kb},
-                {role:'user',content:'已有画像：\n'+(MEM.profile||'（空）')+'\n\n本场记录：\n'+src.slice(-1600)}],
-      temperature:0.5,stream:false,max_tokens:760};
-    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
-    var x=new XMLHttpRequest();
-    x.open('POST',url,true);
-    x.setRequestHeader('Content-Type','application/json');
-    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
-    x.timeout=45000;
-    function done(msg,ok){
-      memBusy=false;renderMem();
-      if(msg)toast(msg);
-      return ok;
-    }
-    x.onreadystatechange=function(){
-      if(x.readyState!==4)return;
-      if(x.status<200||x.status>=300){done('提炼失败（'+x.status+'）',false);return;}
-      try{
-        var j=JSON.parse(x.responseText);
-        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-        if(!c)throw new Error('empty');
-        var cl=c.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
-        var d=null;
-        try{d=JSON.parse(cl);}catch(e){var m=cl.match(/\{[\s\S]*\}/);if(m){try{d=JSON.parse(m[0]);}catch(e2){}}}
-        if(!d)throw new Error('parse');
-        var p=String(d.profile||'').trim().slice(0,400);
-        if(!p)throw new Error('nop');
-        MEM.profile=p;
-        MEM.keywords=Array.isArray(d.keywords)?d.keywords.slice(0,12).map(function(k){return String(k).trim().slice(0,20);}).filter(Boolean):[];
-        MEM.brief=String(d.brief||'').trim().slice(0,120);
-        MEM.sessions=MEM.sessions+1;
-        MEM.updated=new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-        saveMem();
-        done('已提炼进长期记忆（第 '+MEM.sessions+' 场，画像 '+MEM.profile.length+' 字）',true);
-      }catch(e){done('提炼返回解析失败',false);}
-    };
-    x.ontimeout=function(){done('提炼超时',false);};
-    x.send(JSON.stringify(body));
-  }
-  if($('memBtn'))$('memBtn').addEventListener('click',function(){openMem(true);});
-  if($('memClose'))$('memClose').addEventListener('click',function(){openMem(false);});
-  if($('memMask'))$('memMask').addEventListener('click',function(e){if(e.target===this)openMem(false);});
-  if($('memDigest'))$('memDigest').addEventListener('click',function(){digestMemory(false);});
-  if($('memClear'))$('memClear').addEventListener('click',function(){
-    if(!confirm('确定清空长期记忆？此操作不可恢复。'))return;
-    MEM={profile:'',keywords:[],sessions:0,updated:'',brief:''};saveMem();renderMem();toast('长期记忆已清空');
-  });
-
-  /* ===== 1号对话流：预设顺序 · 连贯台词 =====
-     队列只增不减（念到快完自动续写下一批），当前行高亮、可回看可预览，
-     滚轮下滑自动生成；内容按预设顺序一节一节往下讲、前后自然承接，
-     不是网状随机跳点、不是散点；不撑高页面，固定高度内部滚动。 */
-  var scriptQueue=[],scriptIdx=-1,scriptTopic='',batchStarts=[],scriptBusy=false;
-  var talkedAngles=[],angleIdx=0; // 已讲过的节：保证按预设顺序推进、不原地复述
-  var scriptNodes=[],nodeCursor=0; // 兼容旧字段，预设模式下不再用于随机跳点
-
-  // 预设的讲解顺序：任何话题都按这七节一层层连贯往下讲，讲完再换深一层重走
-  var PRESET_SECTIONS=[
-    '开场场景：用一个真实常见的场景把观众带进来',
-    '讲清是什么：用大白话说透一个层面',
-    '讲为什么：背后的道理或机制',
-    '具体怎么做：方法一步步、带动作细节',
-    '真实例子：一个具体的人或场景',
-    '常见误区：大多数人在哪栽跟头',
-    '收尾观点：一句能记住的判断'
-  ];
-
-  // 对话流提示词：预设顺序、连贯推进，每条是可直接念的完整短句，只输出 angle + say
-  var SAY_SYS='你是直播"预设顺序"台词引擎。给你一个话题和"按预设顺序已经讲到第几节"，你要顺着预设顺序讲**下一节**，和上一节自然承接，展开成主播能直接念的实在话。\n'+
-    '【预设顺序·一节一节往下讲，绝不乱跳】固定七节循环：①开场场景(一个真实常见的场景把人带进来) → ②讲清是什么(大白话说透一个层面) → ③讲为什么(背后的道理/机制) → ④具体怎么做(方法一步步、带动作细节) → ⑤真实例子(一个具体的人或场景) → ⑥常见误区(大多数人在哪栽跟头) → ⑦收尾观点(一句能记住的判断)。七节讲完，再换这个话题更深一层的场景重新从①往下走。每次只讲当前这一节，开头一两句接住上一节（如"接着刚说的…""那到底该怎么办呢…"），是一段连贯的话，不是东一句西一句的散点。\n'+
-    '【第一铁律·必须讲具体内容，绝不原地复述话题名】话题是"情绪管理"，绝不能反复写"情绪管理是什么""情绪调节方法""压力应对策略"这种把话题换个说法的标题——那是目录，不是台词，粉丝什么也学不到。每一节都要讲具体的、带细节的实在话。\n'+
-    '【怎么展开一节】angle 用8-14字写清这一节讲的具体方面（如"情绪是身体的警报信号""被领导批评时的6秒暂停法""越压抑越反弹的原因"），不要只写话题名。say 用3条完整陈述句把这一节讲透：给真实场景、给具体动作、给细节、给例子或数字，念出来观众脑子里能有画面。\n'+
-    '【台词长什么样·照这个水平写，这是用户亲口给的标准】话题"情绪管理"，好台词是："我们生完气经常后悔，其实生气那一刻拿个本子，把这件事的来龙去脉写下来——谁惹的、为什么气、值不值得，写完你会发现气消了一大半。" 要点：有真实场景(生完气)、有具体动作(拿本子写)、有细节(来龙去脉/谁惹的/值不值)。每条都要像这样能想象出画面，不许写成抽象概括。\n'+
-    '【严禁·这些一句都不许出现，写了会被系统整句删掉】"情绪管理有哪些方法""有哪些技巧""情绪管理的节奏""情绪管理的重要性""情绪管理是什么""记得记下来提高效率""对话如何提升工作效率""倾听与表达的艺术""对话框对话的规则"——这些是目录、标题、空话，不是台词。\n'+
-    '【严禁·血泪教训】用户截图里真实翻车的反例，绝对不许再出现："情绪管理的重要性"（标题）、"如何在压力大的时候保持冷静？"（设问）、"情绪管理有哪些方法"（提纲）、"记得记下来提高效率"（空话）。这些一句都不能写。\n'+
-    '【严禁】标题式短语（"情绪调节方法""认知行为疗法""X的重要性""X有哪些方法"）；设问句（"情绪是什么呢？""你知道吗？""如何…？"）；空泛铺垫（"那么""接下来聊聊""这个话题很重要"）；把话题名本身当台词；跳回前面重复讲过的内容。\n'+
-    '【连贯·不是散点·不是网状】每一节都接住上一节往下说，像主播顺着话题一层层讲；不跳节、不回头重讲、不随机发散。\n'+
-    '【跟随风格】幽默场给能念的梗；专业场给门道、数字、够狠的要点；情绪场给共情的实在话；观点场给犀利判断。方向指令必须遵守。\n'+
-    '只输出一个 JSON 对象，不要解释、不要代码块：\n'+
-    '{"angle":"这一节讲的具体角度（8-14字）","say":"①...②...③..."}\n';
-
-  // 录入联动引擎提示词：一次算出 话题识别 + 2号知识 + 方向，台词交给预设顺序引擎
-  var LINK_SYS='你是直播现场的"联动引擎"。主播说了或打了一段话（1号听见录入的），你一次算出三样东西：话题标签(topic)、给2号知识窗的名词补充(know)、方向指令(dir)。台词由另一套预设顺序引擎负责，你不写台词。窗口编号：1号=实时听见(录入声音)、2号=名词解释、3号=对话流(预设顺序台词)、4号=文字录入口。\n'+
-    '【新话题开场·最高优先级】若主播明确开场新话题（如"今天聊聊X""要不说说X""换个话题""今天想谈X"），topic 必须精确就是那个新话题本身（例：说"情绪管理"→topic="情绪管理"，绝不能沿用上一个话题"时间管理"），并置 replace:true 表示清空旧台词重开；非开场则 replace:false。\n'+
-    '【2号知识 know——只认真专有名词】只有出现真正的专有名词/概念才写know：人名、历史人物、地名、机构、品牌、产品、技术术语、缩写、外语词、学科概念（理化生政史经）、专业词汇。要做"深度补充"：这人/概念是谁、什么背景、关联人物、朝代职务、领域归属、为什么重要——像一张迷你知识卡，60-90字。例：提到"司马光"→"司马光：北宋史学家，《资治通鉴》主编，砸缸典故主人公；与王安石变法立场相左，属旧党。父亲司马池，谥号文正。"\n'+
-    '【2号知识——普通词一律不解释】普通日常词、动词短语、语气词（如"当中被骂""然后呢""这个东西""聊聊天"）不是专有名词，know 必须返回空字符串 ""，绝不要硬解释——把大白话当知识解释很低级。宁可空着。没有就给 ""。\n'+
-    '【语音纠错】识别常听错（中英混说/谐音/缩写），结合语境纠正：听到"NPD是啥"讲自恋型人格障碍，不是小米快充；拿不准用"你说的应该是X"。\n'+
-    '【1号话题识别 topic】只提炼这段话的话题标签topic（4-12字，如"情绪管理"），用来判断"是不是还在聊同一个话题、要不要换新话题"。nodes 字段必须留空字符串 ""——一个字都不许写！台词由专门的预设顺序引擎按话题生成，绝不靠这里。\n'+
-    '【方向指令 dir】打字若含方向指令（幽默点/往专业走/反转/别聊这个/多抛梗/换风格），写进dir；否则空。\n'+
-    '只输出JSON：{"know":"...或空","topic":"...","nodes":"","replace":false,"dir":""}\n';
-
-  // 话题图：网状关联，靠"共用节点"跳回旧话题（不是概率）
-  var topicGraph={},topicHistory=[];
-  function nodeTags(raw){
-    return splitScript(raw).map(function(x){return String(x).replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'').trim().slice(0,14);}).filter(Boolean);
-  }
-  function topicGraphAdd(topic,raw){
-    if(!topic)return;
-    var tags=nodeTags(raw);
-    if(!topicGraph[topic])topicGraph[topic]=[];
-    tags.forEach(function(g){if(topicGraph[topic].indexOf(g)<0)topicGraph[topic].push(g);});
-    if(topicHistory.indexOf(topic)<0)topicHistory.push(topic);
-    if(topicHistory.length>14)topicHistory=topicHistory.slice(-14);
-    var ks=Object.keys(topicGraph);
-    if(ks.length>16)delete topicGraph[ks[0]];
-  }
-  function topicGraphContext(){
-    if(!topicHistory.length)return '';
-    var lines=['\n\n【之前聊过的话题点（可凭内容关联性跳回，不是随机、不是按概率）】'];
-    topicHistory.slice(-8).forEach(function(k){
-      lines.push('- '+k+'：'+(topicGraph[k]||[]).slice(0,4).join('、'));
-    });
-    return lines.join('\n');
-  }
-
-  function normTxt(x){return String(x||'').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g,'').toLowerCase();}
-  function coverRatio(a,b){ // a 的字符有多大比例能在 b 里找到（按计数，防重复字虚高）
-    var pool=b.split(''),hit=0,i,k;
-    for(i=0;i<a.length;i++){k=pool.indexOf(a.charAt(i));if(k>=0){hit++;pool.splice(k,1);}}
-    return a.length?hit/a.length:0;
-  }
-  // 判断一行是不是"提纲/设问/空话"而非能念的实在台词——代码层硬过滤，不指望小模型自觉
-  function isOutlineLine(ln){
-    var x=String(ln||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩\s、.．]+/,'').trim();
-    if(!x)return true;
-    // 设问句：以问号结尾，或是明显问观众的句式
-    if(/[?？]$/.test(x))return true;
-    if(/^(什么是|为什么|如何|怎么|怎样|哪些|有哪些|情绪是什么|你知道吗|大家觉得|那么|接下来|下面|首先我们|这个话题)/.test(x))return true;
-    // 标题式：X的重要性 / X的方法 / 关于X / 聊聊X / 浅谈X / XX的意义 / XX的技巧 / X有哪些
-    if(/(的重要性|的意义|的方法|的技巧|的策略|的作用|的影响|有哪些|是什么| Definition)/.test(x))return true;
-    if(/^(关于|聊聊|浅谈|说说|谈谈|讲讲|说到)/.test(x)&&x.length<=16)return true;
-    // 纯标签式短语：很短、无标点、无动词实义（如"情绪管理""压力应对""方法与技巧"）
-    var plain=x.replace(/[的与和及、\s]/g,'');
-    if(x.length<=12&&!/[，,。；;：:！!]/.test(x)&&!/[0-9]/.test(x)
-       &&/(管理|方法|技巧|策略|应对|调节|控制|重要|意义|作用|影响|平衡|概述|介绍|节奏|原则|步骤|要点|关键|误区|建议|方式|内涵|本质|定义|特点|优势|好处|问题|现状)$/.test(x))return true;
-    return false;
-  }
-  function splitScript(raw){
-    var parts=String(raw||'').split(/(?=[①②③④⑤⑥⑦⑧⑨⑩])/).map(function(x){return x.trim();}).filter(Boolean);
-    if(parts.length<2){ // 没用圈号时按换行拆
-      parts=String(raw||'').split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);
-    }
-    // 去掉AI自带的圈号前缀（统一由 paintScript 编号），并硬过滤掉提纲/设问/空话
-    parts=parts.map(function(x){return String(x).replace(/^[①②③④⑤⑥⑦⑧⑨⑩\s、.．]+/,'').trim();})
-               .filter(function(x){return x&&!isOutlineLine(x);});
-    return parts;
-  }
-  function resetScript(){
-    scriptQueue=[];scriptIdx=-1;scriptTopic='';batchStarts=[];scriptBusy=false;
-    scriptNodes=[];nodeCursor=0;talkedAngles=[];angleIdx=0;
-    var el=$('cardSay');
-    if(el)el.querySelector('.body').innerHTML='<span class="empty">启动后凭长期记忆自动生成主题与首批台词，念到哪亮到哪，快念完自动往下续写</span>';
-  }
-  function scrollToCurrent(){
-    var bd=$('cardSay')&&$('cardSay').querySelector('.body');if(!bd)return;
-    var node=bd.querySelectorAll('.ln')[scriptIdx];
-    if(node){var r=node.getBoundingClientRect(),br=bd.getBoundingClientRect();bd.scrollTop+=(r.top-br.top)-6;}
-  }
-  function paintScript(follow){
-    var el=$('cardSay');if(!el)return;
-    var bd=el.querySelector('.body');
-    var oldTop=bd.scrollTop;
-    if(!scriptQueue.length){bd.innerHTML='<span class="empty">正在生成台词…</span>';return;}
-    var marks=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
-    bd.innerHTML=scriptQueue.map(function(ln,i){
-      var cls='ln'+(i===scriptIdx?' reading':'')+(scriptIdx>=0&&i<scriptIdx?' dim':'');
-      var mk=marks[i%10];
-      return '<div class="'+cls+'">'+mk+' '+esc(ln)+'</div>';
-    }).join('');
-    if(follow===false)bd.scrollTop=oldTop; // 滚轮追加：保持用户当前视图，新内容接在下方
-    else if(scriptIdx>=0)scrollToCurrent();
-  }
-  // 追加一批台词，返回这批第一行的下标
-  function appendScript(raw,topic,follow){
-    var lines=splitScript(raw);
-    if(!lines.length)return -1;
-    if(topic)scriptTopic=String(topic).trim().slice(0,40)||scriptTopic;
-    var start=scriptQueue.length;
-    batchStarts.push(start);
-    var tailIdx=scriptQueue.length>1?scriptQueue.length-1:0;
-    var existing=scriptQueue.slice(Math.max(0,tailIdx-14)).map(normTxt); // 最近14条的归一化文本，用于去重
-    lines.forEach(function(ln){
-      var nt=normTxt(ln);
-      if(nt&&existing.indexOf(nt)>=0)return; // 与最近台词完全相同→跳过，避免AI重复时队列堆一样的句子
-      existing.push(nt);
-      scriptQueue.push(ln);
-      var tag=String(ln).replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'').trim().slice(0,24);
-      if(tag&&scriptNodes.indexOf(tag)<0)scriptNodes.push(tag);
-    });
-    if(scriptNodes.length>45){scriptNodes=scriptNodes.slice(-45);nodeCursor=nodeCursor%scriptNodes.length;}
-    // 防止队列无限膨胀：只留最近 60 条，同步修正高亮下标与批次起点
-    if(scriptQueue.length>60){
-      var drop=scriptQueue.length-60;
-      scriptQueue=scriptQueue.slice(drop);
-      scriptIdx=scriptIdx>=0?Math.max(0,scriptIdx-drop):-1;
-      batchStarts=batchStarts.map(function(x){return x-drop;}).filter(function(x){return x>=0;});
-    }
-    paintScript(follow);
-    return start;
-  }
-  // 话题切换：清空旧台词，围绕新话题重开（用户明确要求"清空"，不是追加淹没）
-  function replaceScript(raw,topic){
-    var lines=splitScript(raw);
-    if(!lines.length)return -1;
-    scriptQueue=[];batchStarts=[];scriptNodes=[];nodeCursor=0;scriptIdx=-1;talkedAngles=[];angleIdx=0;
-    appendScript(raw,topic,false);
-    scriptIdx=0;paintScript();
-    return 0;
-  }
-  // 续写一批台词：只写台词窗，绝不碰右边名词卡
-  function generateMoreScript(reason,seedTopic,follow){
-    if(scriptBusy)return;
-    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey))return;
-    if(follow===undefined)follow=(reason!=='scroll');
-    scriptBusy=true;
-    $('genState').textContent=reason==='start'?'正在展开开篇角度…':'正在展开下一个角度…';
-    var kb=CFG.knowledge?('\n【主播领域背景】'+CFG.knowledge):'';
-    var memLine=MEM.profile?('\n【关于这位主播（自然沿用，别生硬复述）】'+MEM.profile):'';
-    var dirLine=liveDir?('\n【当前方向，必须遵守】'+liveDir):'';
-    var topicLine=scriptTopic?('\n【本次直播话题】'+scriptTopic):'';
-    var seedLine=seedTopic?('\n【本次指定主题，优先用它开篇】'+seedTopic):'';
-    // 预设顺序进度：告诉 AI 这是第几节、该讲哪一节，必须承接上一节往下讲，不许乱跳
-    var secCount=talkedAngles.length;
-    var curSec=PRESET_SECTIONS[secCount%PRESET_SECTIONS.length];
-    var progressLine='\n【预设顺序进度】按固定七节往下讲，现在该讲第 '+(secCount%PRESET_SECTIONS.length+1)+' 节：'+curSec+'。';
-    if(secCount){
-      progressLine+='\n【已讲过的内容·别重复、别跳回】\n'+talkedAngles.slice(-10).map(function(n,i){return (i+1)+'. '+n;}).join('\n');
-      progressLine+='\n必须承接上面最后一节，顺着讲这一节，不许跳到别节、不许回头重讲。';
-    }else{
-      progressLine+='\n【这是第一节】按"开场场景"讲：用一个真实常见的场景把观众带进来，展开成能念的具体内容。';
-    }
-    var saidLine=progressLine;
-    var lead=reason==='start'?'开场：按预设第①节"开场场景"讲，用一个真实场景把人带进来。':'顺着预设顺序讲下一节，开头一两句接住上一节，再展开成能念的具体内容。';
-    var body={model:CFG.model,
-      messages:[{role:'system',content:SAY_SYS+kb+memLine+dirLine},
-                {role:'user',content:'请展开主播接下来要念的一节（angle + 3条能念的具体台词）。'+lead+topicLine+seedLine+saidLine}],
-      temperature:0.7,stream:false,max_tokens:330};
-    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
-    var x=new XMLHttpRequest();
-    x.open('POST',url,true);
-    x.setRequestHeader('Content-Type','application/json');
-    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
-    x.timeout=45000;
-    x.onreadystatechange=function(){
-      if(x.readyState!==4)return;
-      scriptBusy=false;
-      if(x.status<200||x.status>=300){$('genState').textContent='台词续写失败 · 等下句再续';return;}
-      try{
-        var j=JSON.parse(x.responseText);
-        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-        if(!c)throw new Error('empty');
-        var cl=c.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
-        var d=null;
-        try{d=JSON.parse(cl);}catch(e){var m=cl.match(/\{[\s\S]*\}/);if(m){try{d=JSON.parse(m[0]);}catch(e2){}}}
-        var say=d&&(d.say||d.lines||d.script)||'';
-        if(Array.isArray(say))say=say.join('');
-        if(!String(say).trim())throw new Error('nosay');
-        var angle=d&&(d.angle||d.section)?String(d.angle||d.section).trim().slice(0,20):'';
-        if(angle&&talkedAngles.indexOf(angle)<0){talkedAngles.push(angle);angleIdx++;}
-        var newTopic=d&&d.topic?String(d.topic).trim():'';
-        if(reason==='start'&&!newTopic&&seedTopic)newTopic=String(seedTopic).trim().slice(0,40); // 开篇主题落库，供同话题判断用
-        if(reason==='start'&&!newTopic&&scriptTopic)newTopic=scriptTopic;
-        var start=appendScript(say,newTopic,follow);
-        if(reason==='start'){scriptIdx=start>=0?start:0;paintScript();}
-        else if(reason==='next'&&start>=0){scriptIdx=start;paintScript();}
-        $('genState').textContent=reason==='start'?('已开篇 · '+scriptTopic):('已展开 · '+(angle||('第 '+(scriptIdx+1)+' 条')));
-        if(reason!=='scroll'&&scriptQueue.length<8)generateMoreScript('near-end');
-      }catch(e){$('genState').textContent='台词续写失败 · 等下句再续';}
-    };
-    x.ontimeout=function(){scriptBusy=false;$('genState').textContent='台词续写超时 · 等下句再续';};
-    x.send(JSON.stringify(body));
-  }
-  // 念台词判定：只有"台词连续出现在语音里"或"整句双向高度一致"才算念台词，
-  // 绝不因共享几个字（长语音散字命中）就把新话题误判成念台词——那会让整个联动瘫痪。
-  function onGuardText(t){
-    if(!scriptQueue.length)return false;
-    var a=normTxt(t);
-    if(a.length<2)return false;
-    var best=-1,bestScore=0,i,L,core,sc;
-    for(i=0;i<scriptQueue.length;i++){
-      L=normTxt(scriptQueue[i]);if(L.length<2)continue;
-      core=L.replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/,'');
-      sc=0;
-      // 主判据：台词核心连续出现在语音里（逐字照读）
-      if((core.length>=3&&a.indexOf(core)>=0)||(L.length>=3&&a.indexOf(L)>=0))sc=1;
-      // 次判据：语音长度接近台词时，才用双向字符覆盖率（短句念读）
-      else if(a.length<=L.length*2.2)sc=Math.min(coverRatio(a,L),coverRatio(L,a));
-      if(sc>bestScore){bestScore=sc;best=i;}
-    }
-    if(bestScore>=0.78){
-      if(best!==scriptIdx){scriptIdx=best;paintScript();$('genState').textContent='跟读中 · 第 '+(scriptIdx+1)+' 条';}
-      if(scriptQueue.length-scriptIdx<=3)generateMoreScript('near-end'); // 剩≤3条→自动续写，不断档
-      return true;
-    }
-    return false;
-  }
-
-  // 识别"开场新话题"：用户明确要聊某话题时，必须清空旧台词重开，绝不能被念台词保护吞掉
-  function isNewTopicStart(t){
-    var s=String(t||'').trim();
-    if(!s)return false;
-    if(/(聊聊|聊一聊|说一说|说说|讲讲|谈谈|谈一谈|来聊|来讲|来说|来谈)/.test(s))return true;
-    if(/(今天|咱们|我们|这期|这次|这场|接下来|下面).{0,14}(话题|聊|说|讲|谈)/.test(s))return true;
-    if(/(这个话题|换个话题|换一个话题|新话题|下一个话题|主题是|话题是|主题就)/.test(s))return true;
-    if(/(要不|不如|我想|想跟|准备|打算).{0,12}(聊|说|讲|谈)/.test(s))return true;
-    return false;
-  }
-  // 统一联动入口：3号语音、4号打字都进这里。念台词只推进高亮，新话题/指挥触发联动
-  var linkBusy=false,linkPending=null;
-  function routeInput(text,source){
-    var t=String(text||'').trim();
-    if(!t)return;
-    var newTopic=isNewTopicStart(t); // 新话题开场：强制走联动，跳过念台词保护
-    if(source==='voice'&&!newTopic&&onGuardText(t))return; // 念台词→只高亮，不跳转
-    if(linkBusy){linkPending={t:t,s:source,n:newTopic};return;}
-    linkGenerate(t,source,newTopic);
-  }
-  // 一次调用同时算出 话题识别 + 2号知识 + 方向；台词交给预设顺序引擎
-  function linkGenerate(text,source,forceReplace){
-    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey))return;
-    linkBusy=true;
-    $('genState').innerHTML='<span class="spin"></span> 正在联动';
-    var kb=CFG.knowledge?('\n\n【主播领域背景】'+CFG.knowledge):'';
-    var dirLine=liveDir?('\n\n【当前方向，必须遵守】'+liveDir):'';
-    var memLine=MEM.profile?('\n\n【主播长期记忆】'+MEM.profile):'';
-    var body={model:CFG.model,
-      messages:[{role:'system',content:LINK_SYS+kb+dirLine+memLine},
-                {role:'user',content:(forceReplace?'【主播明确开场新话题·请清空旧台词重开，topic精确用新话题本身】\n':'')+(source==='type'?'主播打字输入：\n':'主播刚说：\n')+text.slice(-300)}],
-      temperature:0.6,stream:false,max_tokens:360};
-    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
-    var x=new XMLHttpRequest();
-    x.open('POST',url,true);
-    x.setRequestHeader('Content-Type','application/json');
-    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
-    x.timeout=45000;
-    function done(){linkBusy=false;if(linkPending){var p=linkPending;linkPending=null;routeInput(p.t,p.s);}}
-    x.onreadystatechange=function(){
-      if(x.readyState!==4)return;
-      if(x.status<200||x.status>=300){done();$('genState').textContent='联动失败 · 继续说';return;}
-      try{
-        var j=JSON.parse(x.responseText);
-        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-        if(!c)throw new Error('空返回');
-        var cl=c.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
-        var d=null;
-        try{d=JSON.parse(cl);}catch(e){var m=cl.match(/\{[\s\S]*\}/);if(m){try{d=JSON.parse(m[0]);}catch(e2){}}}
-        if(!d)throw new Error('解析');
-        // 1号：话题联动。同一话题反复提起→推进下一节(不重开不复述)；真正新话题→清空重开
-        var nodes=d.nodes||d.say||'';
-        if(Array.isArray(nodes))nodes=nodes.join('');
-        var topic=String(d.topic||'').trim().slice(0,40);
-        if(!topic&&scriptTopic)topic=scriptTopic; // LINK 没给话题时沿用当前话题，避免误判成新话题
-        var ta=normTxt(topic),sa=normTxt(scriptTopic),ua=normTxt(text);
-        // 同一话题判定：话题词相互包含，或当前话题词就出现在用户这句话里（反复说同一词=继续聊同话题）
-        var sameTopic=!!(ta&&sa&&(ta===sa||ta.indexOf(sa)>=0||sa.indexOf(ta)>=0||(sa.length>=2&&ua.indexOf(sa)>=0)));
-        var doReplace=!!forceReplace||d.replace===true||d.replace==='true';
-        if(sameTopic&&!doReplace){
-          // 用户还在聊同一话题（哪怕重复很多遍）→ 顺着预设顺序往下讲下一节，绝不重开、绝不复述话题名
-          if(!scriptBusy)generateMoreScript('advance');
-          $('genState').textContent='继续展开 · '+(topic||scriptTopic);
-        }else if(topic&&(doReplace||!sameTopic)){
-          // 真正的新话题（或明确要求换题）→ 清掉旧台词，把新话题落库，从预设第①节连贯重开
-          resetScript();
-          scriptTopic=topic;
-          if(!scriptBusy)generateMoreScript('start',topic);
-          topicGraphAdd(topic,'');
-          $('genState').textContent='话题切换 · '+topic;
-        }else if(String(nodes).trim()){
-          var start=appendScript(String(nodes).trim(),topic||scriptTopic,true);
-          if(start>=0){scriptIdx=start;paintScript();}
-          if(scriptQueue.length<8)generateMoreScript('near-end');
-        }
-
-        var know=String(d.know||'').trim();
-        var kbd=$('cardKnow')&&$('cardKnow').querySelector('.body');
-        if(kbd){
-          kbd.textContent=know||'（这句没有需要解释的专有名词）';kbd.scrollTop=0;
-          if(know&&!CFG.quiet){var el=$('cardKnow');el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
-        }
-        // 方向指令
-        var nd=String(d.dir||'').trim();
-        if(source==='type'&&nd){
-          liveDir=nd.slice(0,120);
-          $('dirTag').textContent='当前风格：'+liveDir;$('dirTag').style.display='inline-block';
-          toast('方向已调整：'+liveDir);
-        }
-      }catch(e){$('genState').textContent='联动解析失败 · 继续说';}
-      done();
-    };
-    x.ontimeout=function(){done();$('genState').textContent='联动超时 · 继续说';};
-    x.send(JSON.stringify(body));
-  }
-
-  // 一行台词的高度（含行间距），用于精准逐行滚动
-  function rowHeight(){
-    var bd=$('cardSay')&&$('cardSay').querySelector('.body');
-    if(!bd)return 30;
-    var ln=bd.querySelector('.ln');
-    if(!ln)return 30;
-    var cs=window.getComputedStyle(ln);
-    return (ln.offsetHeight||24)+(parseFloat(cs.marginBottom)||0);
-  }
-  // 精准滚轮：一次滚动=一行台词（上下都是），带冷却防止惯性连跳。直播时不会一滑跳过好几行。
-  (function(){
-    var bd=$('cardSay')&&$('cardSay').querySelector('.body');
-    if(!bd)return;
-    var acc=0,lockUntil=0;
-    bd.addEventListener('wheel',function(e){
-      e.preventDefault(); // 接管台词窗滚动，浏览器默认一次跳100px≈4行，太快
-      var now=Date.now();
-      if(now<lockUntil)return; // 冷却期内忽略，防止触控板/惯性一次连跳多行
-      acc+=e.deltaY;
-      var thr=20; // 累积阈值：普通鼠标一格deltaY≈100，触控板小步累积
-      if(Math.abs(acc)>=thr){
-        bd.scrollTop+=(acc>0?1:-1)*rowHeight();
-        acc=0;
-        lockUntil=now+70; // 70ms冷却：一格滚轮只走一行
-      }
-    },{passive:false});
-    // 滚到接近底部：自动生成下一批接上（逐行滚到底同样触发）
-    bd.addEventListener('scroll',function(){
-      if(!started||paused||scriptBusy||!scriptQueue.length)return;
-      var max=bd.scrollHeight-bd.clientHeight;
-      if(max>0&&bd.scrollTop>=max-28)generateMoreScript('scroll','',false);
-    });
-  })();
-
-  /* AI 生成：全自动，无按钮 */
-  var SYS='你在给主播做实时直播提词。本轮你只负责两件事：右边的"名词解释"(know) 和 方向指令(dir)。对话流由另一套独立系统负责，本轮不要写台词。\n'+
-    '【窗口位置】1号=实时听见（左上，主播说的话，第一个接收信息并触发联动）；2号=名词解释（右上，你负责）；3号=对话流（左下，预演推进的台词，不用你管）；4号=文字输入口（右下，主播打字指挥）。\n'+
-    '【打字=主播的暗中指挥权】主播打字输入时，往往是当面不好意思说、或想扭转直播间方向。如果输入是方向性指令（如"幽默一点""往专业走""反转一下""聊回刚才那个""别提这个了""多抛梗"），就在 dir 字段用一句话写清新方向（如"更幽默、多抛梗、允许自嘲"），并且本轮 know 立刻按新方向走；方向一旦设定会被记住，持续影响后续所有输出，直到新指令覆盖。如果打字只是普通内容（想让你解释某个词或话题），dir 留空字符串。\n'+
-    '【最重要·主动扫描名词】对主播刚说的每一句话，主动扫一遍里面的名词——缩写、术语、品牌、产品、人名、概念、平台名等，尤其注意粉丝留言里提到、主播照着念出来的词（如"有人问 WorkBuddy""粉丝说 API 是啥"）。\n'+
-    ' - 只要出现主播可能不了解的名词，就必须在 know 里给出准确定义：先用标准术语说出本来的专业含义，再用半句浅显话点明。宁可短，也不要编跟真实定义偏差大的类比。哪怕主播没明说"这是啥"，只要这词有解释价值就主动给。一次多个名词，挑最容易让主播卡住的那个讲。\n'+
-    ' - 例子：主播说"API"，know 写："API（应用程序编程接口）：一套让不同软件按统一规则互相调用、交换数据的接口；通俗说就是软件之间按格式提请求、拿结果的窗口。"主播念"有人提 WorkBuddy"，know 写："WorkBuddy 是一款能查资料、写文档、做表格、执行各类任务的 AI 工作助手；通俗说就是随身替你干活的 AI 同事。"\n'+
-    '【名词纠错】语音识别常把名词听错（中英混说、缩写、谐音），如把 NPD 听成"MPD/NP的"。结合语境推断主播真正想说的词：听到"NPD是啥"要讲自恋型人格障碍，而不是小米快充。拿不准时用"你说的应该是X"点明，绝不讲错东西。\n'+
-    '【know 格式】围绕当下话题关键词及周边，补主播可能不懂的定义和基础事实；专有名词定义第一位——先标准术语给准确含义，再半句浅显话点明，宁可短也别编偏差大的类比；60 字以内、最多两句。没有名词时，就给这句话最该让观众知道的一个关键事实。\n'+
-    '只输出一个 JSON 对象，不要解释、不要代码块标记：\n'+
-    '{"know":"...","dir":""}\n';
-
-  // 说完即触发：收到语音后重置计时，说完停约0.5秒（切段延时）立即生成，不设字数门槛、不加节流。
-  function scheduleGenerate(manual){
-    if(!pendingText.trim())return;
-    if(!manual&&(!started||paused))return;
-    if(genTimer){clearTimeout(genTimer);}
-    genTimer=setTimeout(function(){
-      genTimer=null;
-      if(!manual&&(!started||paused))return; // 语音暂停/结束后不再生成
-      generate(manual);
-    },manual?0:300);
-  }
-
-  var busy=false,liveDir='',lastTopic='';
-  function generate(manual){
-    if(busy)return;
-    if(!manual&&(!started||paused))return;
-    var text=pendingText.trim();
-    if(!text)return;
-    busy=true;pendingText='';
-    $('genState').innerHTML='<span class="spin"></span> 正在生成';
-    var kb=CFG.knowledge?('\n\n【主播的领域背景，供参考】\n'+CFG.knowledge):'';
-    var dirLine=liveDir?('\n\n【当前直播间方向风格，必须遵守】'+liveDir):'';
-    var memLine=MEM.profile?('\n\n【关于这位主播的长期记忆（跨场次累积，自然贴合，别生硬复述）】\n'+MEM.profile):'';
-    var userPrefix=manual?'【主播打字输入，可能是当面不好说、想扭转方向的指令】\n':'主播刚说：\n';
-    var topicLine=(manual&&lastTopic)?('\n【当前正在聊的话题，供参考】\n'+lastTopic):'';
-    var body={model:CFG.model,
-      messages:[{role:'system',content:SYS+kb+dirLine+memLine},{role:'user',content:userPrefix+text.slice(-400)+topicLine}],
-      temperature:0.8,stream:false,max_tokens:260};
-    var url=CFG.baseUrl.replace(/\/+$/,'')+'/chat/completions';
-    var x=new XMLHttpRequest();
-    x.open('POST',url,true);
-    x.setRequestHeader('Content-Type','application/json');
-    x.setRequestHeader('Authorization','Bearer '+CFG.apiKey);
-    x.timeout=45000;
-    function fail(msg){
-      busy=false;$('genState').textContent='生成失败 · 自动重试中';
-      // 文本退回待生成队列，有限重试，避免死循环卡住
-      pendingText=text+pendingText;
-      if(failCount<3){failCount++;toast(msg+'，将自动重试');setTimeout(function(){scheduleGenerate(manual);},2500);}
-      else{toast(msg+'，请检查设置里的接口/Key');$('genState').textContent='生成失败 · 请检查接口设置';failCount=0;}
-    }
-    x.onreadystatechange=function(){
-      if(x.readyState!==4)return;
-      if(x.status<200||x.status>=300){fail('生成失败（'+x.status+'）');return;}
-      busy=false;failCount=0;
-      try{
-        var j=JSON.parse(x.responseText);
-        var c=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-        if(!c)throw new Error('空返回');
-        var data=renderAI(c);
-        var nd=data&&data.dir?String(data.dir).trim():'';
-        if(manual&&nd){
-          liveDir=nd.slice(0,120);
-          $('dirTag').textContent='当前风格：'+liveDir;
-          $('dirTag').style.display='inline-block';
-          toast('方向已调整：'+liveDir);
-          generateMoreScript('next'); // 打字暗中指挥：对话流也立刻按新方向续写
-        }else{
-          lastTopic=text.slice(0,120);
-        }
-        $('genState').textContent='已自动生成 · 继续说即可';
-      }catch(e){fail('解析失败');return;}
-      // 裁剪字幕，避免无限增长
-      if(transcriptFinal.length>1600)transcriptFinal=transcriptFinal.slice(-1200);
-    };
-    x.ontimeout=function(){fail('请求超时');};
-    x.send(JSON.stringify(body));
-  }
-
-  function renderAI(content){
-    var data=null;
-    var cleaned=content.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
-    try{data=JSON.parse(cleaned);}catch(e){
-      var m=cleaned.match(/\{[\s\S]*\}/);
-      if(m){try{data=JSON.parse(m[0]);}catch(e2){}}
-    }
-    // 一号台词窗已升级为独立无限滚动对话流，这里只负责右边二号名词卡，绝不再覆盖台词
-    var v=data&&(data.know||data.knowledge||data.point||data.points);
-    if(Array.isArray(v))v=v.join('\n');
-    var got=false;
-    if(v&&String(v).trim()){
-      var bd=$('cardKnow').querySelector('.body');bd.textContent=String(v).trim();bd.scrollTop=0;got=true;
-      if(!CFG.quiet){var el=$('cardKnow');el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
-    }
-    if(!got){$('cardKnow').querySelector('.body').textContent=cleaned;}
-    return data;
-  }
-
-  // 4号文字输入：纯录入口，打的字作为话题/指挥喂给联动引擎（同时驱动1号跳转、2号知识）
+  /* ===== 文字输入：跟语音完全等价 ===== */
   function sendTyped(){
     var t=$('typeInput').value.trim();
-    if(!t){toast('先输入文字');return;}
-    if(!(CFG.baseUrl&&CFG.model&&CFG.apiKey)){
-      toast('请先在设置里填 API Key');$('settingsBox').open=true;return;
-    }
-    if(busy){toast('正在生成，稍等一下');return;}
+    if(!t)return;
     $('typeInput').value='';
-    routeInput(t,'type');
-    toast('已发送，正在联动');
+    pushTurn(t,'type');
   }
   $('typeSend').addEventListener('click',sendTyped);
   $('typeInput').addEventListener('keydown',function(e){
     if(e.key==='Enter'){e.preventDefault();sendTyped();}
   });
 
-  // 提示卡右上角 ▲▼：点一下在固定高度内翻一屏
-  Array.prototype.forEach.call(document.querySelectorAll('.sbtns button[data-sc]'),function(btn){
-    btn.addEventListener('click',function(){
-      var id=this.getAttribute('data-sc');
-      var body=$(id).querySelector('.body');
-      var step=(id==='cardSay')?rowHeight():Math.max(36,body.clientHeight*0.8); // 台词窗一次一行
-      body.scrollTop+=(this.getAttribute('data-dir')==='1'?1:-1)*step;
-    });
-  });
-
-  load();loadMem();fillForm();renderTranscript();setControls('idle');renderMem();
+  /* ===== 启动 ===== */
+  load();fillForm();setControls('idle');renderScript();
 })();
 </script>
 </body>
